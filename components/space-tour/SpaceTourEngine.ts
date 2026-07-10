@@ -36,7 +36,7 @@ export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
       { index: "CV", label: "Vision & Medical Imaging" },
       { index: "DI", label: "Decision Intelligence" }
     ],
-    href: "/domains",
+    href: "/foundry#domains",
     linkLabel: "Explore the capability map",
     hudStat: { value: 4, label: "AI capability domains" }
   },
@@ -51,7 +51,7 @@ export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
       { index: "03", label: "Data Analysis Agents" },
       { index: "04", label: "Knowledge Search Agents" }
     ],
-    href: "/domains",
+    href: "/foundry#domains",
     linkLabel: "See agents in production",
     hudStat: { value: 5, label: "agents in active orbit" }
   },

@@ -26,21 +26,21 @@ const INNER: Station[] = [
     name: "AI/ML Systems",
     description:
       "Production-focused machine learning systems spanning model design, deployment, monitoring, and MLOps.",
-    href: "/domains",
+    href: "/foundry#domains",
     Icon: BrainCircuit,
   },
   {
     name: "AI Agents",
     description:
       "Domain-specific agents for documents, reporting, knowledge search, and workflow automation with human oversight.",
-    href: "/domains",
+    href: "/foundry#domains",
     Icon: Bot,
   },
   {
     name: "Document Intelligence",
     description:
       "RAG and knowledge systems that turn unstructured documents into searchable, evidence-backed answers.",
-    href: "/domains",
+    href: "/foundry#domains",
     Icon: FileSearch,
   },
   {
@@ -71,7 +71,7 @@ const OUTER: Station[] = [
     name: "Secure & Edge AI",
     description:
       "Federated learning, edge inference, and privacy-preserving architectures for regulated environments.",
-    href: "/domains",
+    href: "/foundry#domains",
     Icon: Network,
   },
   {

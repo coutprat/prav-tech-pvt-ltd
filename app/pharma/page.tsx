@@ -81,7 +81,7 @@ const html = `<header class="page-hero">
       <p>Talk to us about AI-assisted quality intelligence for your GMP environment.</p>
       <div class="cta-row">
         <a href="mailto:pratham@praversetech.com?subject=Pharma%20AI" class="btn btn-white">Request a Walkthrough →</a>
-        <a href="/domains" class="btn btn-outline">All Domains</a>
+        <a href="/foundry#domains" class="btn btn-outline">All Domains</a>
       </div>
     </div>
   </div>

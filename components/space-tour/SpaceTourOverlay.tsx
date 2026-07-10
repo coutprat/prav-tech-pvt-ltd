@@ -170,7 +170,7 @@ export function SpaceTourOverlay({ onClose }: SpaceTourOverlayProps) {
                   <div className="space-tour-body-col">
                     <p ref={bodyRef} className="space-tour-body" />
                     <div ref={tagsRef} className="space-tour-tags-row" />
-                    <a ref={linkRef} className="space-tour-link" href="/domains" />
+                    <a ref={linkRef} className="space-tour-link" href="/foundry#domains" />
                   </div>
                   <div ref={manifestRef} className="space-tour-manifest" />
                 </div>

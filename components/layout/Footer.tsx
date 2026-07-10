@@ -25,7 +25,7 @@ export function Footer() {
           <div>
             <h5>Explore</h5>
             <ul>
-              <li><Link href="/domains">Innovation Domains</Link></li>
+              <li><Link href="/foundry#domains">Innovation Domains</Link></li>
               <li><Link href="/healthmate">MENNIE</Link></li>
               <li><Link href="/pharma">Pharma &amp; Regulatory AI</Link></li>
               <li><Link href="/photonics">Photonics</Link></li>
@@ -46,10 +46,10 @@ export function Footer() {
           <div>
             <h5>Company</h5>
             <ul>
-              <li><Link href="/about">About</Link></li>
+              <li><Link href="/foundry">About</Link></li>
               <li><Link href="/contact">Contact</Link></li>
               <li><a href={site.linkedIn} target="_blank" rel="noopener">LinkedIn</a></li>
-              <li><Link href="/about#legal">Terms &amp; Privacy</Link></li>
+              <li><Link href="/foundry#legal">Terms &amp; Privacy</Link></li>
             </ul>
           </div>
         </div>
