@@ -52,9 +52,9 @@ export default function ContactPage() {
               <p>Connect with the founder for updates and announcements.</p>
             </div>
             <div className="contact-card rv">
-              <span className="lbl">Location</span>
+              <span className="lbl">Office</span>
               <span className="val">Vadodara, Gujarat, India</span>
-              <p>Building from India, deploying for the world.</p>
+              <p>TOWER 2 – 413 &amp; 420, Prince Cube, Nayaran Garden, Gotri, Vadodara. Also present in Bangalore, Hyderabad, Pune, Mumbai, and Chennai.</p>
             </div>
           </div>
         </div>

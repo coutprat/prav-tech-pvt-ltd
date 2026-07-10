@@ -1,13 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { navigation } from "@/data/navigation";
+import { useSpaceTour } from "@/components/space-tour/SpaceTourProvider";
 
 export function Navbar() {
+  const { open } = useSpaceTour();
+
   return (
     <nav id="nav">
       <Link href="/" className="logo">
-        <Image src="/logo.svg" className="logo-mark" alt="Praverse" width={28} height={28} priority />
-        Praverse
+        <Image src="/logo.svg" className="logo-mark" alt="PraverseTech" width={28} height={28} priority />
+        PraverseTech
       </Link>
       <ul id="navLinks">
         {navigation.map((item) => (
@@ -16,7 +21,7 @@ export function Navbar() {
           </li>
         ))}
       </ul>
-      <button className="theme-toggle" title="Toggle Space Tour" type="button">
+      <button className="space-tour-trigger" title="Launch Space Tour" type="button" onClick={open}>
         <span className="orb-ic" />
         <span className="tt-label">SPACE TOUR</span>
       </button>

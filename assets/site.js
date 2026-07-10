@@ -1,4 +1,9 @@
 /* ============ PRAVERSE TECH — SHARED ENGINE ============ */
+(function bootPraverseEngine() {
+if (!window.gsap || !window.ScrollTrigger || !window.THREE || !window.Lenis) {
+  window.setTimeout(bootPraverseEngine, 30);
+  return;
+}
 (function () {
 "use strict";
 gsap.registerPlugin(ScrollTrigger);
@@ -68,19 +73,96 @@ if (canvas && window.THREE) {
   const satA = makeSat(0x06b6d4), satB = makeSat(0x8b5cf6), satC = makeSat(0x3b82f6);
   scene.add(satA, satB, satC);
 
-  /* --- Particle field (becomes starfield in space mode) --- */
+  /* --- Particle field (morphs into the space-tour story) --- */
   const COUNT = isMobile ? 600 : 1600;
   const pPos = new Float32Array(COUNT * 3);
+  const pBase = new Float32Array(COUNT * 3);
+  const pSphere = new Float32Array(COUNT * 3);
+  const pRing = new Float32Array(COUNT * 3);
+  const pHelix = new Float32Array(COUNT * 3);
+  const pGalaxy = new Float32Array(COUNT * 3);
+  const pVoid = new Float32Array(COUNT * 3);
   for (let i = 0; i < COUNT; i++) {
-    pPos[i * 3] = (Math.random() - 0.5) * 40;
-    pPos[i * 3 + 1] = (Math.random() - 0.5) * 26;
-    pPos[i * 3 + 2] = (Math.random() - 0.5) * 30 - 6;
+    const ix = i * 3;
+    const seed = i / COUNT;
+    const randA = Math.sin(i * 12.9898) * 43758.5453;
+    const randB = Math.sin(i * 78.233) * 24634.6345;
+    const jitterA = randA - Math.floor(randA);
+    const jitterB = randB - Math.floor(randB);
+    const theta = seed * Math.PI * 2 * 34 + jitterA * 0.4;
+    const phi = Math.acos(1 - 2 * ((i + 0.5) / COUNT));
+    const sphereRadius = 2.35 + jitterB * 0.38;
+    const ringRadius = 2.0 + jitterA * 3.0;
+    const helixHeight = (seed - 0.5) * 6.2;
+    const helixRadius = 1.0 + seed * 2.4;
+    const arm = i % 4;
+    const armAngle = theta + arm * Math.PI * 0.5;
+    const galaxyRadius = Math.sqrt(seed) * 5.0;
+    const voidRadius = 1.0 + Math.pow(seed, 0.35) * 6.2;
+
+    pBase[ix] = (jitterA - 0.5) * 40;
+    pBase[ix + 1] = (jitterB - 0.5) * 26;
+    pBase[ix + 2] = (Math.random() - 0.5) * 30 - 6;
+
+    pSphere[ix] = Math.sin(phi) * Math.cos(theta) * sphereRadius;
+    pSphere[ix + 1] = Math.cos(phi) * sphereRadius;
+    pSphere[ix + 2] = Math.sin(phi) * Math.sin(theta) * sphereRadius;
+
+    pRing[ix] = Math.cos(theta) * ringRadius;
+    pRing[ix + 1] = (jitterB - 0.5) * 0.55;
+    pRing[ix + 2] = Math.sin(theta) * ringRadius * 0.34;
+
+    pHelix[ix] = Math.cos(theta * 1.7) * helixRadius;
+    pHelix[ix + 1] = helixHeight;
+    pHelix[ix + 2] = Math.sin(theta * 1.7) * helixRadius;
+
+    pGalaxy[ix] = Math.cos(armAngle + galaxyRadius * 0.9) * galaxyRadius;
+    pGalaxy[ix + 1] = (jitterB - 0.5) * 0.75;
+    pGalaxy[ix + 2] = Math.sin(armAngle + galaxyRadius * 0.9) * galaxyRadius;
+
+    pVoid[ix] = Math.cos(theta * 2.2) * voidRadius;
+    pVoid[ix + 1] = (jitterB - 0.5) * voidRadius * 0.48;
+    pVoid[ix + 2] = Math.sin(theta * 2.2) * voidRadius;
+
+    pPos[ix] = pBase[ix];
+    pPos[ix + 1] = pBase[ix + 1];
+    pPos[ix + 2] = pBase[ix + 2];
   }
   const pGeo = new THREE.BufferGeometry();
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
   const pMat = new THREE.PointsMaterial({ color: 0x5b7bd5, size: 0.035, transparent: true, opacity: 0.55 });
   const particles = new THREE.Points(pGeo, pMat);
   scene.add(particles);
+
+  const tourTargets = [pSphere, pRing, pHelix, pGalaxy, pVoid];
+  function smoothstep(v) {
+    return v * v * (3 - 2 * v);
+  }
+  function morphParticles(progress, time) {
+    const scaled = Math.min(0.999, Math.max(0, progress)) * (tourTargets.length - 1);
+    const fromIndex = Math.floor(scaled);
+    const toIndex = Math.min(tourTargets.length - 1, fromIndex + 1);
+    const mix = smoothstep(scaled - fromIndex);
+    const from = tourTargets[fromIndex];
+    const to = tourTargets[toIndex];
+    for (let i = 0; i < COUNT; i++) {
+      const ix = i * 3;
+      const pulse = Math.sin(time * 1.8 + i * 0.037) * 0.045;
+      pPos[ix] = from[ix] + (to[ix] - from[ix]) * mix;
+      pPos[ix + 1] = from[ix + 1] + (to[ix + 1] - from[ix + 1]) * mix + pulse;
+      pPos[ix + 2] = from[ix + 2] + (to[ix + 2] - from[ix + 2]) * mix;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+  }
+  function relaxParticles(time) {
+    for (let i = 0; i < COUNT; i++) {
+      const ix = i * 3;
+      pPos[ix] += (pBase[ix] - pPos[ix]) * 0.035;
+      pPos[ix + 1] += (pBase[ix + 1] - pPos[ix + 1]) * 0.035;
+      pPos[ix + 2] += (pBase[ix + 2] - pPos[ix + 2]) * 0.035 + Math.sin(time + i) * 0.0008;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+  }
 
   /* --- SPACE TOUR exclusives: planet + ring, distant sun, lights --- */
   const spaceGroup = new THREE.Group();
@@ -165,9 +247,14 @@ if (canvas && window.THREE) {
 
   /* --- Scroll progress --- */
   const scrollState = { p: 0 };
+  const tourState = { p: 0 };
   ScrollTrigger.create({
     trigger: document.body, start: 0, end: () => Math.max(1, document.body.scrollHeight - innerHeight),
     onUpdate: (self) => { scrollState.p = self.progress; }
+  });
+  ScrollTrigger.create({
+    trigger: document.body, start: 0, end: () => Math.max(1, Math.min(document.body.scrollHeight - innerHeight, innerHeight * 4.6)),
+    onUpdate: (self) => { tourState.p = self.progress; }
   });
 
   /* --- Mode switching --- */
@@ -178,6 +265,8 @@ if (canvas && window.THREE) {
     spaceGroup.visible = on;
     deepStars.visible = on;
     nodeField.visible = on;
+    coreGroup.visible = !on;
+    satA.visible = satB.visible = satC.visible = !on;
     // material palette morph
     const dur = animate ? 1.6 : 0;
     gsap.to(pMat.color, { r: on ? 1 : 0.357, g: on ? 1 : 0.482, b: on ? 1 : 0.835, duration: dur });
@@ -223,10 +312,14 @@ if (canvas && window.THREE) {
     particles.rotation.y = t * (spaceMode ? 0.004 : 0.012);
 
     const p = scrollState.p;
+    const tp = tourState.p;
 
     if (spaceMode) {
+      morphParticles(tp, t);
       // flythrough: the station (planet) approaches as the tour progresses
-      planet.position.z = -8 + p * 26;
+      planet.position.x = 7.5 - tp * 2.2;
+      planet.position.y = -3.2 + Math.sin(tp * Math.PI) * 1.2;
+      planet.position.z = -16 + tp * 9;
       planetRing.position.copy(planet.position);
       planet.rotation.y = t * 0.08;
       planetRing.rotation.z = 0.4 + t * 0.03;
@@ -243,20 +336,22 @@ if (canvas && window.THREE) {
         m.rotation.x += 0.004;
         m.rotation.y += m.userData.spin * 0.01;
       });
+    } else {
+      relaxParticles(t);
     }
 
     coreGroup.position.y = p * 6.5;
     coreGroup.position.x = Math.sin(p * Math.PI) * 2.0;
     coreGroup.scale.setScalar(1 - p * 0.45);
-    satA.visible = satB.visible = satC.visible = p < 0.35;
+    satA.visible = satB.visible = satC.visible = !spaceMode && p < 0.35;
 
     // camera: base + scroll pull-back + tour warp dive + parallax
-    camera.position.z = 9 + p * 4 - tourFx.warp * 7;
-    camera.position.y = mouse.y * -0.3 + tourFx.warp * 1.2;
-    camera.position.x = mouse.x * 0.4 + tourFx.warp * 2.5;
+    camera.position.z = spaceMode ? 9.2 - tp * 1.8 - tourFx.warp * 7 : 9 + p * 4 - tourFx.warp * 7;
+    camera.position.y = mouse.y * -0.3 + tourFx.warp * 1.2 + (spaceMode ? Math.sin(tp * Math.PI * 2) * 0.35 : 0);
+    camera.position.x = mouse.x * 0.4 + tourFx.warp * 2.5 + (spaceMode ? Math.sin(tp * Math.PI) * 0.8 : 0);
     camera.lookAt(
-      coreGroup.position.x * 0.3 + (spaceMode ? tourFx.warp * 3 : 0),
-      coreGroup.position.y * 0.25,
+      spaceMode ? tourFx.warp * 3 : coreGroup.position.x * 0.3,
+      spaceMode ? 0 : coreGroup.position.y * 0.25,
       spaceMode ? tourFx.warp * -6 : 0
     );
 
@@ -279,6 +374,7 @@ const THEME_KEY = 'praverse-theme';
 function applyTheme(theme, animate) {
   document.body.setAttribute('data-theme', theme);
   setSpaceScene(theme === 'space', !!animate);
+  document.body.classList.toggle('space-tour-active', theme === 'space');
   document.querySelectorAll('.theme-toggle .tt-label').forEach((el) => {
     el.textContent = theme === 'space' ? 'EARTH MODE' : 'SPACE TOUR';
   });
@@ -292,6 +388,103 @@ document.querySelectorAll('.theme-toggle').forEach((btn) => {
     const next = document.body.getAttribute('data-theme') === 'space' ? 'light' : 'space';
     applyTheme(next, true);
   });
+});
+
+/* ---------- Space Tour narrative layer ---------- */
+const tourSteps = [
+  {
+    code: '01 / INTELLIGENCE CORE',
+    title: 'Enterprise AI gathers into one field',
+    body: 'Praverse begins with the operating problem: documents, workflows, images, decisions, and teams that need one trustworthy intelligence layer.',
+    signal: 'Machine learning, document intelligence, decision support',
+    tags: ['ML systems', 'RAG', 'Decision AI']
+  },
+  {
+    code: '02 / AGENT ORBITS',
+    title: 'Agents move around real work',
+    body: 'The ring forms around tasks that matter: review evidence, search knowledge, draft reports, query data, and keep humans in the loop.',
+    signal: 'Document review agents, knowledge search, analysis copilots',
+    tags: ['Agents', 'Copilots', 'Audit trails']
+  },
+  {
+    code: '03 / HEALTHMATE HELIX',
+    title: 'Healthcare support becomes continuous',
+    body: 'The helix carries HealthMate: conversational intake, appointment assistance, hospital navigation, reminders, and clinician-ready summaries.',
+    signal: 'Patient interaction, care routing, assistive healthcare workflows',
+    tags: ['HealthMate', 'Voice intake', 'Care workflows']
+  },
+  {
+    code: '04 / REGULATED GALAXY',
+    title: 'Pharma quality signals connect',
+    body: 'Inspection observations, CAPA reasoning, SOP gaps, data integrity, and quality risk signals become a navigable regulatory intelligence map.',
+    signal: 'FDA 483 analytics, CAPA support, GMP documentation intelligence',
+    tags: ['Pharma AI', 'CAPA', 'GMP']
+  },
+  {
+    code: '05 / FRONTIER DEPLOYMENT',
+    title: 'Research turns into deployed systems',
+    body: 'The tour resolves into the frontier: robotics, federated learning, AIoT, biochip research, photonics, and production infrastructure.',
+    signal: 'Physical AI, secure edge intelligence, research-to-product tracks',
+    tags: ['Robotics', 'Federated AI', 'Frontier Lab']
+  }
+];
+const tourOverlay = document.createElement('aside');
+tourOverlay.className = 'space-tour-overlay';
+tourOverlay.setAttribute('aria-hidden', 'true');
+tourOverlay.innerHTML = `
+  <div class="space-tour-head">
+    <span>Praverse Space Tour</span>
+    <b>Scroll-driven ecosystem map</b>
+  </div>
+  <div class="space-tour-copy">
+    <span class="space-tour-kicker"></span>
+    <h2></h2>
+    <p></p>
+    <div class="space-tour-tags"></div>
+    <div class="space-tour-actions">
+      <a href="#capabilities" class="btn btn-ghost">Explore the ecosystem</a>
+      <a href="/contact" class="btn btn-grad">Start a project</a>
+    </div>
+  </div>
+  <div class="space-tour-system" aria-hidden="true">
+    <span class="system-label">Current signal</span>
+    <strong></strong>
+    <div class="system-lines">
+      <i></i><i></i><i></i><i></i>
+    </div>
+  </div>
+  <div class="space-tour-rail">
+    ${tourSteps.map((_, i) => `<i data-step="${i}"></i>`).join('')}
+  </div>
+`;
+document.body.appendChild(tourOverlay);
+const tourKicker = tourOverlay.querySelector('.space-tour-kicker');
+const tourTitle = tourOverlay.querySelector('h2');
+const tourBody = tourOverlay.querySelector('p');
+const tourTags = tourOverlay.querySelector('.space-tour-tags');
+const tourSignal = tourOverlay.querySelector('.space-tour-system strong');
+const tourDots = tourOverlay.querySelectorAll('.space-tour-rail i');
+let activeTourStep = -1;
+function setTourStep(index) {
+  if (index === activeTourStep) return;
+  activeTourStep = index;
+  const step = tourSteps[index];
+  tourKicker.textContent = step.code;
+  tourTitle.textContent = step.title;
+  tourBody.textContent = step.body;
+  tourSignal.textContent = step.signal;
+  tourTags.innerHTML = step.tags.map((tag) => `<span>${tag}</span>`).join('');
+  tourDots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+  if (!reduceMotion) {
+    gsap.fromTo([tourKicker, tourTitle, tourBody, tourTags, tourSignal], { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.045, ease: 'power3.out' });
+  }
+}
+setTourStep(0);
+ScrollTrigger.create({
+  trigger: document.body,
+  start: 0,
+  end: () => Math.max(1, Math.min(document.body.scrollHeight - innerHeight, innerHeight * 4.6)),
+  onUpdate: (self) => setTourStep(Math.min(tourSteps.length - 1, Math.floor(self.progress * tourSteps.length)))
 });
 
 /* ---------- Loader ---------- */
@@ -309,14 +502,18 @@ if (loader && loadBar) {
     fake = Math.min(fake + Math.random() * 22, 92);
     loadBar.style.width = fake + '%';
   }, 120);
-  window.addEventListener('load', () => {
+  const completeLoader = () => {
     clearInterval(fakeInt);
     loadBar.style.width = '100%';
     setTimeout(finishLoad, 450);
-  });
+  };
+  if (document.readyState === 'complete') completeLoader();
+  else window.addEventListener('load', completeLoader);
   setTimeout(() => { clearInterval(fakeInt); finishLoad(); }, 5000);
 } else {
-  window.addEventListener('load', () => { introTimeline(); if (startThreeScene) startThreeScene(); });
+  const startWithoutLoader = () => { introTimeline(); if (startThreeScene) startThreeScene(); };
+  if (document.readyState === 'complete') startWithoutLoader();
+  else window.addEventListener('load', startWithoutLoader);
 }
 
 /* ---------- Hero intro (home) / page-hero intro (sub-pages) ---------- */
@@ -431,11 +628,12 @@ if (menuBtn && navLinks) {
   navLinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => navLinks.classList.remove('open')));
 }
 // highlight current page
-const page = location.pathname.split('/').pop() || 'index.html';
+const currentPath = location.pathname.replace(/\/$/, '') || '/';
 document.querySelectorAll('nav ul a').forEach((a) => {
-  const href = a.getAttribute('href') || '';
-  if (href === page || (page === 'index.html' && href.startsWith('#'))) return;
-  if (href.split('#')[0] === page) a.classList.add('active');
+  const rawHref = a.getAttribute('href') || '';
+  if (!rawHref || rawHref.startsWith('#')) return;
+  const linkPath = new URL(rawHref, location.origin).pathname.replace(/\/$/, '') || '/';
+  if (linkPath === currentPath) a.classList.add('active');
 });
 
 /* ---------- Anchor scrolling via Lenis ---------- */
@@ -487,9 +685,9 @@ if (!reduceMotion && fineCursor) {
 
 /* ---------- Page transitions (space warp jump) ---------- */
 const PAGE_NAMES = {
-  'index.html': 'Home Base', 'domains.html': 'Innovation Domains', 'healthmate.html': 'HealthMate',
-  'pharma.html': 'Pharma & Regulatory AI', 'research.html': 'Research Sector', 'insights.html': 'Insights Feed',
-  'innovate.html': 'Venture Lab', 'about.html': 'About Praverse', 'contact.html': 'Contact Channel'
+  '/': 'Home Base', '/domains': 'Innovation Domains', '/healthmate': 'HealthMate',
+  '/pharma': 'Pharma & Regulatory AI', '/research': 'Research Sector', '/insights': 'Insights Feed',
+  '/innovate': 'Venture Lab', '/about': 'About Praverse', '/contact': 'Contact Channel'
 };
 const pageFade = document.createElement('div');
 pageFade.className = 'page-fade';
@@ -497,7 +695,9 @@ pageFade.innerHTML = '<div class="warp-streaks"></div><div class="warp-core"></d
 document.body.appendChild(pageFade);
 const warpLabel = pageFade.querySelector('.warp-label');
 document.body.classList.add('page-enter');
-addEventListener('load', () => requestAnimationFrame(() => document.body.classList.remove('page-enter')));
+const clearPageEnter = () => requestAnimationFrame(() => document.body.classList.remove('page-enter'));
+if (document.readyState === 'complete') clearPageEnter();
+else addEventListener('load', clearPageEnter);
 document.querySelectorAll('a[href]').forEach((a) => {
   const href = a.getAttribute('href') || '';
   if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') ||
@@ -505,8 +705,8 @@ document.querySelectorAll('a[href]').forEach((a) => {
   a.addEventListener('click', (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    const page = href.split('#')[0].split('/').pop();
-    warpLabel.textContent = 'Entering ' + (PAGE_NAMES[page] || 'New Sector');
+    const path = new URL(href, location.origin).pathname.replace(/\/$/, '') || '/';
+    warpLabel.textContent = 'Entering ' + (PAGE_NAMES[path] || 'New Sector');
     pageFade.classList.add('active');
     document.body.classList.add('page-enter');
     setTimeout(() => { location.href = href; }, 520);
@@ -530,14 +730,14 @@ document.querySelectorAll('.foot-grid > div').forEach((col) => {
   if (!h5 || h5.textContent.trim() !== 'Explore') return;
   const ul = col.querySelector('ul');
   if (!ul) return;
-  if (!ul.querySelector('a[href="insights.html"]')) {
+  if (!ul.querySelector('a[href="/insights"]')) {
     const li = document.createElement('li');
-    li.innerHTML = '<a href="insights.html">Insights</a>';
+    li.innerHTML = '<a href="/insights">Insights</a>';
     ul.appendChild(li);
   }
-  if (!ul.querySelector('a[href="innovate.html"]')) {
+  if (!ul.querySelector('a[href="/innovate"]')) {
     const li = document.createElement('li');
-    li.innerHTML = '<a href="innovate.html">Innovate</a>';
+    li.innerHTML = '<a href="/innovate">Innovate</a>';
     ul.appendChild(li);
   }
 });
@@ -564,4 +764,5 @@ document.querySelectorAll('.foot-bottom').forEach((bottom) => {
   showTrack();
   setInterval(showTrack, reduceMotion ? 6000 : 4500);
 });
+})();
 })();

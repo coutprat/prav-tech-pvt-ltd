@@ -9,8 +9,8 @@ export function Footer() {
         <div className="foot-grid">
           <div>
             <div className="logo">
-              <Image src="/logo.svg" className="logo-mark" alt="Praverse" width={30} height={30} />
-              Praverse
+              <Image src="/logo.svg" className="logo-mark" alt="PraverseTech" width={30} height={30} />
+              PraverseTech
             </div>
             <p>
               Engineering human-centered intelligence. Enterprise-grade AI/ML systems across healthcare,
@@ -26,8 +26,9 @@ export function Footer() {
             <h5>Explore</h5>
             <ul>
               <li><Link href="/domains">Innovation Domains</Link></li>
-              <li><Link href="/healthmate">HealthMate</Link></li>
+              <li><Link href="/healthmate">MENNIE</Link></li>
               <li><Link href="/pharma">Pharma &amp; Regulatory AI</Link></li>
+              <li><Link href="/photonics">Photonics</Link></li>
               <li><Link href="/research">Research &amp; Labs</Link></li>
               <li><Link href="/insights">Insights</Link></li>
               <li><Link href="/innovate">Innovate</Link></li>
