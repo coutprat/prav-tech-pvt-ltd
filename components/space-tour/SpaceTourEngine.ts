@@ -27,23 +27,23 @@ export interface SpaceTourStep {
 export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
   {
     code: "01 / INTELLIGENCE CORE",
-    title: "Enterprise AI gathers into one field",
-    body: "Data comets from every domain arc inward — documents, workflows, images and decisions spiralling into one trustworthy intelligence layer.",
-    tags: ["ML Systems", "RAG", "Decision AI"],
+    title: "Four labs. One direction.",
+    body: "Praverse Tech Pvt Ltd — founded 2023 in Vadodara, Gujarat. Every applied system traces back to one of four active research labs, fusing deep learning, robotics, and ethical intelligence into a single trustworthy layer.",
+    tags: ["Medical Imaging Lab", "Regulatory AI Lab", "Edge & Federated AI Lab"],
     manifest: [
-      { index: "ML", label: "Machine Learning & Applied AI" },
-      { index: "RAG", label: "Document Intelligence" },
-      { index: "CV", label: "Vision & Medical Imaging" },
-      { index: "DI", label: "Decision Intelligence" }
+      { index: "MI", label: "Medical Imaging Lab" },
+      { index: "REG", label: "Regulatory AI Lab" },
+      { index: "EF", label: "Edge & Federated AI Lab" },
+      { index: "HS", label: "Humanoid Simulation Lab" }
     ],
     href: "/foundry#domains",
     linkLabel: "Explore the capability map",
-    hudStat: { value: 4, label: "AI capability domains" }
+    hudStat: { value: 4, label: "active research labs" }
   },
   {
     code: "02 / AGENT ORBITS",
-    title: "Agents move around real work",
-    body: "Five autonomous agents orbit the core — each locked to a task: evidence review, knowledge search, report drafting, data query, human escalation.",
+    title: "Research that ships, not research that sits",
+    body: "Praverse is research-backed and product-oriented — every published paper feeds a deployed track. NEAT-based simulation research (2024) laid the groundwork for the agent and humanoid-simulation systems now in production.",
     tags: ["Agents", "Copilots", "Audit trails"],
     manifest: [
       { index: "01", label: "Document Review Agents" },
@@ -53,13 +53,13 @@ export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
     ],
     href: "/foundry#domains",
     linkLabel: "See agents in production",
-    hudStat: { value: 5, label: "agents in active orbit" }
+    hudStat: { value: 4, label: "agent classes in production" }
   },
   {
     code: "03 / MENNIE HELIX",
-    title: "Healthcare support becomes continuous",
-    body: "The double helix carries MENNIE through every layer of care: conversational intake, appointment assistance, reminders, and clinician-ready summaries.",
-    tags: ["MENNIE", "Voice intake", "Care workflows"],
+    title: "From Netra Sakhi to MENNIE",
+    body: "It started with Netra Sakhi (2023) — a Scopus-indexed edge AI ophthalmic screening assistant. That lineage became MENNIE, the Medical Empowerment and Neural Navigation Intelligence Engine — patent-pending, in private beta from Q1 2026.",
+    tags: ["MENNIE", "Netra Sakhi", "Patent-Pending"],
     manifest: [
       { index: "VX", label: "Voice-first symptom intake" },
       { index: "AP", label: "Doctor matching & appointments" },
@@ -68,12 +68,12 @@ export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
     ],
     href: "/healthmate",
     linkLabel: "Explore MENNIE",
-    hudStat: { value: 4, label: "layers of continuous care" }
+    hudStat: { value: 2026, label: "private beta year" }
   },
   {
     code: "04 / REGULATED GALAXY",
-    title: "Pharma quality signals crystallise",
-    body: "Inspection observations, CAPA reasoning, SOP gaps and data integrity signals lock into a navigable regulatory intelligence framework.",
+    title: "Built for USFDA 21 CFR Part 211",
+    body: "Inspection observations, CAPA reasoning, SOP gaps, and ALCOA+ data-integrity signals lock into a regulatory intelligence framework aligned to USFDA 21 CFR Part 211, ICH Q9, and ICH Q10.",
     tags: ["Pharma AI", "CAPA", "GMP"],
     manifest: [
       { index: "FDA-483", label: "Observation analytics" },
@@ -87,18 +87,18 @@ export const SPACE_TOUR_STEPS: SpaceTourStep[] = [
   },
   {
     code: "05 / FRONTIER DEPLOYMENT",
-    title: "Research ignites into deployed systems",
-    body: "The frontier ignites: a rocket of production-grade AI lifts off carrying robotics, federated learning, AIoT, biochip research and photonics.",
+    title: "2023 to 2027 — research igniting into systems",
+    body: "Netra Sakhi (2023) → PCOS Detection Pipeline (2024) → MENNIE & Intel Collaboration (2025) → Biochip Intelligence Research (2026) → the projected Cognitive AI Ecosystem and Photonics manufacturing track (2027).",
     tags: ["Robotics", "Federated AI", "Frontier Lab"],
     manifest: [
-      { index: "01", label: "Humanoid Robotics & Physical AI" },
-      { index: "02", label: "Biochip 2027" },
-      { index: "03", label: "Photonics 2027" },
-      { index: "04", label: "Federated & Secure AI" }
+      { index: "23", label: "Netra Sakhi — Edge AI Screening" },
+      { index: "24", label: "PCOS Detection Pipeline" },
+      { index: "25", label: "MENNIE & Intel Collaboration" },
+      { index: "26", label: "Biochip Intelligence Research" }
     ],
     href: "/research",
     linkLabel: "Open the Frontier Lab",
-    hudStat: { value: 3, label: "frontier programmes active" }
+    hudStat: { value: 2027, label: "cognitive AI ecosystem target" }
   }
 ];
 
@@ -134,6 +134,8 @@ export interface SpaceTourEngineRefs {
   coord: HTMLElement;
   dots: HTMLElement[];
   hud?: HTMLElement;
+  progress?: HTMLElement;
+  warp?: HTMLElement;
   onStepChange?: (index: number) => void;
 }
 
@@ -311,9 +313,10 @@ export class SpaceTourEngine {
   private cageMat!: THREE.LineBasicMaterial;
   private nodeVertMat!: THREE.ShaderMaterial;
 
-  private rocketPos!: Float32Array;
-  private rocketGeo!: THREE.BufferGeometry;
-  private rocketMat!: THREE.PointsMaterial;
+  private rocketGroup!: THREE.Group;
+  private rocketMats: THREE.MeshBasicMaterial[] = [];
+  private rocketGlowMat!: THREE.ShaderMaterial;
+  private rocketLastPos = new THREE.Vector3(0.25, -3, 0.15);
   private exhaustPos!: Float32Array;
   private exhaustCol!: Float32Array;
   private exhaustGeo!: THREE.BufferGeometry;
@@ -328,6 +331,7 @@ export class SpaceTourEngine {
   private lensMat: THREE.ShaderMaterial | null = null;
 
   private mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+  private orbDrag = { active: false, lastX: 0, lastY: 0, yaw: 0, pitch: 0 };
   private mounted = false;
 
   constructor(refs: SpaceTourEngineRefs, reducedMotion: boolean) {
@@ -568,6 +572,50 @@ export class SpaceTourEngine {
     window.addEventListener("pointermove", onMM, { passive: true });
     this.cleanupFns.push(() => window.removeEventListener("pointermove", onMM));
 
+    /* Click-and-drag orbit control (mouse only, desktop) */
+    const drag = this.orbDrag;
+    const onPD = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      drag.active = true;
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
+      cv.classList.add("st-dragging");
+      try {
+        cv.setPointerCapture(e.pointerId);
+      } catch {
+        /* synthetic or unsupported pointer event */
+      }
+    };
+    const onPMove = (e: PointerEvent) => {
+      if (!drag.active) return;
+      const dx = e.clientX - drag.lastX;
+      const dy = e.clientY - drag.lastY;
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
+      drag.yaw += dx * 0.0026;
+      drag.pitch = Math.max(-0.55, Math.min(0.55, drag.pitch + dy * 0.002));
+    };
+    const onPUp = (e: PointerEvent) => {
+      drag.active = false;
+      cv.classList.remove("st-dragging");
+      try {
+        cv.releasePointerCapture(e.pointerId);
+      } catch {
+        /* pointer already released */
+      }
+    };
+    cv.addEventListener("pointerdown", onPD);
+    cv.addEventListener("pointermove", onPMove);
+    cv.addEventListener("pointerup", onPUp);
+    cv.addEventListener("pointercancel", onPUp);
+    if (!("ontouchstart" in window)) cv.classList.add("st-draggable");
+    this.cleanupFns.push(() => {
+      cv.removeEventListener("pointerdown", onPD);
+      cv.removeEventListener("pointermove", onPMove);
+      cv.removeEventListener("pointerup", onPUp);
+      cv.removeEventListener("pointercancel", onPUp);
+    });
+
     /* Resize */
     const onR = () => {
       const w = cv.clientWidth || window.innerWidth;
@@ -607,10 +655,18 @@ export class SpaceTourEngine {
       this.updateCage(t, this.prog);
       this.updateRocket(t, this.prog, dt);
 
+      if (!this.orbDrag.active) this.orbDrag.yaw *= 0.975;
+      if (!this.orbDrag.active) this.orbDrag.pitch *= 0.94;
+
       const ct = this.camTarget;
-      cam.position.x += (ct.x + this.mouse.x * 0.9 - cam.position.x) * 0.028;
-      cam.position.y += (ct.y - this.mouse.y * 0.5 - cam.position.y) * 0.028;
-      cam.position.z += (ct.z - cam.position.z) * 0.028;
+      const yaw = this.orbDrag.yaw;
+      const cosY = Math.cos(yaw);
+      const sinY = Math.sin(yaw);
+      const rx = ct.x * cosY - ct.z * sinY;
+      const rz = ct.x * sinY + ct.z * cosY;
+      cam.position.x += (rx + this.mouse.x * 0.9 - cam.position.x) * 0.028;
+      cam.position.y += (ct.y + this.orbDrag.pitch * 4.5 - this.mouse.y * 0.5 - cam.position.y) * 0.028;
+      cam.position.z += (rz - cam.position.z) * 0.028;
       cam.lookAt(this.mouse.x * 0.18, -this.mouse.y * 0.08, 0);
 
       if (this.lensMat) {
@@ -960,14 +1016,95 @@ export class SpaceTourEngine {
   }
 
   private initRocket(sc: THREE.Scene, addB: THREE.Blending, mob: boolean): void {
-    const rPos = new Float32Array(3);
-    const rGeo = new THREE.BufferGeometry();
-    rGeo.setAttribute("position", new THREE.BufferAttribute(rPos, 3));
-    const rMat = new THREE.PointsMaterial({ color: 0xffeebb, size: 0.45, sizeAttenuation: true, transparent: true, blending: addB, depthWrite: false });
-    sc.add(new THREE.Points(rGeo, rMat));
-    this.rocketPos = rPos;
-    this.rocketGeo = rGeo;
-    this.rocketMat = rMat;
+    /* Rocket mesh — nose cone, body, fins. Built along local +Y, then the
+       inner group is rotated -90° about X so the nose faces local -Z,
+       matching Object3D.lookAt()'s forward convention for orientation. */
+    const rocketGroup = new THREE.Group();
+    const inner = new THREE.Group();
+    inner.rotation.x = -Math.PI / 2;
+    rocketGroup.add(inner);
+
+    const noseMat = new THREE.MeshBasicMaterial({ color: 0xf3ede0, transparent: true, opacity: 0 });
+    const hullMat = new THREE.MeshBasicMaterial({ color: 0xe6ecf7, transparent: true, opacity: 0 });
+    const hullDarkMat = new THREE.MeshBasicMaterial({ color: 0x5b6a8c, transparent: true, opacity: 0 });
+    const accentMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0 });
+    const finMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0 });
+    const nozzleMat = new THREE.MeshBasicMaterial({ color: 0x2a3350, transparent: true, opacity: 0 });
+    this.rocketMats = [noseMat, hullMat, hullDarkMat, accentMat, finMat, nozzleMat];
+
+    const scale = mob ? 0.85 : 1;
+    const R = 0.16 * scale;
+
+    /* Nose cone + slim tip antenna */
+    const nose = new THREE.Mesh(new THREE.ConeGeometry(R, 0.4 * scale, 20), noseMat);
+    nose.position.y = 0.66 * scale;
+    inner.add(nose);
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.012 * scale, 0.012 * scale, 0.16 * scale, 6), hullDarkMat);
+    antenna.position.y = 0.96 * scale;
+    inner.add(antenna);
+
+    /* Two-tone hull: upper light band, lower dark band, cyan accent seam */
+    const upperHull = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 0.36 * scale, 20), hullMat);
+    upperHull.position.y = 0.28 * scale;
+    inner.add(upperHull);
+
+    const seam = new THREE.Mesh(new THREE.TorusGeometry(R * 1.02, 0.012 * scale, 8, 24), accentMat);
+    seam.rotation.x = Math.PI / 2;
+    seam.position.y = 0.1 * scale;
+    inner.add(seam);
+
+    const lowerHull = new THREE.Mesh(new THREE.CylinderGeometry(R, R * 1.08, 0.34 * scale, 20), hullDarkMat);
+    lowerHull.position.y = -0.08 * scale;
+    inner.add(lowerHull);
+
+    /* Panel-line greeble rings */
+    for (let i = 0; i < 2; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(R * 1.01, 0.006 * scale, 6, 20), hullDarkMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = (0.42 - i * 0.22) * scale;
+      inner.add(ring);
+    }
+
+    /* Swept, tapered fins — extruded flat trapezoid instead of a crude cone */
+    const finShape = new THREE.Shape();
+    finShape.moveTo(0, 0);
+    finShape.lineTo(0.05 * scale, -0.05 * scale);
+    finShape.lineTo(0.24 * scale, -0.22 * scale);
+    finShape.lineTo(0.15 * scale, -0.26 * scale);
+    finShape.lineTo(0, -0.06 * scale);
+    finShape.closePath();
+    const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: 0.014 * scale, bevelEnabled: false });
+    finGeo.center();
+    for (let i = 0; i < 3; i++) {
+      const fin = new THREE.Mesh(finGeo, finMat);
+      const ang = (i / 3) * Math.PI * 2;
+      fin.position.set(Math.cos(ang) * R * 0.9, -0.2 * scale, Math.sin(ang) * R * 0.9);
+      fin.rotation.y = -ang + Math.PI / 2;
+      inner.add(fin);
+    }
+
+    /* Flared engine nozzle at the base */
+    const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.82, R * 1.25, 0.16 * scale, 16), nozzleMat);
+    nozzle.position.y = -0.33 * scale;
+    inner.add(nozzle);
+
+    const glowMat = new THREE.ShaderMaterial({
+      uniforms: { uColor: { value: new THREE.Color(1.0, 0.72, 0.2) } },
+      vertexShader: RIM_V,
+      fragmentShader: RIM_F,
+      transparent: true,
+      blending: addB,
+      depthWrite: false,
+      side: THREE.BackSide
+    });
+    const glow = new THREE.Mesh(new THREE.CylinderGeometry(0.24 * scale, 0.22 * scale, 1.35 * scale, 16), glowMat);
+    glow.position.y = 0.05 * scale;
+    inner.add(glow);
+    this.rocketGlowMat = glowMat;
+
+    rocketGroup.visible = false;
+    sc.add(rocketGroup);
+    this.rocketGroup = rocketGroup;
 
     const EN = mob ? 80 : 160;
     this.exhaustCount = EN;
@@ -1005,32 +1142,44 @@ export class SpaceTourEngine {
 
   private updateRocket(t: number, p: number, dt: number): void {
     const op = this.sectionOpacity(p, 4);
-    this.rocketMat.opacity = op;
     this.exhaustMat.uniforms.uOpacity.value = op * 0.92;
     if (op < 0.01) {
-      this.rocketPos[1] = 999;
-      this.rocketGeo.attributes.position.needsUpdate = true;
+      this.rocketGroup.visible = false;
       return;
     }
+    this.rocketGroup.visible = true;
+    this.rocketMats.forEach((m) => {
+      m.opacity = op;
+    });
+
     this.rocketT += dt / 5.5;
     if (this.rocketT > 1) this.rocketT = 0;
     const ry = -3 + Math.pow(this.rocketT, 1.7) * 24;
-    this.rocketPos[0] = 0.25;
-    this.rocketPos[1] = ry;
-    this.rocketPos[2] = 0.15;
-    this.rocketGeo.attributes.position.needsUpdate = true;
+    /* Weave through the scene rather than climbing a straight vertical line */
+    const rx = 0.25 + Math.sin(this.rocketT * Math.PI * 2.4 + t * 0.3) * 1.15;
+    const rz = 0.15 + Math.cos(this.rocketT * Math.PI * 1.7 + t * 0.25) * 0.95;
+
+    const rg = this.rocketGroup;
+    rg.position.set(rx, ry, rz);
+    const delta = new THREE.Vector3(rx, ry, rz).sub(this.rocketLastPos);
+    if (delta.lengthSq() > 0.00001) {
+      const lookTarget = rg.position.clone().add(delta);
+      rg.lookAt(lookTarget);
+    }
+    this.rocketLastPos.set(rx, ry, rz);
+
     const trailLen = 1.4 + this.rocketT * 2.2;
     const pos = this.exhaustPos;
     const col = this.exhaustCol;
     const EN = this.exhaustCount;
     for (let i = 0; i < EN; i++) {
       const frac = i / EN;
-      const dy = -frac * trailLen;
+      const back = delta.clone().normalize().multiplyScalar(-frac * trailLen);
       const ang = this.exhaustPhase[i] + t * 4.8;
       const spread = frac * 0.85 * this.exhaustRadius[i];
-      pos[i * 3] = 0.25 + Math.cos(ang) * spread;
-      pos[i * 3 + 1] = ry + dy;
-      pos[i * 3 + 2] = 0.15 + Math.sin(ang) * spread;
+      pos[i * 3] = rx + back.x + Math.cos(ang) * spread;
+      pos[i * 3 + 1] = ry + back.y + 0;
+      pos[i * 3 + 2] = rz + back.z + Math.sin(ang) * spread;
       const heat = 1 - frac * 0.85;
       col[i * 3] = 1.0;
       col[i * 3 + 1] = heat * 0.52;
@@ -1225,6 +1374,22 @@ export class SpaceTourEngine {
         }
       });
     }
+
+    /* Progress readout */
+    if (this.refs.progress) {
+      this.refs.progress.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(SPACE_TOUR_STEPS.length).padStart(2, "0")}`;
+    }
+
+    /* Warp burst on chapter change */
+    if (this.refs.warp && !first && !this.reducedMotion) {
+      const warp = this.refs.warp;
+      gsap.killTweensOf(warp);
+      gsap.set(warp, { opacity: 0, scale: 0.35 });
+      gsap.timeline()
+        .to(warp, { opacity: 0.55, scale: 1.15, duration: 0.16, ease: "power1.out" })
+        .to(warp, { opacity: 0, scale: 2.1, duration: 0.34, ease: "power2.in" });
+    }
+
     const cp = CAM_POS[idx];
     this.camTarget.x = cp.x;
     this.camTarget.y = cp.y;

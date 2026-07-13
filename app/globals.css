@@ -667,7 +667,10 @@ body[data-theme="space"] #vignette{opacity:.55;mix-blend-mode:normal}
 body.space-tour-takeover-active>:not(.space-tour-takeover){visibility:hidden}
 body.space-tour-takeover-active,body.space-tour-takeover-active .space-tour-takeover{cursor:auto!important}
 body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-active .space-tour-takeover button{cursor:pointer!important}
-.space-tour-takeover{position:fixed;inset:0;z-index:4000;background:#020510;isolation:isolate}
+.space-tour-takeover{position:fixed;inset:0;z-index:4000;background:#020510;isolation:isolate;animation:stTourEnter .6s cubic-bezier(.16,1,.3,1) both}
+.space-tour-takeover.st-closing{animation:stTourClose .38s cubic-bezier(.7,0,.84,0) forwards;pointer-events:none}
+@keyframes stTourEnter{from{opacity:0;transform:scale(1.035);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes stTourClose{from{opacity:1;transform:scale(1);filter:blur(0)}to{opacity:0;transform:scale(.97);filter:blur(4px)}}
 
 /* Exit button */
 .space-tour-exit{position:absolute;top:24px;right:24px;z-index:20;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(207,233,255,.85);padding:10px 18px 10px 14px;border-radius:100px;border:1px solid rgba(125,211,252,.2);background:rgba(4,9,22,.75);backdrop-filter:blur(20px);cursor:pointer;transition:background .28s,border-color .28s,transform .28s,box-shadow .28s}
@@ -681,10 +684,15 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
 .space-tour-spacer{position:relative;height:600vh;background:#020510}
 .space-tour-stage{position:sticky;top:0;height:100vh;overflow:hidden}
 .space-tour-canvas{position:absolute;inset:0;width:100%;height:100%}
+.space-tour-canvas.st-draggable{cursor:grab}
+.space-tour-canvas.st-dragging{cursor:grabbing!important}
 
 /* Atmospheric layers */
 .space-tour-vignette{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse 88% 85% at 50% 42%,transparent 22%,rgba(2,5,16,.9) 100%)}
 .space-tour-scanlines{position:absolute;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,transparent 0px,transparent 2px,rgba(0,0,0,.016) 2px,rgba(0,0,0,.016) 3px);mix-blend-mode:overlay}
+
+/* Warp burst — thin radial streak lines flashed on chapter change */
+.space-tour-warp{position:absolute;inset:0;pointer-events:none;z-index:4;opacity:0;mix-blend-mode:screen;background:repeating-conic-gradient(from 0deg,rgba(207,233,255,.9) 0deg 0.4deg,transparent 0.4deg 6deg);mask-image:radial-gradient(circle at 50% 50%,rgba(0,0,0,.9) 0%,transparent 62%);-webkit-mask-image:radial-gradient(circle at 50% 50%,rgba(0,0,0,.9) 0%,transparent 62%)}
 
 /* HUD: top-left */
 .space-tour-label-tl{position:absolute;top:32px;left:40px;z-index:10;pointer-events:none;max-width:min(46vw,360px)}
@@ -696,8 +704,15 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
 /* HUD: top-right */
 .space-tour-label-tr{position:absolute;top:32px;right:96px;z-index:10;pointer-events:none;text-align:right}
 .st-status{font-family:var(--font-m);font-size:9px;letter-spacing:.14em;color:rgba(100,185,255,.45);line-height:2.2;animation:stBlip 5s infinite}
+.st-progress{font-family:var(--font-m);font-size:10px;letter-spacing:.18em;color:rgba(207,233,255,.72);margin-bottom:4px}
 .st-coord{font-family:var(--font-m);font-size:10px;letter-spacing:.14em;color:rgba(100,185,255,.5)}
 @keyframes stBlip{0%,88%,100%{opacity:1}90%,96%{opacity:.25}}
+
+/* Radar sweep */
+.st-radar{position:relative;width:22px;height:22px;margin:0 0 10px auto;border-radius:50%;border:1px solid rgba(100,185,255,.22);overflow:hidden}
+.st-radar::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(6,182,212,.55),transparent 28%,transparent 100%);animation:stRadarSpin 3.6s linear infinite}
+.st-radar::after{content:'';position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px;border-radius:50%;background:#06b6d4;box-shadow:0 0 6px rgba(6,182,212,.8)}
+@keyframes stRadarSpin{to{transform:rotate(360deg)}}
 
 /* Vertical progress rail */
 .space-tour-vrail{position:absolute;left:20px;top:50%;transform:translateY(-50%);height:200px;width:1.5px;background:rgba(100,185,255,.07);z-index:10;border-radius:2px}
@@ -707,7 +722,7 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
 .space-tour-bgnum{position:absolute;top:-.06em;left:50%;transform:translateX(-50%);font-family:var(--font-d);font-weight:800;font-size:min(38vw,460px);line-height:.82;color:rgba(48,108,255,.024);letter-spacing:-.06em;pointer-events:none;user-select:none;z-index:2;white-space:nowrap}
 
 /* Bottom panel */
-.space-tour-panel{position:absolute;bottom:0;left:0;right:0;z-index:8;padding:0 48px 40px;display:flex;flex-direction:column;align-items:center}
+.space-tour-panel{position:absolute;bottom:0;left:0;right:0;z-index:8;padding:0 48px 40px;display:flex;flex-direction:column;align-items:center;perspective:1400px}
 
 /* Chapter stepper */
 .space-tour-stepper{display:flex;align-items:flex-start;gap:0;margin-bottom:22px;width:100%;max-width:1040px}
@@ -741,6 +756,8 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
   background:rgba(4,9,22,.9);
   backdrop-filter:blur(32px) saturate(1.7);
   border-radius:22px;
+  transform-style:preserve-3d;will-change:transform;
+  transform-origin:center center;
   padding:clamp(22px,2.8vw,36px) clamp(24px,3.2vw,42px);
   box-shadow:
     0 0 0 1px rgba(125,211,252,.12),
@@ -788,6 +805,19 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
 /* Scroll hint */
 .space-tour-scrollhint{position:absolute;bottom:240px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:rgba(100,185,255,.3);white-space:nowrap;pointer-events:none;z-index:10;animation:stFadeOut 1.4s 3s forwards}
 @keyframes stFadeOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+
+/* Exit zoom — camera push-in before navigating away from the tour */
+.st-exit-zoom .space-tour-canvas{animation:stExitZoomCanvas .48s cubic-bezier(.7,0,.84,0) forwards}
+.st-exit-zoom .space-tour-panel,
+.st-exit-zoom .space-tour-label-tl,
+.st-exit-zoom .space-tour-label-tr,
+.st-exit-zoom .space-tour-vrail,
+.st-exit-zoom .space-tour-bgnum,
+.st-exit-zoom .space-tour-scrollhint{animation:stExitZoomFade .3s ease forwards}
+.st-exit-zoom .space-tour-vignette{animation:stExitZoomFlash .48s ease forwards}
+@keyframes stExitZoomCanvas{to{transform:scale(2.6);filter:brightness(2.2) saturate(1.3);opacity:0}}
+@keyframes stExitZoomFade{to{opacity:0;transform:translateY(-6px)}}
+@keyframes stExitZoomFlash{0%{background:radial-gradient(ellipse 88% 85% at 50% 42%,transparent 22%,rgba(2,5,16,.9) 100%)}70%{background:rgba(230,240,255,.9)}100%{background:#fff;opacity:1}}
 
 /* Responsive */
 @media (max-width:1080px){
