@@ -598,6 +598,45 @@ footer{position:relative;z-index:2;padding:80px 0 40px;background:var(--bg);tran
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:32px;font-size:12.5px;color:var(--ink-mute);flex-wrap:wrap;gap:12px}
 .foot-bottom .mono{font-family:var(--font-m);letter-spacing:.08em}
 
+/* ── Brand Watermark ──────────────────────────────────────── */
+.bwm-outer{
+  position:relative;
+  width:100%;
+  height:clamp(9rem,18vw,16rem);
+  overflow:hidden;
+  margin-top:clamp(24px,4vw,48px);
+  pointer-events:auto;
+}
+.bwm-svg{
+  display:block;
+  width:100%;height:100%;
+  cursor:crosshair;
+  user-select:none;
+}
+/* shared text attrs */
+.bwm-t{
+  fill:transparent;
+  font-family:var(--font-b),'Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight:800;
+  font-size:60px;
+  letter-spacing:-1px;
+}
+/* layer 1 — always-visible faint outline */
+.bwm-base{
+  stroke:rgba(14,35,90,.18);
+}
+body[data-theme="space"] .bwm-base{
+  stroke:rgba(255,255,255,.07);
+}
+/* layer 2 — animated blue draw stroke */
+.bwm-draw{
+  stroke:#3ca2fa;
+}
+/* layer 3 — mouse reveal (stroke set inline via url(#bwm-tg)) */
+.bwm-reveal{
+  /* stroke and mask set inline */
+}
+
 /* reveal helper */
 .rv{opacity:0}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1}}

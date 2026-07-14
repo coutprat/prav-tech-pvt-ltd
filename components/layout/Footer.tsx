@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
+import BrandWatermark from "@/components/ui/BrandWatermark";
 
 export function Footer() {
   return (
@@ -57,6 +58,7 @@ export function Footer() {
           <span>© 2026 Praverse Tech Pvt Ltd. All rights reserved.</span>
           <span className="mono">INTELLIGENCE · ENGINEERED</span>
         </div>
+        <BrandWatermark />
       </div>
     </footer>
   );
