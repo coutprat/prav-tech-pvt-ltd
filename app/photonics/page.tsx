@@ -41,7 +41,7 @@ const html = `<header class="page-hero">
       <!-- DAC -->
       <div class="ph-card" data-accent="orange">
         <div class="ph-img">
-          <img src="/images/image%204.png" alt="Direct Attach Copper Cable" loading="eager" />
+          <img src="/images/dac-direct-attach-cable.png" alt="Direct Attach Copper Cable" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">DAC</span>
@@ -67,7 +67,7 @@ const html = `<header class="page-hero">
       <!-- ACC -->
       <div class="ph-card" data-accent="amber">
         <div class="ph-img">
-          <img src="/images/image%203.png" alt="Active Copper Cable" loading="eager" />
+          <img src="/images/acc-active-copper-cable.png" alt="Active Copper Cable" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">ACC · Linear Redriver</span>
@@ -93,7 +93,7 @@ const html = `<header class="page-hero">
       <!-- AEC -->
       <div class="ph-card" data-accent="cyan">
         <div class="ph-img">
-          <img src="/images/image%205.png" alt="Active Electrical Cable" loading="eager" />
+          <img src="/images/aec-active-electrical-cable.png" alt="Active Electrical Cable" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">AEC · Retimer / DSP</span>
@@ -119,7 +119,7 @@ const html = `<header class="page-hero">
       <!-- AOC / SR -->
       <div class="ph-card" data-accent="blue">
         <div class="ph-img">
-          <img src="/images/image%201.png" alt="Active Optical Cable" loading="eager" />
+          <img src="/images/aoc-active-optical-cable.png" alt="Active Optical Cable" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">AOC / SR · DSP &amp; LPO</span>
@@ -145,7 +145,7 @@ const html = `<header class="page-hero">
       <!-- Single-mode -->
       <div class="ph-card" data-accent="violet">
         <div class="ph-img">
-          <img src="/images/image%206.png" alt="Single-mode Transceiver" loading="eager" />
+          <img src="/images/hst-high-speed-transceiver.png" alt="Single-mode Transceiver" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">Single-mode · DSP &amp; LPO</span>
@@ -171,7 +171,7 @@ const html = `<header class="page-hero">
       <!-- OCA -->
       <div class="ph-card" data-accent="green">
         <div class="ph-img">
-          <img src="/images/image%208.png" alt="Optical Cable Assembly" loading="eager" />
+          <img src="/images/oca-optical-cable-assembly.png" alt="Optical Cable Assembly" loading="eager" />
         </div>
         <div class="ph-content">
           <span class="ph-code">OCA</span>
