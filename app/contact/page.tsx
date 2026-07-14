@@ -27,17 +27,10 @@ export default function ContactPage() {
           <div className="contact-grid">
             <div className="contact-card rv">
               <span className="lbl">Email</span>
-              <a className="val" href="mailto:pratham@praversetech.com">
-                pratham@praversetech.com
+              <a className="val" href="mailto:inquiry@praversetech.com">
+                inquiry@praversetech.com
               </a>
-              <p>Best for project inquiries, HealthMate waitlist, and collaboration proposals.</p>
-            </div>
-            <div className="contact-card rv">
-              <span className="lbl">Phone</span>
-              <a className="val" href="tel:+919313247264">
-                +91 93132 47264
-              </a>
-              <p>For direct conversations about enterprise engagements.</p>
+              <p>Best for project inquiries, partnership proposals, and general collaboration.</p>
             </div>
             <div className="contact-card rv">
               <span className="lbl">LinkedIn</span>
@@ -75,7 +68,7 @@ export default function ContactPage() {
 
           <form
             className="inquiry-form rv"
-            action="mailto:pratham@praversetech.com"
+            action="mailto:inquiry@praversetech.com"
             method="post"
             encType="text/plain"
           >
@@ -187,7 +180,7 @@ export default function ContactPage() {
             <h2>Ready when you are.</h2>
             <p>Send a message and we&apos;ll get back to you — usually within a couple of business days.</p>
             <div className="cta-row">
-              <a href="mailto:pratham@praversetech.com" className="btn btn-white">
+              <a href="mailto:inquiry@praversetech.com" className="btn btn-white">
                 Start a Conversation →
               </a>
               <Link href="/" className="btn btn-outline">

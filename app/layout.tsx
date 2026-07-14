@@ -7,7 +7,7 @@ import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
 // import { SpaceTourProvider } from "@/components/space-tour/SpaceTourProvider";
 import { ThreeGlobalBridge } from "@/components/three/ThreeGlobalBridge";
 import { WebGLBackground } from "@/components/three/WebGLBackground";
-import SatelliteParallax from "@/components/ui/SatelliteParallax";
+import SatelliteGuard from "@/components/ui/SatelliteGuard";
 import SpotlightCards from "@/components/ui/SpotlightCards";
 import ThemeTransitionOverlay from "@/components/ui/ThemeTransitionOverlay";
 import { site } from "@/data/site";
@@ -68,7 +68,7 @@ export default function RootLayout({
           <Navbar />
           <ThreeGlobalBridge />
           <WebGLBackground />
-          <SatelliteParallax />
+          <SatelliteGuard />
           <SpotlightCards />
           <ThemeTransitionOverlay />
           {children}
