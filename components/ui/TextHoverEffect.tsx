@@ -83,7 +83,11 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-neutral-200 font-[helvetica] text-6xl font-bold dark:stroke-neutral-800"
+        fill="transparent"
+        stroke={hovered ? "rgba(200,220,255,0.5)" : "transparent"}
+        fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        fontSize="60"
+        fontWeight="700"
         style={{ opacity: hovered ? 0.7 : 0 }}
       >
         {text}
@@ -95,7 +99,11 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-[#3ca2fa] font-[helvetica] text-6xl font-bold dark:stroke-[#3ca2fa99]"
+        fill="transparent"
+        stroke="#3ca2fa"
+        fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        fontSize="60"
+        fontWeight="700"
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
         animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
         transition={{ duration: 4, ease: "easeInOut" }}
@@ -110,8 +118,11 @@ export const TextHoverEffect = ({
         dominantBaseline="middle"
         stroke="url(#textGradient)"
         strokeWidth="0.3"
+        fill="transparent"
+        fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        fontSize="60"
+        fontWeight="700"
         mask="url(#textMask)"
-        className="fill-transparent font-[helvetica] text-6xl font-bold"
       >
         {text}
       </text>
