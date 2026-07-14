@@ -583,7 +583,7 @@ section{position:relative;z-index:2}
 .orbit-ring{position:absolute;border:1px solid rgba(255,255,255,.07);border-radius:50%;pointer-events:none}
 
 /* ============ FOOTER ============ */
-footer{position:relative;z-index:2;padding:80px 0 40px;background:var(--bg);transition:background .8s}
+footer{position:relative;z-index:2;padding:80px 0 0;background:var(--bg);transition:background .8s;overflow:hidden}
 .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(120,130,160,.18)}
 .foot-grid .logo{font-family:var(--font-d);font-weight:800;font-size:22px;display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .foot-grid .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--grad)}
@@ -602,39 +602,36 @@ footer{position:relative;z-index:2;padding:80px 0 40px;background:var(--bg);tran
 .bwm-outer{
   position:relative;
   width:100%;
-  height:clamp(9rem,18vw,16rem);
+  height:clamp(120px,20vw,260px);
+  margin-top:-80px;
+  margin-bottom:-60px;
+  pointer-events:none;
   overflow:hidden;
-  margin-top:clamp(24px,4vw,48px);
-  pointer-events:auto;
 }
 .bwm-svg{
   display:block;
   width:100%;height:100%;
   cursor:crosshair;
+  pointer-events:auto;
   user-select:none;
 }
-/* shared text attrs */
 .bwm-t{
   fill:transparent;
-  font-family:var(--font-b),'Helvetica Neue',Helvetica,Arial,sans-serif;
-  font-weight:800;
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight:700;
   font-size:60px;
-  letter-spacing:-1px;
 }
-/* layer 1 — always-visible faint outline */
 .bwm-base{
-  stroke:rgba(14,35,90,.18);
+  stroke:rgba(180,200,255,.15);
 }
 body[data-theme="space"] .bwm-base{
-  stroke:rgba(255,255,255,.07);
+  stroke:rgba(255,255,255,.06);
 }
-/* layer 2 — animated blue draw stroke */
 .bwm-draw{
   stroke:#3ca2fa;
 }
-/* layer 3 — mouse reveal (stroke set inline via url(#bwm-tg)) */
-.bwm-reveal{
-  /* stroke and mask set inline */
+body[data-theme="space"] .bwm-draw{
+  stroke:rgba(60,162,250,.6);
 }
 
 /* reveal helper */

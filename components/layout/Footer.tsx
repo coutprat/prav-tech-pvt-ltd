@@ -58,8 +58,8 @@ export function Footer() {
           <span>© 2026 Praverse Tech Pvt Ltd. All rights reserved.</span>
           <span className="mono">INTELLIGENCE · ENGINEERED</span>
         </div>
-        <BrandWatermark />
       </div>
+      <BrandWatermark />
     </footer>
   );
 }
