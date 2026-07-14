@@ -51,11 +51,11 @@ export const TextHoverEffect = ({
         >
           {hovered && (
             <>
-              <stop offset="0%"   stopColor="#3ca2fa" />
-              <stop offset="25%"  stopColor="#06b6d4" />
+              <stop offset="0%"   stopColor="#eab308" />
+              <stop offset="25%"  stopColor="#ef4444" />
               <stop offset="50%"  stopColor="#80eeb4" />
               <stop offset="75%"  stopColor="#06b6d4" />
-              <stop offset="100%" stopColor="#3ca2fa" />
+              <stop offset="100%" stopColor="#8b5cf6" />
             </>
           )}
         </linearGradient>
@@ -77,7 +77,7 @@ export const TextHoverEffect = ({
         </mask>
       </defs>
 
-      {/* Layer 1 — faint neutral outline, appears on hover */}
+      {/* Base stroke — appears on hover */}
       <text
         x="50%" y="50%"
         textAnchor="middle"
@@ -89,7 +89,7 @@ export const TextHoverEffect = ({
         {text}
       </text>
 
-      {/* Layer 2 — stroke draw animation */}
+      {/* Draw animation on load */}
       <motion.text
         x="50%" y="50%"
         textAnchor="middle"
@@ -103,7 +103,7 @@ export const TextHoverEffect = ({
         {text}
       </motion.text>
 
-      {/* Layer 3 — mouse-reveal gradient highlight */}
+      {/* Cursor-reveal gradient overlay */}
       <text
         x="50%" y="50%"
         textAnchor="middle"
@@ -116,5 +116,17 @@ export const TextHoverEffect = ({
         {text}
       </text>
     </svg>
+  );
+};
+
+export const FooterBackgroundGradient = () => {
+  return (
+    <div
+      className="absolute inset-0 z-0 pointer-events-none"
+      style={{
+        background:
+          "radial-gradient(125% 125% at 50% 10%, #0F0F1166 50%, #3ca2fa33 100%)",
+      }}
+    />
   );
 };

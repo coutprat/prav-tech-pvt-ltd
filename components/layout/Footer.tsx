@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
-import { TextHoverEffect } from "@/components/ui/TextHoverEffect";
+import { TextHoverEffect, FooterBackgroundGradient } from "@/components/ui/TextHoverEffect";
 
 export function Footer() {
   return (
-    <footer>
-      <div className="wrap">
+    <footer style={{ position: "relative", overflow: "hidden" }}>
+      <FooterBackgroundGradient />
+      <div className="wrap" style={{ position: "relative", zIndex: 1 }}>
         <div className="foot-grid">
           <div>
             <div className="logo">
@@ -60,7 +61,7 @@ export function Footer() {
         </div>
       </div>
       <div className="bwm-outer">
-        <TextHoverEffect text="PRAVERSE" className="z-10 pointer-events-auto" />
+        <TextHoverEffect text="PRAVERSE" />
       </div>
     </footer>
   );
