@@ -2,11 +2,39 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import { navigation } from "@/data/navigation";
-import { useSpaceTour } from "@/components/space-tour/SpaceTourProvider";
+import ThemeToggleSwitch from "@/components/ui/ThemeToggleSwitch";
 
 export function Navbar() {
-  const { open } = useSpaceTour();
+  useEffect(() => {
+    const nav = document.getElementById("nav");
+    if (!nav) return;
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    function update() {
+      const y = window.scrollY;
+      if (y < 80) {
+        nav.classList.remove("nav-hidden");
+      } else if (y > lastY + 6) {
+        nav.classList.add("nav-hidden");
+        // close mobile menu when hiding
+        document.getElementById("navLinks")?.classList.remove("open");
+      } else if (y < lastY - 6) {
+        nav.classList.remove("nav-hidden");
+      }
+      lastY = y;
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <nav id="nav">
@@ -21,10 +49,7 @@ export function Navbar() {
           </li>
         ))}
       </ul>
-      <button className="space-tour-trigger" title="Launch Space Tour" type="button" onClick={open}>
-        <span className="orb-ic" />
-        <span className="tt-label">SPACE TOUR</span>
-      </button>
+      <ThemeToggleSwitch />
       <Link href="/contact" className="btn btn-primary">
         Start a Project
       </Link>

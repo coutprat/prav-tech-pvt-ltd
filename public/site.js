@@ -356,7 +356,7 @@ if (canvas && window.THREE) {
     );
 
     const fade = p > 0.85 ? 1 - (p - 0.85) / 0.15 : 1;
-    renderer.domElement.style.opacity = Math.max(0.15, fade * (spaceMode ? 1 : 0.9));
+    renderer.domElement.style.opacity = Math.max(0.04, fade * (spaceMode ? 0.07 : 0.9));
     renderer.render(scene, camera);
   };
   renderer.render(scene, camera); // paint one frame behind the loader
@@ -376,22 +376,22 @@ function applyTheme(theme, animate) {
   setSpaceScene(theme === 'space', !!animate);
   document.body.classList.toggle('space-tour-active', theme === 'space');
   document.querySelectorAll('.theme-toggle .tt-label').forEach((el) => {
-    el.textContent = theme === 'space' ? 'EARTH MODE' : 'SPACE TOUR';
+    el.textContent = theme === 'space' ? 'Flux' : 'Noir';
   });
   try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
 }
 let savedTheme = 'light';
 try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch (e) {}
 applyTheme(savedTheme, false);
-document.querySelectorAll('.theme-toggle').forEach((btn) => {
-  btn.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.theme-toggle')) {
     const next = document.body.getAttribute('data-theme') === 'space' ? 'light' : 'space';
     applyTheme(next, true);
-  });
+  }
 });
 
-/* ---------- Space Tour narrative layer ---------- */
-const tourSteps = [
+/* ---------- Space Tour narrative layer — commented out ---------- */
+/* const tourSteps = [
   {
     code: '01 / INTELLIGENCE CORE',
     title: 'Enterprise AI gathers into one field',
@@ -486,6 +486,7 @@ ScrollTrigger.create({
   end: () => Math.max(1, Math.min(document.body.scrollHeight - innerHeight, innerHeight * 4.6)),
   onUpdate: (self) => setTourStep(Math.min(tourSteps.length - 1, Math.floor(self.progress * tourSteps.length)))
 });
+*/
 
 /* ---------- Hero intro (home) / page-hero intro (sub-pages) ---------- */
 let introPlayed = false;
@@ -550,6 +551,26 @@ document.querySelectorAll('.float-chip').forEach((chip, i) => {
   }
 });
 
+/* ---------- Character scrub on section kickers (Outcrowd-style) ---------- */
+if (!reduceMotion) {
+  document.querySelectorAll('.kicker').forEach((el) => {
+    if (el.children.length > 0) return; // skip if has child elements (e.g. pulse dot)
+    const text = el.textContent;
+    el.textContent = '';
+    [...text].forEach((ch) => {
+      const s = document.createElement('span');
+      s.className = 'char';
+      s.style.display = 'inline-block';
+      s.textContent = ch === ' ' ? ' ' : ch;
+      el.appendChild(s);
+    });
+    gsap.fromTo(el.querySelectorAll('.char'), { opacity: 0.1 }, {
+      opacity: 1, stagger: 0.025, ease: 'none',
+      scrollTrigger: { trigger: el, start: 'top 88%', end: 'top 48%', scrub: 0.6 }
+    });
+  });
+}
+
 /* ---------- Scroll reveals ---------- */
 if (!reduceMotion) {
   document.querySelectorAll('section .rv, .safe-note').forEach((el) => {
@@ -575,11 +596,11 @@ if (!reduceMotion) {
 /* ---------- Horizontal frontier scroll ---------- */
 const track = document.getElementById('frontierTrack');
 if (track && !reduceMotion && innerWidth > 760) {
-  const getDist = () => track.scrollWidth - innerWidth + 48;
+  const getDist = () => Math.max(0, track.scrollWidth - innerWidth);
   gsap.to(track, {
     x: () => -getDist(), ease: 'none',
     scrollTrigger: {
-      trigger: '#frontier', start: 'top top', end: () => '+=' + getDist(),
+      trigger: '.frontier-pin', start: 'top top', end: () => '+=' + getDist(),
       pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1
     }
   });
@@ -724,6 +745,129 @@ if (!reduceMotion) {
     scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true }
   });
 }
+
+/* ---------- Scroll rocket (dark mode narrative) ---------- */
+(function () {
+  const RNS = 'http://www.w3.org/2000/svg';
+  const RVW = 144, RVH = 900;
+  const RCX = RVW / 2; // 72
+
+  const rPathD = [
+    `M ${RCX} 24`,
+    `C ${RVW * 0.9} ${RVH * 0.14}, ${RVW * 0.08} ${RVH * 0.3}, ${RCX} ${RVH * 0.47}`,
+    `C ${RVW * 0.92} ${RVH * 0.63}, ${RVW * 0.08} ${RVH * 0.78}, ${RCX} ${RVH * 0.93}`
+  ].join(' ');
+
+  function rEl(tag, attrs) {
+    const el = document.createElementNS(RNS, tag);
+    if (attrs) Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  }
+
+  const rSvg = rEl('svg', {
+    id: 'rocket-overlay',
+    viewBox: `0 0 ${RVW} ${RVH}`,
+    preserveAspectRatio: 'xMidYMid meet'
+  });
+  Object.assign(rSvg.style, {
+    position: 'fixed', right: '0', top: '0',
+    width: RVW + 'px', height: '100vh',
+    pointerEvents: 'none', zIndex: '6',
+    opacity: '0', transition: 'opacity .9s ease',
+    overflow: 'visible'
+  });
+
+  // Dashed guide line
+  rSvg.appendChild(rEl('path', {
+    d: rPathD, fill: 'none',
+    stroke: 'rgba(0,212,255,0.1)', 'stroke-width': '1.5',
+    'stroke-dasharray': '4 14', 'stroke-linecap': 'round'
+  }));
+
+  // Glowing trail (reveals as rocket passes)
+  const rTrail = rEl('path', {
+    d: rPathD, fill: 'none',
+    stroke: 'rgba(0,212,255,0.44)', 'stroke-width': '1.5',
+    'stroke-linecap': 'round'
+  });
+  rSvg.appendChild(rTrail);
+
+  // Invisible reference path for position math
+  const rMP = rEl('path', { d: rPathD, fill: 'none', stroke: 'none' });
+  rSvg.appendChild(rMP);
+
+  // Rocket group
+  const rG = rEl('g', { id: 'scroll-rocket' });
+
+  // Exhaust flames (behind body)
+  const rEx = [
+    [0, 11, 3.5, 5.5, 0.38],
+    [0, 19, 2.2, 3.5, 0.2],
+    [0, 25, 1.3, 2.2, 0.1]
+  ].map(([cx, cy, rx, ry, op]) =>
+    rEl('ellipse', { cx, cy, rx, ry, fill: `rgba(0,212,255,${op})` })
+  );
+  rEx.forEach(e => rG.appendChild(e));
+
+  // Body
+  rG.appendChild(rEl('path', {
+    d: 'M 0,-16 C 6,-16 10,-10 10,-3 L 10,6 L 0,9 L -10,6 L -10,-3 C -10,-10 -6,-16 0,-16 Z',
+    fill: '#00d4ff'
+  }));
+  // Body shine
+  rG.appendChild(rEl('path', {
+    d: 'M 0,-16 C 6,-16 10,-10 10,-3 L 0,-3 Z',
+    fill: 'rgba(255,255,255,0.2)'
+  }));
+  // Fins
+  rG.appendChild(rEl('path', { d: 'M -10,3 L -17,11 L -10,8 Z', fill: 'rgba(0,153,255,0.9)' }));
+  rG.appendChild(rEl('path', { d: 'M 10,3 L 17,11 L 10,8 Z', fill: 'rgba(0,153,255,0.9)' }));
+  // Window
+  rG.appendChild(rEl('circle', {
+    cx: 0, cy: -5, r: 3.5,
+    fill: 'rgba(8,8,9,0.9)', stroke: 'rgba(0,212,255,0.7)', 'stroke-width': '0.8'
+  }));
+  rG.appendChild(rEl('circle', { cx: -1, cy: -6.5, r: 1.1, fill: 'rgba(255,255,255,0.45)' }));
+
+  rSvg.appendChild(rG);
+  document.body.appendChild(rSvg);
+
+  // Measure path after it's in the DOM
+  const rTL = rMP.getTotalLength();
+  rTrail.style.strokeDasharray = rTL;
+  rTrail.style.strokeDashoffset = rTL;
+
+  // Exhaust pulse
+  if (!reduceMotion) {
+    gsap.to(rEx[0], { ry: 7.5, opacity: 0.58, duration: 0.44, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(rEx[1], { ry: 4.8, opacity: 0.32, duration: 0.34, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 0.12 });
+  }
+
+  function placeRocket(progress) {
+    const len = progress * rTL;
+    const pt  = rMP.getPointAtLength(len);
+    const ptF = rMP.getPointAtLength(Math.min(len + rTL * 0.05, rTL - 0.1));
+    const angle = Math.atan2(ptF.y - pt.y, ptF.x - pt.x) * (180 / Math.PI) - 90;
+    rG.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle} 0 0)`);
+    rTrail.style.strokeDashoffset = rTL * (1 - progress);
+  }
+  placeRocket(0);
+
+  // Update rocket position on scroll and on each animation frame
+  function rktUpdate() {
+    const p = window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight);
+    placeRocket(p);
+  }
+  addEventListener('scroll', rktUpdate, { passive: true });
+  rktUpdate();
+
+  // Show only in dark mode
+  function rktSync() {
+    rSvg.style.opacity = document.body.getAttribute('data-theme') === 'space' ? '1' : '0';
+  }
+  new MutationObserver(rktSync).observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+  rktSync();
+}());
 
 /* ---------- Footer: Insights/Innovate links + "currently exploring" ticker ---------- */
 document.querySelectorAll('.foot-grid > div').forEach((col) => {
