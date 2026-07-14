@@ -42,6 +42,7 @@ export const TextHoverEffect = ({
       className={cn("select-none uppercase cursor-pointer", className)}
     >
       <defs>
+        {/* Cursor-reveal colour gradient */}
         <linearGradient
           id="textGradient"
           gradientUnits="userSpaceOnUse"
@@ -60,6 +61,35 @@ export const TextHoverEffect = ({
           )}
         </linearGradient>
 
+        {/* Sweeping border-light gradient */}
+        <linearGradient id="bwm-light" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="450" y2="0">
+          <stop offset="0%"    stopColor="transparent" />
+          <stop offset="20%"   stopColor="#3ca2fa"  stopOpacity="0" />
+          <stop offset="38%"   stopColor="#06b6d4"  stopOpacity="0.9" />
+          <stop offset="50%"   stopColor="#e0f2ff"  stopOpacity="1" />
+          <stop offset="62%"   stopColor="#8b5cf6"  stopOpacity="0.9" />
+          <stop offset="80%"   stopColor="#3ca2fa"  stopOpacity="0" />
+          <stop offset="100%"  stopColor="transparent" />
+          <animateTransform
+            attributeName="gradientTransform"
+            type="translate"
+            from="-900 0"
+            to="900 0"
+            dur="4s"
+            repeatCount="indefinite"
+          />
+        </linearGradient>
+
+        {/* Soft glow filter for the light layer */}
+        <filter id="bwm-glow" x="-10%" y="-40%" width="120%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* Radial spotlight for mouse reveal */}
         <motion.radialGradient
           id="revealMask"
           gradientUnits="userSpaceOnUse"
@@ -110,6 +140,22 @@ export const TextHoverEffect = ({
       >
         {text}
       </motion.text>
+
+      {/* Sweeping border-light layer */}
+      <text
+        x="50%" y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        stroke="url(#bwm-light)"
+        strokeWidth="0.6"
+        fill="transparent"
+        fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        fontSize="60"
+        fontWeight="700"
+        filter="url(#bwm-glow)"
+      >
+        {text}
+      </text>
 
       {/* Cursor-reveal gradient overlay */}
       <text
