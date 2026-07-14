@@ -565,7 +565,7 @@ section{position:relative;z-index:2}
 .contact-card{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--card-brd);border-radius:22px;padding:34px 32px;box-shadow:var(--card-shadow);transition:transform .4s,box-shadow .4s,background .6s}
 .contact-card:hover{transform:translateY(-6px);box-shadow:var(--card-shadow-hover)}
 .contact-card .lbl{font-family:var(--font-m);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:block}
-.contact-card a.val,.contact-card .val{font-family:var(--font-d);font-size:clamp(16px,1.8vw,21px);font-weight:700;word-break:break-word}
+.contact-card a.val,.contact-card .val{font-family:var(--font-d);font-size:clamp(14px,1.5vw,19px);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .contact-card a.val:hover{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .contact-card p{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6}
 .inquiry-form{position:relative;max-width:900px;margin:0 auto;background:var(--card-bg);backdrop-filter:blur(18px);border:1px solid var(--card-brd);border-radius:var(--r-lg);padding:clamp(28px,4vw,46px);box-shadow:var(--card-shadow);overflow:hidden}
