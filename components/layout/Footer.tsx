@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
-import BrandWatermark from "@/components/ui/BrandWatermark";
+import { TextHoverEffect } from "@/components/ui/TextHoverEffect";
 
 export function Footer() {
   return (
@@ -59,7 +59,9 @@ export function Footer() {
           <span className="mono">INTELLIGENCE · ENGINEERED</span>
         </div>
       </div>
-      <BrandWatermark />
+      <div className="bwm-outer">
+        <TextHoverEffect text="PRAVERSE" className="z-10 pointer-events-auto" />
+      </div>
     </footer>
   );
 }
