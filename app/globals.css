@@ -927,12 +927,131 @@ body.space-tour-takeover-active .space-tour-takeover a,body.space-tour-takeover-
 .story-meta::before{content:'';display:block;width:32px;height:1px;background:currentColor;opacity:.4;flex-shrink:0}
 
 /* ============ PHOTONICS PAGE ============ */
-.photonics-product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px;border:1px solid var(--card-brd);border-radius:20px;overflow:hidden;margin-top:8px}
-.photonics-product-cell{padding:24px 22px;background:var(--card-bg);transition:background .25s}
-.photonics-product-cell:hover{background:var(--card-bg-hover,rgba(59,130,246,.06))}
-.photonics-product-cell .prod-code{display:block;font-family:var(--font-m);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--violet);margin-bottom:8px}
-.photonics-product-cell h4{font-size:14px;font-weight:700;margin:0 0 6px;line-height:1.35}
-.photonics-product-cell p{font-size:12.5px;line-height:1.6;color:var(--ink-soft);margin:0}
+
+/* ── Product Showcase Grid ── */
+.ph-showcase{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  border:1px solid var(--card-brd);
+  border-radius:24px;
+  overflow:hidden;
+  margin-top:48px;
+  background:var(--card-brd)
+}
+.ph-card{
+  display:flex;align-items:stretch;
+  background:var(--card-bg);
+  transition:background .3s ease;
+  position:relative;overflow:hidden;isolation:isolate;
+  min-height:180px
+}
+.ph-card:hover{background:var(--card-bg-hover,rgba(59,130,246,.04))}
+.ph-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(99,140,255,.07),transparent 55%);
+  opacity:0;transition:opacity .4s;pointer-events:none;z-index:0
+}
+.ph-card:hover::before{opacity:1}
+
+/* image pane */
+.ph-img{
+  width:200px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px 16px;
+  border-right:1px solid var(--card-brd);
+  background:var(--bg-soft);
+  position:relative;z-index:1
+}
+.ph-img img{
+  width:100%;max-width:160px;
+  height:140px;object-fit:contain;
+  filter:drop-shadow(0 4px 14px rgba(0,0,0,.12));
+  transition:transform .4s cubic-bezier(.16,1,.3,1)
+}
+.ph-card:hover .ph-img img{transform:scale(1.04) translateY(-2px)}
+
+/* content pane */
+.ph-content{
+  padding:28px 28px 28px 26px;
+  display:flex;flex-direction:column;justify-content:center;
+  gap:12px;position:relative;z-index:1;flex:1
+}
+.ph-code{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-m);font-size:9px;letter-spacing:.24em;
+  text-transform:uppercase;font-weight:600;
+  padding:4px 10px;border-radius:50px;
+  width:fit-content
+}
+.ph-card-title{
+  font-family:var(--font-d);font-size:clamp(16px,1.4vw,20px);
+  font-weight:800;letter-spacing:-.02em;line-height:1.15;
+  margin:0;color:var(--ink)
+}
+.ph-desc{
+  font-size:13px;line-height:1.65;color:var(--ink-soft);
+  margin:0;max-width:440px
+}
+
+/* speed tiers */
+.ph-tiers{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.ph-tier{display:flex;align-items:baseline;gap:10px;font-size:12px;line-height:1.5}
+.ph-tier-badge{
+  font-family:var(--font-m);font-size:8.5px;letter-spacing:.14em;
+  font-weight:700;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;
+  white-space:nowrap;flex-shrink:0
+}
+.ph-tier-forms{color:var(--ink-soft);font-size:11.5px;font-family:var(--font-m)}
+
+/* accent colour sets — one per card via data-accent */
+.ph-card[data-accent="orange"] .ph-code{background:rgba(249,115,22,.1);color:#f97316}
+.ph-card[data-accent="orange"] .ph-card-title{color:var(--ink)}
+.ph-card[data-accent="orange"] .ph-tier-badge{background:rgba(249,115,22,.12);color:#ea6c0a}
+
+.ph-card[data-accent="amber"] .ph-code{background:rgba(245,158,11,.1);color:#d97706}
+.ph-card[data-accent="amber"] .ph-tier-badge{background:rgba(245,158,11,.12);color:#b45309}
+
+.ph-card[data-accent="cyan"] .ph-code{background:rgba(6,182,212,.1);color:#0891b2}
+.ph-card[data-accent="cyan"] .ph-tier-badge{background:rgba(6,182,212,.12);color:#0e7490}
+
+.ph-card[data-accent="blue"] .ph-code{background:rgba(59,130,246,.1);color:#2563eb}
+.ph-card[data-accent="blue"] .ph-tier-badge{background:rgba(59,130,246,.12);color:#1d4ed8}
+
+.ph-card[data-accent="violet"] .ph-code{background:rgba(139,92,246,.1);color:#7c3aed}
+.ph-card[data-accent="violet"] .ph-tier-badge{background:rgba(139,92,246,.12);color:#6d28d9}
+
+.ph-card[data-accent="green"] .ph-code{background:rgba(34,197,94,.1);color:#16a34a}
+.ph-card[data-accent="green"] .ph-tier-badge{background:rgba(34,197,94,.12);color:#15803d}
+
+/* dark mode adjustments */
+body[data-theme="space"] .ph-img{background:rgba(255,255,255,.03)}
+body[data-theme="space"] .ph-img img{filter:drop-shadow(0 4px 18px rgba(0,0,0,.35))}
+body[data-theme="space"] .ph-card[data-accent="orange"] .ph-code{background:rgba(249,115,22,.15);color:#fb923c}
+body[data-theme="space"] .ph-card[data-accent="amber"] .ph-code{background:rgba(245,158,11,.15);color:#fbbf24}
+body[data-theme="space"] .ph-card[data-accent="cyan"] .ph-code{background:rgba(6,182,212,.15);color:#22d3ee}
+body[data-theme="space"] .ph-card[data-accent="blue"] .ph-code{background:rgba(59,130,246,.15);color:#60a5fa}
+body[data-theme="space"] .ph-card[data-accent="violet"] .ph-code{background:rgba(139,92,246,.15);color:#a78bfa}
+body[data-theme="space"] .ph-card[data-accent="green"] .ph-code{background:rgba(34,197,94,.15);color:#4ade80}
+body[data-theme="space"] .ph-card::before{background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(0,212,255,.07),transparent 55%)}
+
+/* responsive */
+@media(max-width:900px){
+  .ph-showcase{grid-template-columns:1fr}
+  .ph-img{width:160px}
+  .ph-img img{max-width:130px;height:110px}
+}
+@media(max-width:600px){
+  .ph-card{flex-direction:column}
+  .ph-img{width:100%;border-right:none;border-bottom:1px solid var(--card-brd);padding:24px;height:140px}
+  .ph-img img{height:100px}
+  .ph-content{padding:20px}
+}
+
+/* old grid kept for compatibility — hidden now */
+.photonics-product-grid{display:none}
+.photonics-product-cell{}
 .photonics-bandwidth-track{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin:32px 0 0;border-radius:16px;overflow:hidden;border:1px solid var(--card-brd)}
 .photonics-bw-cell{padding:28px 24px;background:var(--card-bg)}
 .photonics-bw-cell:nth-child(2){background:rgba(59,130,246,.04);border-left:1px solid var(--card-brd);border-right:1px solid var(--card-brd)}

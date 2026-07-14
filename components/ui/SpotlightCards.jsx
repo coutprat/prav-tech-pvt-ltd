@@ -8,7 +8,7 @@ import { useEffect } from "react";
 export default function SpotlightCards() {
   useEffect(() => {
     const SEL =
-      ".card, .agent-card, .pharma-cell, .step, .tl-card, .frontier-card";
+      ".card, .agent-card, .pharma-cell, .step, .tl-card, .frontier-card, .ph-card";
     let targets = [];
 
     function onMove(e) {

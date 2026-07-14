@@ -33,51 +33,170 @@ const html = `<header class="page-hero">
     <div class="sec-head center rv">
       <span class="kicker">Manufacturing Portfolio</span>
       <h2>What we <span class="grad-text">manufacture.</span></h2>
-      <p>Our planned manufacturing portfolio covers the complete spectrum of high-speed connectivity products for AI infrastructure, cloud computing, hyperscale data centres, telecom networks, and high-performance computing environments.</p>
+      <p>Our planned portfolio covers the complete spectrum of high-speed connectivity products — from passive copper to advanced optical assemblies — for AI infrastructure, cloud computing, and hyperscale data centres.</p>
     </div>
-    <div class="photonics-product-grid rv">
-      <div class="photonics-product-cell">
-        <span class="prod-code">PCB</span>
-        <h4>High-Speed PCB Assemblies</h4>
-        <p>Printed circuit board assemblies engineered for high-frequency signal integrity in AI compute and networking environments.</p>
+
+    <div class="ph-showcase rv">
+
+      <!-- DAC -->
+      <div class="ph-card" data-accent="orange">
+        <div class="ph-img">
+          <img src="/images/image%204.png" alt="Direct Attach Copper Cable" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">DAC</span>
+          <h3 class="ph-card-title">Direct Attach Copper</h3>
+          <p class="ph-desc">Passive copper cables for low-cost, ultra-low-latency rack-to-rack and switch-to-server connectivity. No active components — pure signal, minimum power.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">100G – 400G</span>
+              <span class="ph-tier-forms">SFP / QSFP / SFPDD / DSFP / OSFP / QSFP-DD</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">800G</span>
+              <span class="ph-tier-forms">SFP112 / SFP-DD112 / QSFP112 / QSFP-DD800 / OSFP</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">1.6T</span>
+              <span class="ph-tier-forms">OSFP-XD / OSFP1600</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">DAC</span>
-        <h4>Direct Attach Copper Cables</h4>
-        <p>Short-reach copper interconnects for rack-to-rack and switch-to-server connectivity at high data rates.</p>
+
+      <!-- ACC -->
+      <div class="ph-card" data-accent="amber">
+        <div class="ph-img">
+          <img src="/images/image%203.png" alt="Active Copper Cable" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">ACC · Linear Redriver</span>
+          <h3 class="ph-card-title">Active Copper Cables</h3>
+          <p class="ph-desc">Signal-conditioned copper cables with linear redriver ICs for extended reach over DAC. Low latency, low power, no retiming overhead.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">100G – 400G</span>
+              <span class="ph-tier-forms">QSFP / DSFP / QSFP-DD / OSFP</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">800G</span>
+              <span class="ph-tier-forms">QSFP112 / OSFP800 / QSFP-DD800</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">1.6T</span>
+              <span class="ph-tier-forms">OSFP1600 / OSFP-XD / QSFP-DD1600</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">ACC</span>
-        <h4>Active Copper Cables</h4>
-        <p>Signal-amplified copper cables extending reach while maintaining low latency and power efficiency.</p>
+
+      <!-- AEC -->
+      <div class="ph-card" data-accent="cyan">
+        <div class="ph-img">
+          <img src="/images/image%205.png" alt="Active Electrical Cable" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">AEC · Retimer / DSP</span>
+          <h3 class="ph-card-title">Active Electrical Cables</h3>
+          <p class="ph-desc">Retimer-based copper cables for reach beyond DAC — up to 7m+. Full signal regeneration via CDR/DSP chips for maximum signal integrity at longer distances.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">100G – 400G</span>
+              <span class="ph-tier-forms">QSFP / OSFP / QSFP-DD</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">800G</span>
+              <span class="ph-tier-forms">QSFP112 / OSFP / QSFP-DD</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">1.6T</span>
+              <span class="ph-tier-forms">OSFP1600 / OSFP-XD / QSFP-DD1600</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">AEC</span>
-        <h4>Active Electrical Cables</h4>
-        <p>Electronically enhanced copper cables with retimer chips for longer-reach, high-speed data centre connectivity.</p>
+
+      <!-- AOC / SR -->
+      <div class="ph-card" data-accent="blue">
+        <div class="ph-img">
+          <img src="/images/image%201.png" alt="Active Optical Cable" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">AOC / SR · DSP &amp; LPO</span>
+          <h3 class="ph-card-title">Multi-mode Active Optical</h3>
+          <p class="ph-desc">Lightweight optical cables with integrated transceivers for high-density, long-distance data-centre interconnects. DSP and LPO variants for power-optimised deployments.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">100G – 400G</span>
+              <span class="ph-tier-forms">QSFP56 / QSFP-DD Gearbox / OSFP</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">800G</span>
+              <span class="ph-tier-forms">OSFP / QSFP-DD / QSFP112</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">1.6T</span>
+              <span class="ph-tier-forms">OSFP1600 / QSFP-DD1600 LPO / LRO / SiPh AOC</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">AOC</span>
-        <h4>Active Optical Cables</h4>
-        <p>Optical cables with integrated transceivers for high-bandwidth, low-power, long-distance interconnects within data centres.</p>
+
+      <!-- Single-mode -->
+      <div class="ph-card" data-accent="violet">
+        <div class="ph-img">
+          <img src="/images/image%206.png" alt="Single-mode Transceiver" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">Single-mode · DSP &amp; LPO</span>
+          <h3 class="ph-card-title">Single-mode Transceivers</h3>
+          <p class="ph-desc">Pluggable optical modules for long-reach, single-mode fibre links. EML-DSP and SiPh-LPO optical engines for maximum reach with minimum power at 400G to 1.6T.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">100G – 400G</span>
+              <span class="ph-tier-forms">QSFP28 LR/ER Bidi / QSFP-DD DR4 / QSFP28 DR1</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">400G – 800G</span>
+              <span class="ph-tier-forms">OSFP / QSFP-DD800 / QSFP112 DR4 SiPh / SiPh-LPO</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">1.6T</span>
+              <span class="ph-tier-forms">OSFP1600 EML(DSP) / OSFP1600 DR8 SiPh-LPO</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">OCA</span>
-        <h4>Optical Cable Assemblies</h4>
-        <p>Precision-terminated optical cable assemblies for data centres, telecom infrastructure, and HPC environments.</p>
+
+      <!-- OCA -->
+      <div class="ph-card" data-accent="green">
+        <div class="ph-img">
+          <img src="/images/image%208.png" alt="Optical Cable Assembly" loading="eager" />
+        </div>
+        <div class="ph-content">
+          <span class="ph-code">OCA</span>
+          <h3 class="ph-card-title">Optical Cable Assemblies</h3>
+          <p class="ph-desc">Precision-terminated fibre assemblies — patch cords, trunk cables, and high-density breakout solutions for data centres, telecom infrastructure, and HPC environments.</p>
+          <div class="ph-tiers">
+            <div class="ph-tier">
+              <span class="ph-tier-badge">Patch &amp; Trunk</span>
+              <span class="ph-tier-forms">Cords and trunks for transceiver applications</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">High Density</span>
+              <span class="ph-tier-forms">Up to 6912F custom assemblies</span>
+            </div>
+            <div class="ph-tier">
+              <span class="ph-tier-badge">Compliance</span>
+              <span class="ph-tier-forms">UL / ETL flame ratings · robust supply capacity</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">HSI</span>
-        <h4>High-Speed Interconnect Assemblies</h4>
-        <p>Complex interconnect assemblies integrating copper, optical, and PCB components for system-level connectivity solutions.</p>
-      </div>
-      <div class="photonics-product-cell">
-        <span class="prod-code">SR</span>
-        <h4>Short-Reach Data-Centre Connectivity</h4>
-        <p>Short-reach optics and connectivity solutions supporting SR, DR, LPO, and next-generation optical interface standards.</p>
-      </div>
-    </div>
-    <p class="safe-note rv" style="margin-top:24px"><span class="shield" data-icon="MFG"></span><span>Custom cable, connector, transceiver, and communication assemblies available for customer-specific architectures. Compliance with relevant technical and quality requirements is built into our manufacturing process.</span></p>
+
+    </div><!-- /ph-showcase -->
+
+    <p class="safe-note rv" style="margin-top:28px"><span class="shield" data-icon="MFG"></span><span>Custom cable, connector, transceiver, and communication assemblies available for customer-specific architectures. Compliance with relevant technical and quality requirements is built into our manufacturing process.</span></p>
   </div>
 </section>
 
