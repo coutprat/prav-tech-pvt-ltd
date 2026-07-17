@@ -10,7 +10,9 @@ const config = [
       "assets/**",
       "public/site.js",
       "public/vendor/**",
-      "*.html"
+      "*.html",
+      // CommonJS dev-only static server; not part of the Next build
+      ".local-static-server.cjs"
     ]
   },
   ...nextVitals,

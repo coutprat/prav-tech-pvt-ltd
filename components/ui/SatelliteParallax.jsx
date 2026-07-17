@@ -47,7 +47,6 @@ function controlPoint(ax, ay, bx, by, factor, flip) {
 export default function SatelliteParallax({ waypoints = DEFAULT_WAYPOINTS }) {
   const wrapRef   = useRef(null);
   const stRef     = useRef(null);
-  const floatRef  = useRef(null);
   const rangesRef = useRef([]); // [{scrollStart, scrollEnd}] per waypoint segment
 
   useEffect(() => {
@@ -149,7 +148,6 @@ export default function SatelliteParallax({ waypoints = DEFAULT_WAYPOINTS }) {
 
     return () => {
       stRef.current?.kill();
-      floatRef.current?.kill();
       window.removeEventListener("resize", onResize);
       cleanup?.();
     };

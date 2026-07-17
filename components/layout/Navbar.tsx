@@ -13,7 +13,7 @@ export function Navbar() {
     let lastY = window.scrollY;
     let ticking = false;
 
-    function update() {
+    const update = () => {
       const y = window.scrollY;
       if (y < 80) {
         nav.classList.remove("nav-hidden");
@@ -26,11 +26,11 @@ export function Navbar() {
       }
       lastY = y;
       ticking = false;
-    }
+    };
 
-    function onScroll() {
+    const onScroll = () => {
       if (!ticking) { requestAnimationFrame(update); ticking = true; }
-    }
+    };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

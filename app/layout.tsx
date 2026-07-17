@@ -4,7 +4,6 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
-// import { SpaceTourProvider } from "@/components/space-tour/SpaceTourProvider";
 import { ThreeGlobalBridge } from "@/components/three/ThreeGlobalBridge";
 import { WebGLBackground } from "@/components/three/WebGLBackground";
 import SatelliteGuard from "@/components/ui/SatelliteGuard";
@@ -64,17 +63,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sora.variable} ${inter.variable} ${jetbrains.variable}`}>
       <body>
-        {/* <SpaceTourProvider> */}
-          <Navbar />
-          <ThreeGlobalBridge />
-          <WebGLBackground />
-          <SatelliteGuard />
-          <SpotlightCards />
-          <ThemeTransitionOverlay />
-          {children}
-          <Footer />
-          <SmoothScrollProvider />
-        {/* </SpaceTourProvider> */}
+        <Navbar />
+        <ThreeGlobalBridge />
+        <WebGLBackground />
+        <SatelliteGuard />
+        <SpotlightCards />
+        <ThemeTransitionOverlay />
+        {children}
+        <Footer />
+        <SmoothScrollProvider />
       </body>
     </html>
   );
