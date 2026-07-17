@@ -24,11 +24,16 @@ Two findings dominated the work:
    `b324dee`, with five further commits landed on top of it. This was **not** caused by the cleanup.
    It is now fixed, so the repo has a green baseline for the first time in six commits.
 
-2. **There are two "space tour" implementations, and only one is dead.** The React implementation
-   (`components/space-tour/`) is disabled and unreachable. The *legacy* implementation lives inside
-   the live `public/site.js` and shares the same `space-tour-` CSS prefix in `globals.css`.
-   Deleting "the space-tour CSS" would have broken the live Noir/Flux theme. That CSS was
-   **deliberately preserved** and verified live in a browser (see §4).
+2. **The `space-tour-` CSS prefix spans both dead and live code.** Two Space Tour implementations
+   existed — the React one (`components/space-tour/`) and a legacy one inside `public/site.js` —
+   and commit `b324dee` retired **both**, replacing them with the NOIR/FLUX theme toggle. But it
+   kept `body.space-tour-active` as the **Flux theme hook**, so a blanket deletion of
+   "the space-tour CSS" would have broken the live theme. Those rules were **deliberately
+   preserved** and verified in a browser (see §4).
+
+   > Corrected: this section originally claimed the legacy implementation was live and that React
+   > stripped its overlay during hydration. Both were wrong — it is commented out on purpose.
+   > See **§12** for the correction and how it was established.
 
 ---
 
@@ -48,10 +53,10 @@ Recorded on the untouched checkout at `2e744f1`, after `npm install`:
   effect. TypeScript does not preserve narrowing of a captured `const` inside a *hoisted function
   declaration*; it does inside an arrow function. Verified empirically with an isolated test case
   against the project's own TypeScript 5.7.2.
-- **The legacy space-tour overlay never renders in the Next.js app.** `public/site.js:460` runs
+- ~~**The legacy space-tour overlay never renders in the Next.js app.** `public/site.js:460` runs
   `document.body.appendChild(tourOverlay)`, but React owns `<body>` and removes the injected
-  `<aside>` during hydration. Confirmed present at baseline **and** after cleanup (identical DOM),
-  so it is pre-existing and untouched. See §9.
+  `<aside>` during hydration.~~ **RETRACTED — this diagnosis was wrong. See §12.** The overlay is
+  not broken: the whole block (`public/site.js` lines 393–489) is **commented out on purpose**.
 - `tsconfig.tsbuildinfo` was tracked; merely running `tsc` rewrote it, dirtying the working tree.
 
 Environment: Node/npm on Windows; no test framework, no CI config, no Docker/K8s, no database and
@@ -251,11 +256,11 @@ code splitting and static prerendering; all 11 routes are `○ (Static)`.
 
 ## 9. Remaining recommendations (higher-risk — intentionally not implemented)
 
-1. **The legacy space-tour overlay is dead at runtime — decide its fate.** `public/site.js:460`
+1. ~~**The legacy space-tour overlay is dead at runtime — decide its fate.** `public/site.js:460`
    appends `<aside class="space-tour-overlay">` to `document.body`, but React removes it during
-   hydration, so the feature **never renders** (confirmed at baseline, pre-existing). Either mount it
-   through React, or delete the ~200 lines of tour code from `site.js` **and** its CSS together.
-   Until then the CSS must stay — the `body.space-tour-active` rules genuinely style the Flux theme.
+   hydration.~~ **RETRACTED — wrong diagnosis. See §12.** The overlay is commented out on purpose
+   (`site.js` 393–489); React is not involved. The `body.space-tour-active` rules do still style the
+   Flux theme and must stay.
 
 2. **Then remove v2-only CSS.** Once the above is settled, these selectors in `globals.css` are used
    by nothing (they belonged to the deleted React tree): `space-tour-takeover`, `-takeover-active`,
@@ -384,8 +389,9 @@ is the rewritten `.cap-grid` rule, collapsed from multi-line to a single line by
 
 ### 11.6 Still outstanding
 
-- **The legacy space-tour overlay still never renders** (§9 item 1) — `site.js:460` appends it to
-  `<body>`; React strips it during hydration. Its CSS is therefore retained.
+- ~~**The legacy space-tour overlay still never renders** (§9 item 1) — `site.js:460` appends it to
+  `<body>`; React strips it during hydration.~~ **RETRACTED — see §12.** It is commented out
+  deliberately, not broken.
 - Root `*.html` + `assets/` (~200 KB) are kept: `.local-static-server.cjs` serves them as a local
   preview of the pre-Next design.
 - `DEFAULT_WAYPOINTS` (`SatelliteParallax.jsx`) is exported but only used as a default parameter in
@@ -393,3 +399,73 @@ is the rewritten `.cap-grid` rule, collapsed from multi-line to a single line by
 - The 6 photonics images use raw `<img>` inside `StaticPageContent` HTML, so they bypass
   `next/image` and ship unoptimised on any host. The two large hero PNGs **do** go through
   `next/image`, so Vercel would optimise those automatically — this supersedes §9 item 6.
+
+---
+
+## 12. Correction — the space-tour overlay is not broken (retracts §2, §9.1, §11.6)
+
+**Earlier claim (wrong):** "`site.js:460` appends the overlay to `<body>`, but React removes it
+during hydration, so the feature never renders."
+
+**Actual cause:** the entire legacy Space Tour block — `public/site.js` **lines 393–489** — is
+**commented out**, and says so:
+
+```js
+/* ---------- Space Tour narrative layer — commented out ---------- */
+/* const tourSteps = [
+   ...
+*/
+```
+
+React is not involved. The code never executes.
+
+### How the wrong conclusion was reached
+
+The chain of evidence looked strong and was not: `appendChild(tourOverlay)` exists in the file →
+the class exists in the file → the element is absent from the DOM → *therefore* something removes
+it. Every step was verified except the one that mattered — **whether the code was live**. Searching
+a file for a string does not establish that the string is executable.
+
+It was settled by direct observation rather than inference. A `MutationObserver` installed above
+the engine recorded **zero** add and **zero** remove events for `.space-tour-overlay`, and an
+execution marker placed inside the block never fired while a marker after it did. Nothing removes
+the overlay; it is never created. A control probe also disproved the mechanism outright: an
+`<aside class="space-tour-overlay">` appended manually to `<body>` **survived** two React
+re-renders, so React does not strip foreign nodes here. `site.js`'s own injected elements
+(`div.cursor-dot`, `div.page-fade`, `div#vignette`, `svg#rocket-overlay`) are all present in the
+DOM for the same reason.
+
+### Why it was disabled
+
+Commit **`b324dee`** ("satellite parallax, spotlight cards, theme toggle pill + NOIR/FLUX overlay")
+retired **both** Space Tour implementations in one change — it commented out the React
+`SpaceTourProvider` in `app/layout.tsx` *and* this legacy narrative layer — replacing them with the
+NOIR/FLUX theme toggle. `body.space-tour-active` was kept and repurposed as the **Flux theme hook**
+(`site.js:377`). The Space Tour effectively *became* the theme toggle. (That same commit introduced
+the build break fixed in `818253d`.) No dangling references to `tourOverlay`/`tourSteps` remain
+outside the comment.
+
+### Consequence for the CSS audit (§11)
+
+The purge's reference haystack is plain text, so it matched the selectors **inside that block
+comment** and preserved them as "live". They are not. These are referenced *only* from commented-out
+code and are dead — **34 lines** of `app/globals.css`:
+
+`.space-tour-overlay`, `.space-tour-head`, `.space-tour-copy`, `.space-tour-kicker`,
+`.space-tour-tags`, `.space-tour-actions`, `.space-tour-system`, `.space-tour-rail`
+
+**`body.space-tour-active` (9 lines) is genuinely live** and was correctly retained — it styles
+`#webgl`, `#hero`, `.float-chip`, `main`, `footer` in Flux mode, verified in-browser
+(`#webgl` → `z-index:1; opacity:0.95`).
+
+Those 34 lines were **not** removed: re-enabling the tour is an open product decision, and the CSS
+would be needed if it is restored. Note the coupling — because the overlay CSS is gated on
+`body.space-tour-active`, which now means "Flux theme", simply uncommenting the block would make the
+narrative overlay appear **whenever a visitor selects Flux**. That is a design decision, not a fix.
+
+### Lesson for future audits of this repo
+
+This is the third variant of the same trap (§4 live-vs-dead prefixes, §11.2 dynamic class names,
+and now commented-out code). A grep-based audit of this repo produces **both** false negatives
+(runtime-built names like `tto-${phase}`) and false positives (strings inside comments). Any future
+purge must confirm reachability by execution, not by text search.
