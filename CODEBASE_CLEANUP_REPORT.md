@@ -4,6 +4,10 @@
 **Branch:** `main` · **Baseline commit:** `2e744f1`
 **Date:** 2026-07-17
 
+> **Pass 2 (same day).** After the first pass, the remaining "manual review" items were
+> re-examined and cleared. See **§11 — Second pass** at the end. Sections 1–10 describe
+> pass 1 and are left as written, except where §11 explicitly supersedes them.
+
 ---
 
 ## 1. Executive summary
@@ -299,3 +303,93 @@ code splitting and static prerendering; all 11 routes are `○ (Static)`.
 - [x] Formatting changes do not hide functional changes (one de-indent, in `app/layout.tsx`).
 - [x] No pagination/virtualisation/streaming/export logic existed to preserve; no content caps,
       truncation or row limits were introduced.
+
+---
+
+## 11. Second pass — clearing the "manual review" backlog
+
+Pass 1 deliberately preserved everything whose use could not be disproven. On review, the
+owner authorised removing all of it. This pass also audited `app/globals.css`, which pass 1
+never analysed.
+
+### 11.1 What was removed
+
+| Item | Size / scale | Evidence |
+|---|---|---|
+| `app/globals.css` dead selectors | **1,311 → 1,105 lines** (120 rules, 109 distinct selectors, 5 empty `@media`) | Orphaned by pass 1's deletion of the React space-tour, plus pre-existing leftovers. |
+| `Space Tour v2 Standalone.html` | 764 KB | **Generated artifact.** Decompressed it: a `dc-runtime` bundle of 18 gzip+base64 assets — its own copies of three.js (654 KB), GSAP 3.12.5 and ~10 woff2 fonts. Its runtime header reads *"GENERATED from dc-runtime/src/*.ts — do not edit."* Not source, never served. |
+| `legacy-static-site/` (13 files) | 172 KB | 8 of 9 HTML files byte-identical to the root copies; nothing serves it (`.local-static-server.cjs` serves the **root**). |
+| `public/images/image 1..6,8,9.png` + `image7.png` (9 files) | ~600 KB | Zero references in source, CSS, HTML — including the standalone bundle, which embeds its own assets. |
+
+Dead CSS families removed: the space-tour **v2** set (`-takeover`, `-panel`, `-stage`, `-canvas`,
+`-warp`, `-vignette`, `-scanlines`, `-label-tl/tr`, `-vrail`, `-bgnum`, `-stepper`, `-content-card`,
+`-copy-grid`, `-title`, `-body`, `-body-col`, `-tags-row`, `-link`, `-manifest*`, `-exit`, `-scroll`,
+`-spacer`, `-scrollhint`, `-kicker-text`, `-trigger`); the 15 `st-*` / `stp-*` HUD classes
+(`st-radar`, `st-hud-num`, `st-progress`, …); `case-card` / `case-grid` / `case-metrics` / `metric`;
+`photonics-product-grid` and the **empty rule** `.photonics-product-cell{}`; `menu-lines`; `orb-ic`.
+
+`.case-grid` was **rewritten** rather than dropped — it was one selector in a live comma list
+(`.cap-grid,.cap-grid.two,…`), so only that selector was removed.
+
+### 11.2 Near-miss: dynamically constructed class names
+
+The static audit flagged `tto-enter` / `tto-hold` / `tto-exit` as unused. **They are live.**
+`ThemeTransitionOverlay.jsx:32` builds them by interpolation:
+
+```jsx
+className={`tto-root tto-${info.phase} ${isNoir ? "tto-noir" : "tto-flux"}`}
+```
+
+`info.phase` is `enter|hold|exit`, so the literals never appear in source and any
+`grep`-style audit calls them dead. Removing them would have broken the theme-transition
+animation. They were whitelisted, and the surviving `tto-*` rules verified **byte-identical**
+to the original. **Any future CSS purge of this repo must whitelist them.**
+
+This is the same class of trap as the space-tour CSS in §4: the repo has two independent
+mechanisms (React and the vanilla `public/site.js`) writing classes onto the same DOM.
+
+### 11.3 Tooling note — why a hand-rolled purge was abandoned
+
+A bespoke line-based cutter was written, then discarded after verification caught four
+successive defects it introduced: it corrupted the 58 multi-line rules (unbalanced braces),
+parsed comma-containing section-header **comments** as selectors, duplicated comment blocks,
+and mis-reconstructed `@media` bodies. Each was caught before it shipped; none reached a commit.
+
+The purge was redone with **postcss** (already a devDependency), which parses properly and
+re-parses its own output to prove validity. Verification: braces balanced 703/703, postcss
+re-parse valid, no duplicated content, every live selector retained. The one formatting change
+is the rewritten `.cap-grid` rule, collapsed from multi-line to a single line by postcss.
+
+### 11.4 Verification (pass 2)
+
+| Check | Result |
+|---|---|
+| `npx tsc --noEmit` | PASS (0) |
+| `npm run lint` | PASS (0) |
+| `npx next build` | PASS — 11/11 routes prerendered |
+| Theme transition | `tto-enter` → `tto-hold` → `tto-exit` all mount; FLUX label renders; `.tto-top` computes to identity transform, proving `.tto-enter .tto-top` applies (base is `translateY(-102%)`) |
+| Flux theme (preserved v1 CSS) | `body.space-tour-active` applied; `#webgl` → `z-index:1`, `opacity:0.95` — unchanged from baseline |
+| Routes | 9/9 → 200; zero failed resources |
+| Engine | THREE r160, gsap, ScrollTrigger, Lenis all live; 9 homepage sections |
+
+### 11.5 Net result across both passes
+
+| Metric | Before pass 1 | After pass 2 |
+|---|---|---|
+| Tracked files | 110 | **66** |
+| `app/globals.css` | 1,311 lines | **1,105 lines** |
+| Runtime dependencies | 12 | **8** |
+| `node_modules` | 642 MB | **510 MB** |
+| Production build | **FAILING** | **PASSING** |
+
+### 11.6 Still outstanding
+
+- **The legacy space-tour overlay still never renders** (§9 item 1) — `site.js:460` appends it to
+  `<body>`; React strips it during hydration. Its CSS is therefore retained.
+- Root `*.html` + `assets/` (~200 KB) are kept: `.local-static-server.cjs` serves them as a local
+  preview of the pre-Next design.
+- `DEFAULT_WAYPOINTS` (`SatelliteParallax.jsx`) is exported but only used as a default parameter in
+  its own file. Retained — it is a defensible configuration point for the component.
+- The 6 photonics images use raw `<img>` inside `StaticPageContent` HTML, so they bypass
+  `next/image` and ship unoptimised on any host. The two large hero PNGs **do** go through
+  `next/image`, so Vercel would optimise those automatically — this supersedes §9 item 6.
