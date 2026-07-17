@@ -458,10 +458,12 @@ code and are dead — **34 lines** of `app/globals.css`:
 `#webgl`, `#hero`, `.float-chip`, `main`, `footer` in Flux mode, verified in-browser
 (`#webgl` → `z-index:1; opacity:0.95`).
 
-Those 34 lines were **not** removed: re-enabling the tour is an open product decision, and the CSS
-would be needed if it is restored. Note the coupling — because the overlay CSS is gated on
-`body.space-tour-active`, which now means "Flux theme", simply uncommenting the block would make the
-narrative overlay appear **whenever a visitor selects Flux**. That is a design decision, not a fix.
+**Resolution (owner decision): leave the Space Tour retired and finish the cleanup.** Done in §13.
+
+Worth recording for anyone tempted to revive it: because the overlay CSS was gated on
+`body.space-tour-active` — which `b324dee` repurposed to mean "Flux theme" — simply uncommenting the
+block would have made the narrative overlay appear **whenever a visitor selects Flux**. Re-enabling
+was never a one-line uncomment; it would need its own trigger, decoupled from the theme.
 
 ### Lesson for future audits of this repo
 
@@ -469,3 +471,67 @@ This is the third variant of the same trap (§4 live-vs-dead prefixes, §11.2 dy
 and now commented-out code). A grep-based audit of this repo produces **both** false negatives
 (runtime-built names like `tto-${phase}`) and false positives (strings inside comments). Any future
 purge must confirm reachability by execution, not by text search.
+
+---
+
+## 13. Finishing the Space Tour retirement
+
+Owner decision after §12: keep the feature retired (as `b324dee` intended) and remove what was left
+behind. The 3D "space" scene and the NOIR/FLUX theme are **unaffected** — only the retired
+*narrative overlay* and its styling are gone.
+
+### 13.1 Removed
+
+| Item | Scale | Evidence |
+|---|---|---|
+| `public/site.js` lines 393–489 | **914 → 815 lines** (−99) | The commented-out `/* const tourSteps = [ … */` block. Verified before cutting that the range opens and closes a comment, that no live code referenced `tourOverlay`/`tourSteps`/`setTourStep`/etc. afterwards, and that the `body.space-tour-active` toggle survived. `node --check` confirms valid JS; CRLF line endings preserved. |
+| `app/globals.css` overlay rules | **1,106 → 1,064 lines** (−42; 39 rules, 27 selectors) | `.space-tour-overlay/-head/-copy/-kicker/-tags/-actions/-system/-rail` and descendants, plus `.system-lines` (the overlay's own markup). |
+
+`body.space-tour-active .space-tour-overlay` was correctly dropped: live ancestor, **dead
+descendant**, so the rule could never match. `body.space-tour-active #webgl` / `#hero` / `main` /
+`footer` were **kept** — they style the Flux theme.
+
+Recoverable: `git show b324dee^:public/site.js`.
+
+### 13.2 A second tooling bug — haystack scope
+
+Re-running the purge after cutting `site.js` initially dropped **zero** rules. The reference
+haystack included `assets/site.js` — the **legacy** static site's engine, which still contains the
+tour code uncommented — so the selectors still looked "live".
+
+But the legacy static site is a self-contained pair: root `*.html` + `assets/site.css` +
+`assets/site.js`, served by `.local-static-server.cjs`. **It never loads `app/globals.css`.** Its
+class usage therefore says nothing about what `globals.css` needs. The haystack now excludes
+`assets/` alongside `legacy-static-site/` — the same reasoning already applied to
+`case-card`/`menu-lines` in §11.1.
+
+Excluding it revealed 27 dead selectors rather than the 8 predicted in §12 — the extra ones
+(`.system-lines` and descendants) were also overlay-only markup.
+
+### 13.3 Verification
+
+| Check | Result |
+|---|---|
+| `node --check public/site.js` | VALID |
+| `npx tsc --noEmit` / `npm run lint` / `npx next build` | PASS / PASS / PASS (11/11 routes) |
+| postcss re-parse of `globals.css` | VALID CSS; braces 664/664 |
+| Engine boot | THREE r160, gsap, ScrollTrigger, Lenis; WebGL context live; 9 sections |
+| **Flux theme (preserved rules)** | `body.space-tour-active` applied; `#webgl` → `z-index:1`, `opacity:0.95`; `body` → `overflow-x:hidden` — unchanged |
+| **Theme transition** | still cycles — sampled `tto-root tto-hold tto-noir` |
+| Retired overlay | correctly absent |
+| Console errors / failed resources | 0 / 0 |
+
+### 13.4 Net result across all passes
+
+| Metric | Start (`2e744f1`) | Now |
+|---|---|---|
+| Tracked files | 110 | **66** |
+| `app/globals.css` | 1,311 lines | **1,064 lines** |
+| `public/site.js` | 914 lines | **815 lines** |
+| Runtime dependencies | 12 | **8** |
+| Production build | **FAILING** | **PASSING** |
+
+Remaining `space-tour` mentions in the codebase are now exactly two, both intentional:
+`site.js:377` (`classList.toggle('space-tour-active', theme === 'space')` — the Flux hook) and a
+descriptive comment on the particle field. The `assets/` legacy static site still contains the
+original tour code; it is untouched and self-contained.
