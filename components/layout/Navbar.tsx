@@ -50,7 +50,7 @@ export function Navbar() {
         ))}
       </ul>
       <ThemeToggleSwitch />
-      <Link href="/contact" className="btn btn-primary">
+      <Link href="/start-a-project" className="btn btn-primary">
         Start a Project
       </Link>
       <button id="menuBtn" aria-label="Menu" type="button">

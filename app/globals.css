@@ -541,6 +541,20 @@ section{position:relative;z-index:2}
 .inquiry-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:8px}
 .inquiry-actions .form-note{margin-top:0;max-width:520px}
 
+/* ── Simple contact form (ct-*) ── */
+.ct-simple-form{max-width:720px;margin:0 auto;background:var(--card-bg);backdrop-filter:blur(18px);border:1px solid var(--card-brd);border-radius:var(--r-lg);padding:clamp(28px,4vw,48px);box-shadow:var(--card-shadow)}
+.ct-topic-row{margin-bottom:28px}
+.ct-topic-label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:12px}
+.ct-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ct-chip{font-family:var(--font-b);font-size:13px;font-weight:500;padding:8px 16px;border-radius:100px;border:1px solid var(--card-brd);background:transparent;color:var(--ink-soft);cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+.ct-chip:hover{border-color:var(--cyan);color:var(--ink)}
+.ct-chip--active{background:rgba(6,182,212,.1);border-color:var(--cyan);color:var(--ink)}
+body[data-theme="space"] .ct-chip--active{background:rgba(0,212,255,.1);border-color:var(--cyan)}
+.ct-simple-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.ct-sent-label{font-family:var(--font-m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+.ct-sent-title{font-size:clamp(22px,3vw,32px);margin-bottom:12px}
+.ct-sent-body{font-size:15px;color:var(--ink-soft);max-width:42ch;margin:0 auto;line-height:1.7}
+
 /* ============ CTA ============ */
 .cta-box{position:relative;background:radial-gradient(900px 500px at 20% -20%,#1c2c63,var(--navy) 60%);border-radius:40px;padding:clamp(60px,8vw,110px) clamp(28px,6vw,90px);text-align:center;color:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(10,18,48,.35)}
 .cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(500px 300px at 80% 120%,rgba(139,92,246,.3),transparent 60%),radial-gradient(400px 250px at 10% 110%,rgba(6,182,212,.22),transparent 60%)}

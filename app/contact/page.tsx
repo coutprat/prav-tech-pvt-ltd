@@ -1,11 +1,40 @@
+"use client";
+
 import type { Metadata } from "next";
 import Link from "next/link";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Contact - Praverse Tech"
-};
+const TOPICS = [
+  "General Inquiry",
+  "Partnership",
+  "Press & Media",
+  "Mentorship",
+  "Careers",
+  "Other",
+];
 
 export default function ContactPage() {
+  const [topic, setTopic] = useState("General Inquiry");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("sending");
+    const fd = new FormData(e.currentTarget);
+    const res = await fetch("/api/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        formType: "contact",
+        name: fd.get("Name"),
+        email: fd.get("Email"),
+        topic,
+        message: fd.get("Message"),
+      }),
+    });
+    setStatus(res.ok ? "sent" : "error");
+  }
+
   return (
     <main>
       <header className="page-hero">
@@ -22,6 +51,7 @@ export default function ContactPage() {
         </p>
       </header>
 
+      {/* ── Direct channels ── */}
       <section className="sec-pad-sm">
         <div className="wrap">
           <div className="contact-grid">
@@ -46,97 +76,98 @@ export default function ContactPage() {
             </div>
             <div className="contact-card rv">
               <span className="lbl">Office</span>
-              <span className="val">Vadodara, Gujarat, India</span>
+              <span className="val">Vadodara, Gujarat</span>
               <p>TOWER 2 – 413 &amp; 420, Prince Cube, Nayaran Garden, Gotri, Vadodara. Also present in Bangalore, Hyderabad, Pune, Mumbai, and Chennai.</p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* ── Simple contact form ── */}
       <section className="sec-pad-sm">
         <div className="wrap">
           <div className="sec-head center rv">
-            <span className="kicker">Inquiry Form</span>
+            <span className="kicker">Send a Message</span>
             <h2>
-              Send a structured <span className="grad-text">request.</span>
+              What&apos;s on your <span className="grad-text">mind?</span>
             </h2>
             <p>
-              Share the problem, domain, and timeline. The form opens your email client with the
-              details ready to send to Praverse.
+              For a detailed project brief, use{" "}
+              <Link href="/start-a-project" style={{ color: "var(--cyan)", textDecoration: "underline" }}>
+                Start a Project
+              </Link>
+              . This form is for everything else.
             </p>
           </div>
 
-          <form
-            className="inquiry-form rv"
-            action="mailto:inquiry@praversetech.com"
-            method="post"
-            encType="text/plain"
-          >
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="name">Name</label>
-                <input id="name" name="Name" type="text" autoComplete="name" required />
-              </div>
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input id="email" name="Email" type="email" autoComplete="email" required />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="company">Company / Organization</label>
-                <input id="company" name="Company" type="text" autoComplete="organization" />
-              </div>
-              <div className="field">
-                <label htmlFor="domain">Inquiry Type</label>
-                <select id="domain" name="Inquiry Type" defaultValue="Enterprise AI / ML">
-                  <option>Enterprise AI / ML</option>
-                  <option>HealthMate / Healthcare AI</option>
-                  <option>Pharma & Regulatory AI</option>
-                  <option>Research Collaboration</option>
-                  <option>Venture Lab / Idea</option>
-                  <option>Press / General</option>
-                </select>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="timeline">Timeline</label>
-                <select id="timeline" name="Timeline" defaultValue="Exploring">
-                  <option>Exploring</option>
-                  <option>0-3 months</option>
-                  <option>3-6 months</option>
-                  <option>6+ months</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="budget">Budget Range <span className="opt">optional</span></label>
-                <input id="budget" name="Budget Range" type="text" placeholder="Pilot / project range" />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="message">What should we help you build?</label>
-              <textarea
-                id="message"
-                name="Message"
-                rows={6}
-                placeholder="Tell us about the workflow, data, users, constraints, and desired outcome."
-                required
-              />
-            </div>
-            <div className="inquiry-actions">
-              <button className="btn btn-grad" type="submit">
-                Send Inquiry →
-              </button>
-              <p className="form-note">
-                No diagnosis, compliance guarantee, or automated decisioning is implied. Every
-                high-stakes workflow is designed for expert review.
+          {status === "sent" ? (
+            <div className="ct-simple-form" style={{ textAlign: "center", padding: "3rem 2rem" }}>
+              <p className="ct-sent-label">Message sent</p>
+              <h3 className="ct-sent-title">We&apos;ll be in touch.</h3>
+              <p className="ct-sent-body">
+                Thanks for reaching out. We read every message and usually reply within a day or two.
               </p>
             </div>
-          </form>
+          ) : (
+            <form className="ct-simple-form rv" onSubmit={handleSubmit}>
+
+              {/* Topic chips */}
+              <div className="ct-topic-row">
+                <span className="ct-topic-label">Topic</span>
+                <div className="ct-chips">
+                  {TOPICS.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      className={`ct-chip${topic === t ? " ct-chip--active" : ""}`}
+                      onClick={() => setTopic(t)}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name + Email */}
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="ct-name">Name</label>
+                  <input id="ct-name" name="Name" type="text" autoComplete="name" required placeholder="Your name" />
+                </div>
+                <div className="field">
+                  <label htmlFor="ct-email">Email</label>
+                  <input id="ct-email" name="Email" type="email" autoComplete="email" required placeholder="you@example.com" />
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="field">
+                <label htmlFor="ct-message">Message</label>
+                <textarea
+                  id="ct-message"
+                  name="Message"
+                  rows={5}
+                  placeholder="Say anything — we read everything."
+                  required
+                />
+              </div>
+
+              <div className="ct-simple-actions">
+                <button className="btn btn-grad" type="submit" disabled={status === "sending"}>
+                  {status === "sending" ? "Sending…" : "Send Message →"}
+                </button>
+                {status === "error" && (
+                  <p className="form-note" style={{ color: "#e05", marginTop: 0 }}>
+                    Something went wrong. Email us at inquiry@praversetech.com.
+                  </p>
+                )}
+              </div>
+            </form>
+          )}
         </div>
       </section>
 
+      {/* ── Reach Out cards ── */}
       <section className="sec-pad-sm">
         <div className="wrap">
           <div className="sec-head center rv">
@@ -158,8 +189,8 @@ export default function ContactPage() {
               <div className="ico" data-icon="IX" />
               <h3>Ideas &amp; Collaboration</h3>
               <p>
-                Researchers, founders, or builders with an idea worth exploring together — see also
-                our <a href="/innovate">Venture Lab</a>.
+                Researchers, founders, or builders with an idea worth exploring — see also our{" "}
+                <a href="/innovate">Venture Lab</a>.
               </p>
             </div>
             <div className="card rv">
@@ -174,15 +205,16 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* ── CTA ── */}
       <section className="sec-pad-sm">
         <div className="wrap">
           <div className="cta-box rv">
-            <h2>Ready when you are.</h2>
-            <p>Send a message and we&apos;ll get back to you — usually within a couple of business days.</p>
+            <h2>Ready to build something?</h2>
+            <p>Start a structured project brief and we&apos;ll respond with a plan.</p>
             <div className="cta-row">
-              <a href="mailto:inquiry@praversetech.com" className="btn btn-white">
-                Start a Conversation →
-              </a>
+              <Link href="/start-a-project" className="btn btn-white">
+                Start a Project →
+              </Link>
               <Link href="/" className="btn btn-outline">
                 Back to Home
               </Link>
