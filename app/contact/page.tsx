@@ -4,17 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { useState } from "react";
 
-const TOPICS = [
-  "General Inquiry",
-  "Partnership",
-  "Press & Media",
-  "Mentorship",
-  "Careers",
-  "Other",
-];
-
 export default function ContactPage() {
-  const [topic, setTopic] = useState("General Inquiry");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -28,7 +18,6 @@ export default function ContactPage() {
         formType: "contact",
         name: fd.get("Name"),
         email: fd.get("Email"),
-        topic,
         message: fd.get("Message"),
       }),
     });
@@ -110,23 +99,6 @@ export default function ContactPage() {
             </div>
           ) : (
             <form className="ct-simple-form rv" onSubmit={handleSubmit}>
-
-              {/* Topic chips */}
-              <div className="ct-topic-row">
-                <span className="ct-topic-label">Topic</span>
-                <div className="ct-chips">
-                  {TOPICS.map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      className={`ct-chip${topic === t ? " ct-chip--active" : ""}`}
-                      onClick={() => setTopic(t)}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               {/* Name + Email */}
               <div className="form-row">
