@@ -18,6 +18,8 @@ export default function ContactPage() {
         formType: "contact",
         name: fd.get("Name"),
         email: fd.get("Email"),
+        phone: fd.get("Phone"),
+        subject: fd.get("Subject"),
         message: fd.get("Message"),
       }),
     });
@@ -109,6 +111,18 @@ export default function ContactPage() {
                 <div className="field">
                   <label htmlFor="ct-email">Email</label>
                   <input id="ct-email" name="Email" type="email" autoComplete="email" required placeholder="you@example.com" />
+                </div>
+              </div>
+
+              {/* Phone + Subject */}
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="ct-phone">Contact Number <span className="opt">optional</span></label>
+                  <input id="ct-phone" name="Phone" type="tel" autoComplete="tel" placeholder="+91 98765 43210" />
+                </div>
+                <div className="field">
+                  <label htmlFor="ct-subject">Subject</label>
+                  <input id="ct-subject" name="Subject" type="text" required placeholder="What's this about?" />
                 </div>
               </div>
 

@@ -55,7 +55,8 @@ function buildContactHtml(f: Record<string, string>) {
       <p style="margin:0;font-size:13px;color:#55556a;">${f.email}</p>
     </div>
     <div style="padding:20px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0">
-      ${row("Topic", f.topic)}
+      ${row("Subject", f.subject)}
+      ${f.phone ? row("Phone", f.phone) : ""}
     </table></div>
     ${msgBlock("Message", f.message)}
     ${replyBtn(f.email, f.name.split(" ")[0], "#3ca2fa")}`;
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
     let html = "";
 
     if (formType === "contact") {
-      subject = `Message from ${fields.name} — ${fields.topic}`;
+      subject = `Message from ${fields.name} — ${fields.subject}`;
       html = buildContactHtml(fields);
     } else if (formType === "project") {
       subject = `Project Brief from ${fields.name} — ${fields.inquiryType}`;
