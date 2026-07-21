@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import SatelliteParallax from "@/components/ui/SatelliteParallax";
 
-const HIDDEN_ON = ["/contact"];
+const HIDDEN_ON = ["/contact", "/start-a-project"];
 
 export default function SatelliteGuard() {
   const path = usePathname();
