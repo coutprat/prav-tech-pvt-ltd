@@ -54,7 +54,7 @@ const html = `
       <div class="tm-bio-col">
         <span class="tm-num">01 / Strategic Advisor</span>
         <h2 class="tm-name">Vishal Jajodia</h2>
-        <p class="tm-role-label">Managing Director · SWATI Spentose</p>
+        <p class="tm-role-label">Managing Director of SWATI Spentose</p>
         <div class="tm-group-pill rv">
           <span class="tm-group-dot"></span>
           Part of the SWATI Group — a 70-year legacy in specialty pharmaceuticals
