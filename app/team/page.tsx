@@ -54,18 +54,23 @@ const html = `
       <div class="tm-bio-col">
         <span class="tm-num">01 / Strategic Advisor</span>
         <h2 class="tm-name">Vishal Jajodia</h2>
-        <p class="tm-role-label">SWATI</p>
+        <p class="tm-role-label">Managing Director · SWATI Spentose</p>
+        <div class="tm-group-pill rv">
+          <span class="tm-group-dot"></span>
+          Part of the SWATI Group — a 70-year legacy in specialty pharmaceuticals
+        </div>
         <p class="tm-excerpt">
           Three decades across the full arc of specialty pharma: from lab-grade formulation to
-          global regulatory strategy. At SWATI, Vishal led the development and commercialization
-          of specialty pharmaceutical products including Pentosan Polysulfate Sodium (Intravesical
-          Instillation), recognized with the IDMA-APTAR Innovation of the Year Award in 2022.
-          His advisory to Praverse is grounded in lived experience: AI in healthcare doesn't
-          work unless the people building it understand what clinicians actually need, and
-          why the industry is structured the way it is.
+          global regulatory strategy. As MD of SWATI Spentose, Vishal leads a division built on
+          one of the most enduring pharmaceutical legacies in India. He drove the development
+          and commercialization of Pentosan Polysulfate Sodium (Intravesical Instillation),
+          recognized with the IDMA-APTAR Innovation of the Year Award in 2022. His advisory to
+          Praverse is grounded in lived experience: AI in healthcare doesn't work unless the
+          people building it understand what clinicians actually need, and why the industry is
+          structured the way it is.
         </p>
         <ul class="tm-creds">
-          <li>30+ years specialty pharmaceutical leadership at SWATI, Mumbai</li>
+          <li>Managing Director, SWATI Spentose — part of the 70-year SWATI Group, Mumbai</li>
           <li>IDMA-APTAR Innovation of the Year Award 2022 — Pentosan Polysulfate Sodium</li>
           <li>Keynote: PHARMEET 2013 · GREEN VOICE 2016 · ESSIC 2015, Rome Catholic University</li>
           <li>Guest Speaker: SVKM's NMIMS SPPSPTM, Mumbai</li>
