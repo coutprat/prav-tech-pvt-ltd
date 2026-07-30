@@ -54,7 +54,7 @@ const html = `
       <div class="tm-bio-col">
         <span class="tm-num">01 / Strategic Advisor</span>
         <h2 class="tm-name">Vishal Jajodia</h2>
-        <p class="tm-role-label">Managing Director · SWATI</p>
+        <p class="tm-role-label">SWATI</p>
         <p class="tm-excerpt">
           Three decades across the full arc of specialty pharma: from lab-grade formulation to
           global regulatory strategy. At SWATI, Vishal led the development and commercialization
@@ -114,7 +114,7 @@ const html = `
         <ul class="tm-creds">
           <li>IEEE Transactions on Medical Imaging — DME Detection, 98% accuracy</li>
           <li>Scopus-indexed: Netra Sakhi · Edge AI ophthalmic screening for low-resource settings</li>
-          <li>Architect of MENNIE, HealthMate, Pharma AI, Praverse Photonics, Praverse Foundry</li>
+          <li>Architect of MENNIE, HealthMate, Pharma AI, Photonics, Praverse Foundry</li>
           <li>Domain focus: Healthcare AI, Regulatory Intelligence, Edge AI, Assistive Robotics</li>
         </ul>
         <div class="tm-tags">
