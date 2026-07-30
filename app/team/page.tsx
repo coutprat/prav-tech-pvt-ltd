@@ -70,10 +70,10 @@ const html = `
           structured the way it is.
         </p>
         <ul class="tm-creds">
-          <li>Managing Director, SWATI Spentose — part of the 70-year SWATI Group, Mumbai</li>
+          <li>Managing Director, SWATI Spentose — part of the V-Group, established 1952, Mumbai</li>
           <li>IDMA-APTAR Innovation of the Year Award 2022 — Pentosan Polysulfate Sodium</li>
+          <li>Founding Patron, GIBS — Global Interstitial Cystitis Bladder Pain Syndrome Society, est. 2016</li>
           <li>Keynote: PHARMEET 2013 · GREEN VOICE 2016 · ESSIC 2015, Rome Catholic University</li>
-          <li>Guest Speaker: SVKM's NMIMS SPPSPTM, Mumbai</li>
           <li>Domain focus: Women's Health, Urology, Specialty Formulation, GMP Strategy</li>
         </ul>
         <div class="tm-tags">
@@ -82,6 +82,26 @@ const html = `
           <span class="tm-tag">Urology</span>
           <span class="tm-tag">GMP</span>
           <span class="tm-tag">Regulatory Strategy</span>
+        </div>
+
+        <div class="tm-sspl-brief rv">
+          <div class="tm-sspl-head">
+            <span class="tm-sspl-name">Swati Spentose Pvt. Ltd.</span>
+            <span class="tm-sspl-group">V-Group · Est. 1952</span>
+          </div>
+          <div class="tm-sspl-facts">
+            <p class="tm-sspl-fact">Only global manufacturer of Pentosan Polysulfate Sodium outside the originator.</p>
+            <p class="tm-sspl-fact">Largest pharmaceutical-grade melatonin manufacturer worldwide.</p>
+            <p class="tm-sspl-fact">Three manufacturing units in Vapi, Gujarat. Commercial presence in 60+ countries.</p>
+          </div>
+          <div class="tm-sspl-badges">
+            <span class="tm-sspl-badge">US FDA ×3</span>
+            <span class="tm-sspl-badge">EU GMP</span>
+            <span class="tm-sspl-badge">PMDA Japan</span>
+            <span class="tm-sspl-badge">WHO-GMP</span>
+            <span class="tm-sspl-badge">COFEPRIS Mexico</span>
+            <span class="tm-sspl-badge">60+ Countries</span>
+          </div>
         </div>
       </div>
     </div>
