@@ -4,5 +4,6 @@ export const navigation = [
   { label: "MENNIE", href: "/healthmate" },
   { label: "Pharma AI", href: "/pharma" },
   { label: "Research", href: "/research" },
+  { label: "Team", href: "/team" },
   { label: "Contact", href: "/contact" }
 ];
