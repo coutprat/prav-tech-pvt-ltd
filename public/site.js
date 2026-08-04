@@ -9,6 +9,16 @@ if (!window.gsap || !window.ScrollTrigger || !window.THREE || !window.Lenis) {
 gsap.registerPlugin(ScrollTrigger);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ---------- Viewport size ----------
+   window.innerWidth is unreliable on mobile: it can still report a
+   pre-viewport-meta value when a deferred script first runs, and it tracks
+   the visual viewport (so it shifts as the URL bar hides). Reading the wrong
+   width made the scene size itself past the screen AND made isMobile false
+   on phones, so they rendered the full desktop particle count at full
+   opacity. documentElement.clientWidth is the layout viewport and is stable. */
+const vpW = () => document.documentElement.clientWidth || window.innerWidth;
+const vpH = () => document.documentElement.clientHeight || window.innerHeight;
+
 /* ---------- Smooth scroll ---------- */
 let lenis = null;
 if (!reduceMotion && window.Lenis) {
@@ -32,14 +42,14 @@ if (canvas && window.THREE) {
   // updateStyle=false: leave the canvas box to CSS (position:fixed; inset:0).
   // Otherwise three writes inline px sizes that go stale on resize and the
   // canvas spills past the viewport.
-  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.setSize(vpW(), vpH(), false);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(50, vpW() / vpH(), 0.1, 200);
   camera.position.set(0, 0, 9);
   // let, not const: particle counts are fixed at build time but the opacity
   // damping below re-reads this after a resize or orientation change.
-  let isMobile = innerWidth < 760;
+  let isMobile = vpW() < 760;
 
   /* --- Neural core --- */
   const coreGroup = new THREE.Group();
@@ -246,19 +256,19 @@ if (canvas && window.THREE) {
   /* --- Mouse parallax --- */
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener('pointermove', (e) => {
-    mouse.tx = (e.clientX / innerWidth - 0.5) * 2;
-    mouse.ty = (e.clientY / innerHeight - 0.5) * 2;
+    mouse.tx = (e.clientX / vpW() - 0.5) * 2;
+    mouse.ty = (e.clientY / vpH() - 0.5) * 2;
   }, { passive: true });
 
   /* --- Scroll progress --- */
   const scrollState = { p: 0 };
   const tourState = { p: 0 };
   ScrollTrigger.create({
-    trigger: document.body, start: 0, end: () => Math.max(1, document.body.scrollHeight - innerHeight),
+    trigger: document.body, start: 0, end: () => Math.max(1, document.body.scrollHeight - vpH()),
     onUpdate: (self) => { scrollState.p = self.progress; }
   });
   ScrollTrigger.create({
-    trigger: document.body, start: 0, end: () => Math.max(1, Math.min(document.body.scrollHeight - innerHeight, innerHeight * 4.6)),
+    trigger: document.body, start: 0, end: () => Math.max(1, Math.min(document.body.scrollHeight - vpH(), vpH() * 4.6)),
     onUpdate: (self) => { tourState.p = self.progress; }
   });
 
@@ -373,22 +383,29 @@ if (canvas && window.THREE) {
   // Mobile browsers fire resize on every URL-bar show/hide during scroll.
   // Reallocating the GL buffer each time is expensive and visibly janky, so
   // ignore height-only changes under the bar's height and debounce the rest.
-  let lastW = innerWidth, lastH = innerHeight, resizeTimer = null;
+  let lastW = vpW(), lastH = vpH(), resizeTimer = null;
+  const syncViewport = () => {
+    const w = vpW(), h = vpH();
+    const widthChanged = w !== lastW;
+    lastW = w; lastH = h;
+    isMobile = w < 760;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    // pinned/scroll-triggered sections keep stale measurements after a
+    // width change (phone rotation) unless ScrollTrigger re-measures
+    if (window.ScrollTrigger && widthChanged) window.ScrollTrigger.refresh();
+  };
   addEventListener('resize', () => {
-    const widthChanged = innerWidth !== lastW;
-    if (!widthChanged && Math.abs(innerHeight - lastH) < 140) return;
+    if (vpW() === lastW && Math.abs(vpH() - lastH) < 140) return;
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      lastW = innerWidth; lastH = innerHeight;
-      isMobile = innerWidth < 760;
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight, false);
-      // pinned/scroll-triggered sections keep stale measurements after a
-      // width change (phone rotation) unless ScrollTrigger re-measures
-      if (window.ScrollTrigger && widthChanged) window.ScrollTrigger.refresh();
-    }, 120);
+    resizeTimer = setTimeout(syncViewport, 120);
   }, { passive: true });
+  addEventListener('orientationchange', () => setTimeout(syncViewport, 250), { passive: true });
+  // The layout viewport can still be settling when a deferred script runs,
+  // so re-measure once everything (fonts, viewport meta) has applied.
+  addEventListener('load', syncViewport, { once: true });
+  requestAnimationFrame(() => requestAnimationFrame(syncViewport));
 }
 
 /* ---------- Theme: Space Tour toggle ---------- */
@@ -519,8 +536,8 @@ if (!reduceMotion) {
 
 /* ---------- Horizontal frontier scroll ---------- */
 const track = document.getElementById('frontierTrack');
-if (track && !reduceMotion && innerWidth > 760) {
-  const getDist = () => Math.max(0, track.scrollWidth - innerWidth);
+if (track && !reduceMotion && vpW() > 760) {
+  const getDist = () => Math.max(0, track.scrollWidth - vpW());
   gsap.to(track, {
     x: () => -getDist(), ease: 'none',
     scrollTrigger: {
@@ -600,7 +617,7 @@ if (!reduceMotion && fineCursor) {
   const cursorDot = document.createElement('div');
   cursorDot.className = 'cursor-dot';
   document.body.appendChild(cursorDot);
-  let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy;
+  let cx = vpW() / 2, cy = vpH() / 2, tx = cx, ty = cy;
   addEventListener('pointermove', (e) => {
     tx = e.clientX; ty = e.clientY;
     cursorDot.classList.add('show');
