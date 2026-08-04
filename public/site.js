@@ -29,12 +29,17 @@ let startThreeScene = null;
 if (canvas && window.THREE) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(innerWidth, innerHeight);
+  // updateStyle=false: leave the canvas box to CSS (position:fixed; inset:0).
+  // Otherwise three writes inline px sizes that go stale on resize and the
+  // canvas spills past the viewport.
+  renderer.setSize(innerWidth, innerHeight, false);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
   camera.position.set(0, 0, 9);
-  const isMobile = innerWidth < 760;
+  // let, not const: particle counts are fixed at build time but the opacity
+  // damping below re-reads this after a resize or orientation change.
+  let isMobile = innerWidth < 760;
 
   /* --- Neural core --- */
   const coreGroup = new THREE.Group();
@@ -356,16 +361,33 @@ if (canvas && window.THREE) {
     );
 
     const fade = p > 0.85 ? 1 - (p - 0.85) / 0.15 : 1;
-    renderer.domElement.style.opacity = Math.max(0.04, fade * (spaceMode ? 0.07 : 0.9));
+    // The same node field spread over a phone width reads as clutter behind
+    // body copy, so damp it there. Desktop keeps the full 0.9.
+    const base = spaceMode ? 0.07 : (isMobile ? 0.34 : 0.9);
+    renderer.domElement.style.opacity = Math.max(0.04, fade * base);
     renderer.render(scene, camera);
   };
   renderer.render(scene, camera); // paint one frame behind the loader
   startThreeScene = () => renderer.setAnimationLoop(renderLoop);
 
+  // Mobile browsers fire resize on every URL-bar show/hide during scroll.
+  // Reallocating the GL buffer each time is expensive and visibly janky, so
+  // ignore height-only changes under the bar's height and debounce the rest.
+  let lastW = innerWidth, lastH = innerHeight, resizeTimer = null;
   addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
+    const widthChanged = innerWidth !== lastW;
+    if (!widthChanged && Math.abs(innerHeight - lastH) < 140) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      lastW = innerWidth; lastH = innerHeight;
+      isMobile = innerWidth < 760;
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight, false);
+      // pinned/scroll-triggered sections keep stale measurements after a
+      // width change (phone rotation) unless ScrollTrigger re-measures
+      if (window.ScrollTrigger && widthChanged) window.ScrollTrigger.refresh();
+    }, 120);
   }, { passive: true });
 }
 
