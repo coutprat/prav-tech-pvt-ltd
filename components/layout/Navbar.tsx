@@ -48,6 +48,9 @@ export function Navbar() {
             <Link href={item.href}>{item.label}</Link>
           </li>
         ))}
+        <li className="nav-cta-mobile">
+          <Link href="/start-a-project">Start a Project →</Link>
+        </li>
       </ul>
       <ThemeToggleSwitch />
       <Link href="/start-a-project" className="btn btn-primary">

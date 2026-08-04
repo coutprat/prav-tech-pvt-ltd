@@ -203,6 +203,7 @@ nav ul{display:flex;gap:2px;list-style:none;transition:opacity .32s ease,transfo
 nav ul a{font-size:13.5px;font-weight:500;color:var(--ink-soft);padding:8px 13px;border-radius:100px;transition:.25s}
 nav ul a:hover{color:var(--ink);background:rgba(11,18,38,.05)}
 nav ul a.active{color:var(--ink);background:rgba(59,130,246,.1)}
+.nav-cta-mobile{display:none}
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-b);font-weight:600;font-size:14px;padding:12px 24px;border-radius:100px;cursor:pointer;border:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .btn-primary{background:var(--navy);color:#fff;box-shadow:0 8px 24px rgba(11,18,38,.25)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(11,18,38,.3)}
@@ -221,7 +222,7 @@ nav ul a.active{color:var(--ink);background:rgba(59,130,246,.1)}
 #webgl{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 /* ============ HERO (home) ============ */
-#hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #hero .inner{position:relative;z-index:2;text-align:center;padding:150px 24px 80px;max-width:1100px}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-m);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);padding:9px 18px;border-radius:100px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 16px rgba(11,18,38,.05);transition:background .6s,border-color .6s}
 .eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
@@ -348,7 +349,7 @@ section{position:relative;z-index:2}
 
 /* frontier horizontal */
 #frontier{background:var(--bg-soft);transition:background .8s}
-.frontier-pin{position:relative;overflow:hidden;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.frontier-pin{position:relative;overflow:hidden;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
 .frontier-track{display:flex;gap:26px;padding:0 24px;will-change:transform}
 .frontier-card{flex:none;width:min(420px,82vw);background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--card-brd);border-radius:28px;padding:40px 36px;box-shadow:var(--card-shadow);display:flex;flex-direction:column;min-height:380px;transition:background .6s}
 .frontier-card .num{font-family:var(--font-m);font-size:12px;color:var(--ink-mute);letter-spacing:.2em}
@@ -528,7 +529,7 @@ section{position:relative;z-index:2}
 .pub-card .yr{margin-top:18px;font-family:var(--font-m);font-size:11px;color:var(--ink-mute)}
 
 /* ============ CONTACT ============ */
-.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:960px;margin:0 auto}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:22px;max-width:960px;margin:0 auto}
 .contact-card{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--card-brd);border-radius:22px;padding:34px 32px;box-shadow:var(--card-shadow);transition:transform .4s,box-shadow .4s,background .6s}
 .contact-card:hover{transform:translateY(-6px);box-shadow:var(--card-shadow-hover)}
 .contact-card .lbl{font-family:var(--font-m);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:block}
@@ -671,6 +672,7 @@ footer{position:relative;z-index:2;padding:80px 0 0;background:var(--bg);transit
   .cap-grid,.cap-grid.two,.pub-grid{grid-template-columns:repeat(2,1fr)}
   .pharma-grid{grid-template-columns:repeat(2,1fr)}
   .process-steps{grid-template-columns:repeat(2,1fr)}
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:34px}
   .agents-layout,.hm-layout{grid-template-columns:1fr;gap:48px}
   .hm-visual{height:380px}
   .innovation-wrap{grid-template-columns:1fr;gap:48px}
@@ -688,13 +690,19 @@ footer{position:relative;z-index:2;padding:80px 0 0;background:var(--bg);transit
   nav ul{gap:0}
   nav ul a{padding:8px 10px;font-size:12.5px}
 }
-@media(max-width:760px){
+/* Nav collapses to a hamburger early: 7 links + toggle + CTA need ~810px */
+@media(max-width:900px){
   nav ul{position:fixed;inset:80px 16px auto;flex-direction:column;background:var(--nav-bg);backdrop-filter:blur(24px);border-radius:24px;padding:20px;box-shadow:0 24px 64px rgba(11,18,38,.18);border:1px solid var(--nav-brd);opacity:0;pointer-events:none;transform:translateY(-10px);transition:.35s}
   nav ul.open{opacity:1;pointer-events:auto;transform:translateY(0)}
   nav ul a{display:block;padding:13px 18px;font-size:15px}
   #menuBtn{display:block}
   nav .btn{display:none}
+  .nav-cta-mobile{display:block;margin-top:8px;padding-top:12px;border-top:1px solid var(--nav-brd)}
+  .nav-cta-mobile a{color:var(--cyan);font-weight:600}
   .theme-toggle .tt-label{display:none}
+}
+
+@media(max-width:760px){
   .cap-grid,.cap-grid.two,.pharma-grid,.process-steps,.pub-grid,.contact-grid,.innovate-layout,.form-row{grid-template-columns:1fr}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .innovation-guide{grid-template-columns:1fr;padding:20px}
@@ -704,7 +712,119 @@ footer{position:relative;z-index:2;padding:80px 0 0;background:var(--bg);transit
   .foot-grid{grid-template-columns:1fr 1fr}
   #healthmate{margin:0 8px;border-radius:32px}
   .page-hero{padding:160px 20px 70px}
+  .hm-points{grid-template-columns:1fr}
+  .sec-head{margin-bottom:44px}
   body.space-tour-active #webgl{clip-path:inset(54vh 0 0 0);opacity:.72}
+}
+
+/* ---------- Phone: 600px and below ---------- */
+@media(max-width:600px){
+  .wrap{padding:0 18px}
+  .sec-pad{padding:72px 0}
+  .sec-pad-sm{padding:56px 0}
+  .sec-head{margin-bottom:36px}
+  .sec-head h2{font-size:clamp(27px,7.6vw,38px)}
+  .sec-head p{font-size:15px}
+
+  #hero .inner{padding:132px 18px 64px}
+  #hero h1{font-size:clamp(34px,10.4vw,54px);letter-spacing:-.028em;margin:22px 0 20px}
+  #hero .sub{font-size:15.5px;margin-bottom:30px}
+  body[data-theme="space"] #hero h1{font-size:clamp(36px,10.8vw,58px);letter-spacing:-.032em;margin:24px 0 22px}
+  body[data-theme="space"] #hero .sub{font-size:15.5px}
+
+  .page-hero{padding:128px 18px 56px}
+  .page-hero h1{font-size:clamp(30px,8.6vw,44px);margin:20px auto 16px}
+  .page-hero .sub{font-size:15px}
+  .eyebrow{font-size:10px;letter-spacing:.16em;padding:8px 14px}
+
+  /* stack every remaining multi-column surface */
+  .stats-row,.foot-grid,.photonics-bandwidth-track{grid-template-columns:1fr}
+  .stat h3{font-size:clamp(36px,11vw,48px)}
+  body[data-theme="space"] .stat h3{font-size:clamp(38px,11.5vw,52px)!important}
+  .stats-row{gap:28px}
+  .foot-grid{gap:34px;padding-bottom:40px}
+  .foot-grid p{max-width:none}
+
+  /* buttons + touch targets */
+  .btn{padding:13px 22px;font-size:14px;min-height:46px}
+  .cta-row{flex-direction:column;align-items:stretch}
+  .cta-row .btn{justify-content:center;width:100%}
+  .cta-box{border-radius:28px;padding:52px 22px}
+  .cta-box h2{font-size:clamp(26px,7.4vw,36px)}
+  .cta-box p{font-size:15px;margin-bottom:30px}
+
+  .field input,.field select,.field textarea{padding:13px 15px}
+  .field label{font-size:13.5px}
+  .inquiry-form,.innovate-form,.ct-simple-form{padding:24px 20px;border-radius:20px}
+  .inquiry-actions .btn,.ct-simple-actions .btn{width:100%;justify-content:center}
+
+  /* cards + sections */
+  .card,.frontier-card,.pub-card,.contact-card,.agent-card{padding:24px 22px}
+  .step{padding:24px 22px}
+  .timeline{padding-left:28px}
+  .tl-card{padding:20px 22px}
+  #healthmate,#mennie{margin:0 6px;border-radius:26px}
+
+  /* orbit visual shrinks so it never clips awkwardly */
+  .station-orbit{min-height:400px}
+  .orbit-node{--orbit-r:96px}
+  .orbit-node--outer{--orbit-r:150px}
+  .orbit-ring-one{width:110px;height:110px}
+  .orbit-ring-two{width:196px;height:196px}
+  .orbit-ring-three{width:304px;height:304px}
+  .station-orbit::before{width:170px;height:170px}
+  .orbit-popup{width:180px;padding:12px}
+  .innovation-copy h2{font-size:clamp(28px,8.4vw,38px)}
+  .innovation-copy p{font-size:15px}
+  .innovation-stations{padding-top:72px;padding-bottom:72px}
+
+  .marquee-track,.marquee-track span{gap:34px}
+  .marquee-band{padding:26px 0}
+  .page-story .story-inner{padding-left:22px}
+  .story-pullquote{font-size:clamp(20px,6.6vw,28px)}
+
+  /* team page */
+  .tm-portrait-col{flex-direction:column;align-items:flex-start}
+  .tm-avatar{width:112px;height:112px;font-size:38px}
+  .tm-stat-card{width:100%;text-align:left;padding:16px 18px}
+  .tm-name{font-size:clamp(26px,8vw,34px)}
+  .tm-origin-h{font-size:clamp(19px,5.8vw,26px)}
+  .tm-quote{font-size:clamp(17px,5.2vw,22px)}
+  .tm-group-pill{font-size:10px;letter-spacing:.05em;padding:7px 13px;align-items:flex-start;line-height:1.5;border-radius:14px}
+  .tm-sspl-brief{padding:20px 18px}
+  .tm-sspl-head{flex-direction:column;gap:4px}
+
+  /* long addresses/emails wrap rather than getting ellipsis-clipped */
+  .contact-card a.val,.contact-card .val{white-space:normal;overflow-wrap:anywhere;font-size:16px}
+}
+
+/* ---------- Small phone: 400px and below ---------- */
+@media(max-width:400px){
+  .wrap{padding:0 15px}
+  #hero h1{font-size:clamp(30px,10vw,38px)}
+  body[data-theme="space"] #hero h1{font-size:clamp(32px,10.4vw,40px)}
+  .page-hero h1{font-size:clamp(27px,8.4vw,34px)}
+  .sec-head h2{font-size:clamp(24px,7.4vw,30px)}
+  .cta-box{padding:44px 18px}
+  .card,.frontier-card,.pub-card,.contact-card{padding:22px 18px}
+  .inquiry-form,.innovate-form,.ct-simple-form{padding:22px 17px}
+  .station-orbit{min-height:330px}
+  .orbit-node{--orbit-r:80px}
+  .orbit-node--outer{--orbit-r:124px}
+  .orbit-ring-two{width:164px;height:164px}
+  .orbit-ring-three{width:252px;height:252px}
+  .tm-sspl-badge{font-size:9px;padding:4px 8px}
+}
+
+/* ---------- Touch devices ---------- */
+@media(hover:none){
+  /* iOS Safari zooms the page on focus when an input is under 16px */
+  .field input,.field select,.field textarea{font-size:16px}
+  .card:hover,.frontier-card:hover,.pub-card:hover,.contact-card:hover,
+  .agent-card:hover,.step:hover,.pharma-cell:hover,.tm-stat-card:hover{transform:none}
+  .tl-card:hover{transform:none}
+  .btn:hover{transform:none}
+  .hm-points div:hover{transform:none}
 }
 
 /* ============ INNOVATE FORM ============ */
