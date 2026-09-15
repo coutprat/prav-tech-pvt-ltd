@@ -117,7 +117,7 @@ export default function ContactPage() {
               <div className="form-row">
                 <div className="field">
                   <label htmlFor="ct-phone">Contact Number <span className="opt">optional</span></label>
-                  <input id="ct-phone" name="Phone" type="tel" autoComplete="tel" placeholder="+91 98765 43210" />
+                  <input id="ct-phone" name="Phone" type="tel" autoComplete="tel" placeholder="+91 XXXXXXXXXX" />
                 </div>
                 <div className="field">
                   <label htmlFor="ct-subject">Subject</label>
