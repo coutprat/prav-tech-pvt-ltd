@@ -658,9 +658,17 @@ pageFade.innerHTML = '<div class="warp-streaks"></div><div class="warp-core"></d
 document.body.appendChild(pageFade);
 const warpLabel = pageFade.querySelector('.warp-label');
 document.body.classList.add('page-enter');
-const clearPageEnter = () => requestAnimationFrame(() => document.body.classList.remove('page-enter'));
-if (document.readyState === 'complete') clearPageEnter();
-else addEventListener('load', clearPageEnter);
+/* Visibility must never depend on 'load' or on requestAnimationFrame: a stalled request
+   or a backgrounded tab would leave the whole page stuck at opacity 0. rAF is used only
+   so the fade-in gets one painted frame; the timeout is an unconditional backstop that
+   clears the class directly, and pageshow covers bfcache restores after the warp
+   transition below. */
+const clearPageEnter = () => document.body.classList.remove('page-enter');
+const fadeInSoon = () => requestAnimationFrame(clearPageEnter);
+if (document.readyState === 'loading') addEventListener('DOMContentLoaded', fadeInSoon);
+else fadeInSoon();
+setTimeout(clearPageEnter, 600);
+addEventListener('pageshow', clearPageEnter);
 document.querySelectorAll('a[href]').forEach((a) => {
   const href = a.getAttribute('href') || '';
   if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') ||

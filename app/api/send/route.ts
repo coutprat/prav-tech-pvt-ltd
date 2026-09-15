@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const TO = "inquiry@praversetech.com";
 
 function shell(content: string, badge: string, badgeColor: string) {
@@ -120,6 +119,17 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json({ error: "Unknown form type" }, { status: 400 });
     }
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("[send] RESEND_API_KEY is not set - message was NOT delivered.");
+      return NextResponse.json(
+        { error: `Our contact form is temporarily unavailable. Please email ${TO} directly.` },
+        { status: 503 }
+      );
+    }
+
+    const resend = new Resend(apiKey);
 
     const { error } = await resend.emails.send({
       from: "Praverse Tech <noreply@praversetech.com>",
