@@ -1310,3 +1310,41 @@ body[data-theme="space"] .ts-pill:not(:checked){
   .ts-pill{transition:none}
   .tto-panel,.tto-seam,.tto-word,.tto-sub{transition:none}
 }
+
+/* ============ CPHI MILAN 2026 ============
+   Time-boxed content for /cphi. Remove this block, app/cphi/, and the
+   pharma-page link together after 8 October 2026. */
+.cphi-facts{display:flex;flex-wrap:wrap;gap:9px 24px;margin-top:28px;font-family:var(--font-m);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mute)}
+.cphi-facts b{color:var(--ink-soft);font-weight:600}
+.cphi-facts a{color:var(--blue);text-decoration:none}
+.cphi-facts a:hover{text-decoration:underline}
+
+.cphi-fit{margin-top:36px;border-top:1px solid var(--nav-brd)}
+.cphi-fit-row{display:grid;grid-template-columns:120px 1fr;gap:10px 30px;padding:26px 0;border-bottom:1px solid var(--nav-brd);align-items:start}
+.cphi-tag{font-family:var(--font-m);font-size:9.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:5px 9px;border-radius:4px;display:inline-block;white-space:nowrap}
+.cphi-tag.is-core{color:var(--blue);background:rgba(59,130,246,.13)}
+.cphi-tag.is-partial{color:var(--violet);background:rgba(139,92,246,.12)}
+.cphi-tag.is-adjacent{color:var(--ink-mute);background:rgba(107,117,145,.12)}
+.cphi-tag.is-none{color:var(--ink-mute);background:transparent;border:1px dashed var(--nav-brd)}
+.cphi-fit-row h3{font-family:var(--font-d);font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0 0 9px}
+.cphi-src{font-family:var(--font-m);font-size:11.5px;line-height:1.65;color:var(--ink-mute);margin:0 0 11px}
+.cphi-pos{font-size:14.5px;line-height:1.68;color:var(--ink-soft);margin:0;max-width:66ch}
+.cphi-fit-row.is-quiet h3,.cphi-fit-row.is-quiet .cphi-pos{color:var(--ink-mute)}
+
+.cphi-reg{margin-top:30px;display:grid;gap:14px}
+.cphi-reg-item{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:baseline;padding-bottom:14px;border-bottom:1px solid var(--nav-brd)}
+.cphi-reg-item:last-child{border-bottom:0;padding-bottom:0}
+.cphi-reg-item .ref{font-family:var(--font-m);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
+.cphi-reg-item p{font-size:14.5px;line-height:1.68;color:var(--ink-soft);margin:0;max-width:64ch}
+
+.cphi-note{margin-top:34px;border:1px solid var(--nav-brd);border-radius:var(--r-md);padding:24px 28px;background:var(--bg-soft)}
+.cphi-note .cphi-note-label{font-family:var(--font-m);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mute);display:block;margin-bottom:10px}
+.cphi-note p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:0;max-width:70ch}
+.cphi-note p + p{margin-top:11px}
+
+@media(max-width:760px){
+  .cphi-fit-row{grid-template-columns:1fr;gap:12px}
+  .cphi-reg-item{grid-template-columns:1fr;gap:7px}
+}
+body[data-theme="space"] .cphi-note{background:rgba(255,255,255,.03)}
+body[data-theme="space"] .cphi-tag.is-adjacent{background:rgba(255,255,255,.07)}

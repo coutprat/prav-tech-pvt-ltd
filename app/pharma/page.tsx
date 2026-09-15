@@ -9,6 +9,7 @@ const html = `<header class="page-hero">
   <div class="eyebrow rv"><span class="pulse"></span>Pharma &amp; Regulatory Intelligence</div>
   <h1 class="rv">Quality, with a<br><span class="grad-text">second brain.</span></h1>
   <p class="sub rv">AI-assisted regulatory intelligence designed to support expert quality judgment — not replace it. Built for inspection readiness, documentation intelligence, and high-stakes quality systems.</p>
+  <p class="cphi-facts rv"><a href="/cphi"><b>Meet us at CPHI Milan, 6&ndash;8 October 2026 &rarr;</b></a></p>
 </header>
 
 <section class="page-story sec-pad-sm">
