@@ -12,6 +12,15 @@ import { businessLines, company, howWeWork, people, pillars } from "@/content/co
 export default function HomePage() {
   return (
     <>
+      {/* The hero's first frame is the LCP element — preload it so it is not
+          queued behind the JS bundles. */}
+      <link
+        rel="preload"
+        as="image"
+        href={`${homeFrames.desktop.dir}/frame-0001.webp`}
+        fetchPriority="high"
+      />
+
       {/* ---------------------------------------------------------- hero */}
       <ScrollSequence
         desktop={homeFrames.desktop}
@@ -136,7 +145,7 @@ export default function HomePage() {
               <li key={p.slug}>
                 <Link href="/company">
                   <Image
-                    src={`/team/${p.slug}-mono.webp`}
+                    src={`/team/${p.slug}-plate.webp`}
                     alt={`Portrait of ${p.name}`}
                     width={800}
                     height={1000}

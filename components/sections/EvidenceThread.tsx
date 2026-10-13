@@ -2,7 +2,10 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
+
+gsap.registerPlugin(DrawSVGPlugin);
 
 /**
  * Pharma signature — "the evidence thread".
@@ -39,49 +42,62 @@ export function EvidenceThread() {
       if (prefersReducedMotion()) {
         // Present the finished state: threads drawn, CAPA written, stamp on.
         gsap.set(q(".et-thread"), { drawSVG: "100%" });
-        gsap.set([q(".et-capa-line"), q(".et-stamp"), q(".et-source")], {
-          opacity: 1,
-          y: 0
-        });
+        gsap.set([q(".et-capa-line"), q(".et-stamp")], { opacity: 1, y: 0 });
+        gsap.set(q(".et-source"), { borderColor: "var(--teal-ink)" });
         gsap.set(q(".et-mark"), { backgroundSize: "100% 100%" });
         return;
       }
 
       gsap.set(q(".et-thread"), { drawSVG: "0%" });
       gsap.set([q(".et-capa-line"), q(".et-stamp")], { opacity: 0, y: 12 });
-      gsap.set(q(".et-source"), { opacity: 0.35 });
+      gsap.set(q(".et-source"), { borderColor: "var(--line)" });
       gsap.set(q(".et-mark"), { backgroundSize: "0% 100%" });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=320%",
-          pin: true,
-          scrub: 0.6,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
+      // Deferred past first paint: a pinned ScrollTrigger forces a full-page
+      // layout, and useGSAP runs before the browser paints.
+      let tl: gsap.core.Timeline | null = null;
+      const cancel = afterPaint(() => {
+        tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: "+=320%",
+            pin: true,
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true
+          }
+        });
+
+        tl.to(q(".et-mark"), {
+          backgroundSize: "100% 100%",
+          duration: 1,
+          stagger: 0.4,
+          ease: "power1.inOut"
+        })
+          .to(
+            q(".et-thread"),
+            { drawSVG: "100%", duration: 1.4, stagger: 0.35, ease: "power2.inOut" },
+            "-=0.6"
+          )
+          .to(
+            q(".et-source"),
+            { borderColor: "var(--teal-ink)", duration: 0.5, stagger: 0.35 },
+            "<0.3"
+          )
+          .to(
+            q(".et-capa-line"),
+            { opacity: 1, y: 0, duration: 0.6, stagger: 0.4, ease: "power2.out" },
+            "+=0.2"
+          )
+          .to(q(".et-stamp"), { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "+=0.3");
       });
 
-      tl.to(q(".et-mark"), {
-        backgroundSize: "100% 100%",
-        duration: 1,
-        stagger: 0.4,
-        ease: "power1.inOut"
-      })
-        .to(
-          q(".et-thread"),
-          { drawSVG: "100%", duration: 1.4, stagger: 0.35, ease: "power2.inOut" },
-          "-=0.6"
-        )
-        .to(q(".et-source"), { opacity: 1, duration: 0.5, stagger: 0.35 }, "<0.3")
-        .to(
-          q(".et-capa-line"),
-          { opacity: 1, y: 0, duration: 0.6, stagger: 0.4, ease: "power2.out" },
-          "+=0.2"
-        )
-        .to(q(".et-stamp"), { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "+=0.3");
+      return () => {
+        cancel();
+        tl?.scrollTrigger?.kill();
+        tl?.kill();
+      };
     },
     { scope: root }
   );

@@ -642,16 +642,14 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.45s ease;
+  /* one image, desaturated by filter — a second colour copy at opacity 0
+     doubled this page's image bytes for a hover most visitors never trigger */
+  filter: grayscale(1);
+  transition: filter 0.45s ease;
 }
-.person-portrait .colour {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-}
-.person:hover .person-portrait .colour,
-.person:focus-within .person-portrait .colour {
-  opacity: 1;
+.person:hover .person-portrait img,
+.person:focus-within .person-portrait img {
+  filter: grayscale(0);
 }
 .person-name {
   font-size: 21px;
@@ -1426,11 +1424,12 @@ textarea {
   border-radius: var(--r-md);
   border: 1px solid var(--line);
   background: var(--paper-2);
+  filter: grayscale(1);
   transition: filter 0.4s ease;
 }
 .leader-strip a:hover img,
 .leader-strip a:focus-visible img {
-  filter: brightness(1.04);
+  filter: grayscale(0);
 }
 
 /* numbered steps */
@@ -2338,4 +2337,22 @@ textarea {
   letter-spacing: 0.05em;
   color: var(--ink-2);
   margin-top: 3px;
+}
+
+/* First frame painted straight from the HTML; the canvas covers it once it
+   has drawn its first frame. */
+.sequence-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+.sequence-poster[data-hidden="true"] {
+  opacity: 0;
+}
+.sequence-canvas {
+  position: relative;
+  z-index: 1;
 }

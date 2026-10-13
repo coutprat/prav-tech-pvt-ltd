@@ -27,6 +27,15 @@ export const metadata: Metadata = {
 export default function PhotonicsPage() {
   return (
     <>
+      {/* The hero's first frame is the LCP element — preload it so it is not
+          queued behind the JS bundles. */}
+      <link
+        rel="preload"
+        as="image"
+        href={`${photonicsFrames.desktop.dir}/frame-0001.webp`}
+        fetchPriority="high"
+      />
+
       <ScrollSequence
         desktop={photonicsFrames.desktop}
         mobile={photonicsFrames.mobile}

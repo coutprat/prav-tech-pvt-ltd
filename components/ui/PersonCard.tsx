@@ -11,7 +11,14 @@ export type Person = {
 
 /**
  * Portrait is grayscale at rest and resolves to colour on hover or keyboard
- * focus. Both files are 800×1000 on the same warm-gray backdrop.
+ * focus — done with a CSS filter on one image rather than stacking a second
+ * colour copy at opacity 0. Two full-size images per person doubled the bytes
+ * on this page for a hover state most visitors never trigger.
+ *
+ * Uses the `-plate` variants: the three source photos have different
+ * backdrops, so the transparent cutouts are composited onto one warm-gray
+ * plate by scripts/media/portraits.py. Side by side they then read as one
+ * set rather than three unrelated photos.
  *
  * Ashwani's source photo is low resolution. A reshoot can drop in over the
  * same filenames with no code change.
@@ -23,21 +30,12 @@ export function PersonCard({ person, priority }: { person: Person; priority?: bo
     <article className="person">
       <div className="person-portrait">
         <Image
-          src={`/team/${slug}-mono.webp`}
+          src={`/team/${slug}-plate.webp`}
           alt={`Portrait of ${name}`}
           width={800}
           height={1000}
           sizes="(min-width: 900px) 33vw, 100vw"
           priority={priority}
-        />
-        <Image
-          className="colour"
-          src={`/team/${slug}.webp`}
-          alt=""
-          aria-hidden="true"
-          width={800}
-          height={1000}
-          sizes="(min-width: 900px) 33vw, 100vw"
         />
       </div>
 

@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
+import { useReducedMotion } from "@/lib/useMediaQuery";
 
 /**
  * Must stay plain data: this crosses the server → client boundary, and a
@@ -69,8 +70,14 @@ export function ScrollSequence({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const paintedRef = useRef(false);
   const [active, setActive] = useState(0);
-  const [reduced, setReduced] = useState(false);
+  const [painted, setPainted] = useState(false);
+  const reduced = useReducedMotion();
+
+  // Rendered into the HTML so it is not discovered late. Mobile gets its own
+  // smaller frame via the CSS below; this is the desktop one.
+  const firstFrame = `${desktop.dir}/${desktop.prefix ?? "frame-"}${String(1).padStart(desktop.pad ?? 4, "0")}.${desktop.ext ?? "webp"}`;
 
   useGSAP(
     () => {
@@ -128,6 +135,10 @@ export function ScrollSequence({
         ctx.fillStyle = styles.getPropertyValue("--paper").trim() || "#eeedea";
         ctx.fillRect(0, 0, cw, ch);
         ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+        if (!paintedRef.current) {
+          paintedRef.current = true;
+          setPainted(true);
+        }
       };
 
       /* ---------------------------------------------------------- loading */
@@ -161,57 +172,61 @@ export function ScrollSequence({
         }
       };
 
-      void loadAll();
-      window.addEventListener("resize", resize);
+      if (!prefersReducedMotion()) {
+        void loadAll();
+        window.addEventListener("resize", resize);
+      }
 
       /* ------------------------------------------------- reduced motion */
 
+      // Reduced motion: the poster already shows the finished state in the
+      // markup, so there is nothing to load, draw, pin or scrub.
       if (prefersReducedMotion()) {
-        setReduced(true);
-        // Show the completed end state rather than an empty pinned stage.
-        void load(set.count - 1).then(() => {
-          current = set.count - 1;
-          resize();
-        });
-        return () => {
-          disposed = true;
-          window.removeEventListener("resize", resize);
-        };
+        disposed = true;
+        window.removeEventListener("resize", resize);
+        return;
       }
 
       /* ------------------------------------------------------- scrubbing */
 
       const state = { frame: 0 };
+      let tween: gsap.core.Tween | null = null;
 
-      const tween = gsap.to(state, {
-        frame: set.count - 1,
-        ease: "none",
-        snap: "frame",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: `+=${scrollLength}%`,
-          pin: true,
-          scrub: 0.5,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const p = self.progress;
-            const idx = chapters.findIndex((c) => p >= c.from && p < c.to);
-            setActive(idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx);
+      // Deferred past first paint: creating a pinned ScrollTrigger forces a
+      // full-page layout, and useGSAP runs before the browser paints.
+      const cancel = afterPaint(() => {
+        if (disposed) return;
+        tween = gsap.to(state, {
+          frame: set.count - 1,
+          ease: "none",
+          snap: "frame",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: `+=${scrollLength}%`,
+            pin: true,
+            scrub: 0.5,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const p = self.progress;
+              const idx = chapters.findIndex((c) => p >= c.from && p < c.to);
+              setActive(idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx);
+            }
+          },
+          onUpdate: () => {
+            current = Math.round(state.frame);
+            draw(current);
           }
-        },
-        onUpdate: () => {
-          current = Math.round(state.frame);
-          draw(current);
-        }
+        });
       });
 
       return () => {
         disposed = true;
+        cancel();
         window.removeEventListener("resize", resize);
-        tween.scrollTrigger?.kill();
-        tween.kill();
+        tween?.scrollTrigger?.kill();
+        tween?.kill();
       };
     },
     { scope: rootRef }
@@ -226,11 +241,22 @@ export function ScrollSequence({
           role="img"
           aria-label={alt}
         />
-        {/* Poster covers the canvas until the first frame decodes. */}
-        <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="sequence-poster" src={poster} alt={alt} />
-        </noscript>
+        {/*
+          The first frame, in the markup, so the browser can discover and
+          paint it immediately instead of waiting for JS to construct an
+          Image(). The canvas covers it as soon as it has drawn.
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="sequence-poster"
+          src={reduced ? poster : firstFrame}
+          alt={alt}
+          width={desktop.width}
+          height={desktop.height}
+          fetchPriority="high"
+          decoding="async"
+          data-hidden={painted && !reduced}
+        />
 
         {chapters.length > 0 && !reduced ? (
           <div className="chapters">

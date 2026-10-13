@@ -2,7 +2,12 @@
 
 import { useRef, type ElementType, type ReactNode } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, SplitText, prefersReducedMotion } from "@/lib/gsap";
+import { SplitText } from "gsap/SplitText";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
+
+// Registered here rather than in lib/gsap so pages that never render a
+// Headline do not download the plugin.
+gsap.registerPlugin(SplitText);
 
 /**
  * Line-by-line headline reveal.

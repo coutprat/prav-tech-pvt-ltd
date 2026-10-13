@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 
 /**
  * Enterprise AI signature — "the checkpoint".
@@ -40,44 +40,55 @@ export function Checkpoint() {
       gsap.set([q(".cp-check"), q(".cp-ledger-line")], { opacity: 0, y: 8 });
       gsap.set(q(".cp-gate-bar"), { scaleY: 1, opacity: 1 });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=300%",
-          pin: true,
-          scrub: 0.6,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
+      // Deferred past first paint: a pinned ScrollTrigger forces a full-page
+      // layout, and useGSAP runs before the browser paints.
+      let tl: gsap.core.Timeline | null = null;
+      const cancel = afterPaint(() => {
+        tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: "+=300%",
+            pin: true,
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true
+          }
+        });
+
+        // stream in, and stop at the gate
+        tl.to(q(".cp-doc"), {
+          opacity: 1,
+          duration: 0.3,
+          stagger: 0.06
+        })
+          .to(
+            q(".cp-doc"),
+            { x: 150, duration: 1.2, stagger: 0.06, ease: "power2.inOut" },
+            "<"
+          )
+          .to(q(".cp-node"), { scale: 1.06, duration: 0.4, yoyo: true, repeat: 1 }, "-=0.5")
+          // the pause is the point: nothing passes until a person approves
+          .to(q(".cp-check"), { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.8)" }, "+=0.3")
+          .to(q(".cp-gate-bar"), {
+            scaleY: 0.12,
+            opacity: 0.4,
+            duration: 0.6,
+            ease: "power2.inOut"
+          })
+          .to(q(".cp-doc"), { x: 300, duration: 0.9, stagger: 0.05, ease: "power2.in" }, "<0.2")
+          .to(
+            q(".cp-ledger-line"),
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.35, ease: "power2.out" },
+            "-=0.4"
+          );
       });
 
-      // stream in, and stop at the gate
-      tl.to(q(".cp-doc"), {
-        opacity: 1,
-        duration: 0.3,
-        stagger: 0.06
-      })
-        .to(
-          q(".cp-doc"),
-          { x: 150, duration: 1.2, stagger: 0.06, ease: "power2.inOut" },
-          "<"
-        )
-        .to(q(".cp-node"), { scale: 1.06, duration: 0.4, yoyo: true, repeat: 1 }, "-=0.5")
-        // the pause is the point: nothing passes until a person approves
-        .to(q(".cp-check"), { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.8)" }, "+=0.3")
-        .to(q(".cp-gate-bar"), {
-          scaleY: 0.12,
-          opacity: 0.4,
-          duration: 0.6,
-          ease: "power2.inOut"
-        })
-        .to(q(".cp-doc"), { x: 300, duration: 0.9, stagger: 0.05, ease: "power2.in" }, "<0.2")
-        .to(
-          q(".cp-ledger-line"),
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.35, ease: "power2.out" },
-          "-=0.4"
-        );
+      return () => {
+        cancel();
+        tl?.scrollTrigger?.kill();
+        tl?.kill();
+      };
     },
     { scope: root }
   );

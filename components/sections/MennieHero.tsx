@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { mennie } from "@/content/company";
 
 /**
@@ -30,30 +30,41 @@ export function MennieHero() {
         return;
       }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=340%",
-          pin: true,
-          scrub: 0.6,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const step = Math.min(
-              mennie.hudSteps.length - 1,
-              Math.floor(self.progress * mennie.hudSteps.length)
-            );
-            setActive(step);
+      // Deferred past first paint: a pinned ScrollTrigger forces a full-page
+      // layout, and useGSAP runs before the browser paints.
+      let tl: gsap.core.Timeline | null = null;
+      const cancel = afterPaint(() => {
+        tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: "+=340%",
+            pin: true,
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const step = Math.min(
+                mennie.hudSteps.length - 1,
+                Math.floor(self.progress * mennie.hudSteps.length)
+              );
+              setActive(step);
+            }
           }
-        }
+        });
+
+        tl.fromTo(
+          root.current?.querySelector(".mennie-figure") ?? null,
+          { scale: 1 },
+          { scale: 1.12, ease: "none" }
+        );
       });
 
-      tl.fromTo(
-        root.current?.querySelector(".mennie-figure") ?? null,
-        { scale: 1 },
-        { scale: 1.12, ease: "none" }
-      );
+      return () => {
+        cancel();
+        tl?.scrollTrigger?.kill();
+        tl?.kill();
+      };
     },
     { scope: root }
   );
@@ -64,7 +75,7 @@ export function MennieHero() {
         <div className="mennie-figure-wrap">
           <Image
             className="mennie-figure"
-            src="/media/mennie/still.png"
+            src="/media/mennie/still.webp"
             alt="Concept visualisation of the MENNIE assistive robot, seen from behind, looking out over a bright clinical interior."
             width={1086}
             height={1448}
