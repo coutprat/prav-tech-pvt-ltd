@@ -4799,3 +4799,154 @@ body::before {
   line-height: 1.55;
   color: var(--ink-2);
 }
+
+/* ==========================================================================
+   SOVEREIGN AI DATA CENTRES
+   ========================================================================== */
+.sov-tests {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+@media (min-width: 860px) {
+  .sov-tests {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.sov-tests li {
+  display: flex;
+  gap: 16px;
+  padding: 24px 22px;
+  background: var(--paper-3);
+}
+.sov-n {
+  flex: none;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--acc-pho-ink);
+  padding-top: 3px;
+}
+.sov-tests h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.sov-tests p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ---------------------------------------------------------------- stories */
+.sov-stories {
+  list-style: none;
+  margin: 44px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1000px) {
+  .sov-stories {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.sov-story {
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--acc-pho);
+  border-radius: 12px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.sov-kind {
+  margin: 0 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.sov-story h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.sov-setting {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.sov-qa {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+.sov-qa dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--acc-pho-ink);
+  margin-top: 14px;
+}
+.sov-qa dt:first-of-type {
+  margin-top: 0;
+}
+.sov-qa dd {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ----------------------------------------------------------------- phases */
+.sov-phases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sov-phases li {
+  background: var(--paper-3);
+  padding: 20px 20px;
+}
+.sov-phases li p.mono {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--acc-pho-ink);
+}
+.sov-phases h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.sov-phase-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
