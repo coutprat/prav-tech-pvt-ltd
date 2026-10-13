@@ -23,23 +23,46 @@ export function ModuleSection() {
   const [explode, setExplode] = useState(0);
   const [mounted, setMounted] = useState(false);
 
-  // Mount the 3D only once the section is close to the viewport, so the
-  // three.js chunk is fetched while the visitor is still reading above it.
+  /**
+   * Arm the observer only after load, and only once the visitor has scrolled.
+   *
+   * Observing immediately pulled the 267 KB three.js chunk into the initial
+   * load window, and compiling it there delayed the hero's own first paint by
+   * ~3.5s of render delay on throttled mobile. This section is several
+   * screens down: nobody reaches it without scrolling first, so nothing is
+   * lost by waiting, and the chunk still arrives well before it is needed.
+   */
   useEffect(() => {
     if (highPower !== true) return;
     const el = root.current;
     if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setMounted(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "400px 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+
+    let io: IntersectionObserver | null = null;
+
+    const arm = () => {
+      if (io) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setMounted(true);
+            io?.disconnect();
+          }
+        },
+        { rootMargin: "600px 0px" }
+      );
+      io.observe(el);
+    };
+
+    window.addEventListener("scroll", arm, { once: true, passive: true });
+    window.addEventListener("wheel", arm, { once: true, passive: true });
+    window.addEventListener("touchstart", arm, { once: true, passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", arm);
+      window.removeEventListener("wheel", arm);
+      window.removeEventListener("touchstart", arm);
+      io?.disconnect();
+    };
   }, [highPower]);
 
   useGSAP(

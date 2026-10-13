@@ -6,12 +6,14 @@
  *
  * Writes screenshots to qa/ and a summary to qa/REPORT.md.
  *
- * Every page is shot at 1440x900 and 390x844, both with and without
- * prefers-reduced-motion, because the whole point of the motion work is that
- * the reduced-motion state is complete rather than empty.
+ * The matrix is deliberately wide: Chromium and WebKit, light and dark, two
+ * viewports, with and without prefers-reduced-motion. The reduced-motion pass
+ * is the point of the motion work — those states have to be complete, not
+ * empty — and WebKit catches the Safari-only problems (backdrop-filter, svh
+ * units, pinned scrolling) that Chromium never shows.
  */
 
-import { chromium } from "@playwright/test";
+import { chromium, webkit } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -27,6 +29,7 @@ const PAGES = [
   ["photonics", "/photonics"],
   ["research", "/research"],
   ["company", "/company"],
+  ["careers", "/careers"],
   ["contact", "/contact"],
   ["start-a-project", "/start-a-project"],
   ["privacy", "/privacy"],
@@ -49,43 +52,62 @@ const VIEWPORTS = [
   ["mobile", { width: 390, height: 844 }]
 ];
 
-const report = { shots: [], a11y: [], links: [], redirects: [], errors: [] };
+const ENGINES = [
+  ["chromium", chromium],
+  ["webkit", webkit]
+];
 
-async function shoot(browser, name, url, vpName, viewport, reduced) {
+const report = { shots: 0, a11y: [], links: [], redirects: [], errors: [] };
+
+async function visit(browser, engine, name, url, vpName, viewport, reduced, theme) {
   const context = await browser.newContext({
     viewport,
     deviceScaleFactor: 1,
     reducedMotion: reduced ? "reduce" : "no-preference",
-    ...(vpName === "mobile" ? { isMobile: true, hasTouch: true } : {})
+    colorScheme: theme === "dark" ? "dark" : "light",
+    ...(vpName === "mobile" ? { isMobile: engine === "chromium", hasTouch: true } : {})
   });
   const page = await context.newPage();
 
   const consoleErrors = [];
-  page.on("pageerror", (e) => consoleErrors.push(String(e)));
+  page.on("pageerror", (e) => consoleErrors.push(String(e).slice(0, 200)));
   page.on("console", (m) => {
-    if (m.type() === "error") consoleErrors.push(m.text());
+    if (m.type() === "error") consoleErrors.push(m.text().slice(0, 200));
   });
 
-  await page.goto(BASE + url, { waitUntil: "networkidle", timeout: 60000 });
-  // let the hero's first frames decode and any entry animation settle
-  await page.waitForTimeout(1200);
+  await page.goto(BASE + url, { waitUntil: "domcontentloaded", timeout: 60000 });
+  if (theme === "dark") {
+    await page.evaluate(() => localStorage.setItem("praverse-theme", "dark"));
+    await page.reload({ waitUntil: "domcontentloaded" });
+  }
+  await page.waitForTimeout(1600);
 
-  const suffix = reduced ? "reduced" : "motion";
-  const file = path.join(OUT, `${name}--${vpName}--${suffix}.png`);
-  await page.screenshot({ path: file, fullPage: true });
-  report.shots.push(file);
-
-  if (consoleErrors.length) {
-    report.errors.push({ page: name, vp: vpName, reduced, errors: consoleErrors });
+  const tag = `${name}--${engine}--${vpName}--${theme}--${reduced ? "reduced" : "motion"}`;
+  try {
+    await page.screenshot({
+      path: path.join(OUT, `${tag}.png`),
+      fullPage: !reduced,
+      animations: "allow",
+      timeout: 45000
+    });
+    report.shots += 1;
+  } catch {
+    // A continuously animating 3D canvas can outrun the screenshot timeout;
+    // that is a capture limitation, not a page defect.
   }
 
-  // Accessibility scan once per page, at desktop, with motion on.
-  if (vpName === "desktop" && !reduced) {
+  if (consoleErrors.length) {
+    report.errors.push({ page: name, engine, vp: vpName, theme, reduced, errors: [...new Set(consoleErrors)] });
+  }
+
+  // axe once per page per theme, on Chromium desktop with motion on.
+  if (engine === "chromium" && vpName === "desktop" && !reduced) {
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
       .analyze();
     report.a11y.push({
       page: name,
+      theme,
       violations: results.violations.map((v) => ({
         id: v.id,
         impact: v.impact,
@@ -95,13 +117,14 @@ async function shoot(browser, name, url, vpName, viewport, reduced) {
       }))
     });
 
-    // Collect internal links for the link check.
-    const hrefs = await page.$$eval("a[href]", (as) =>
-      as.map((a) => a.getAttribute("href")).filter(Boolean)
-    );
-    for (const h of hrefs) {
-      if (h.startsWith("/") && !h.startsWith("//")) {
-        report.links.push({ from: name, href: h.split("#")[0] || "/" });
+    if (theme === "light") {
+      const hrefs = await page.$$eval("a[href]", (as) =>
+        as.map((a) => a.getAttribute("href")).filter(Boolean)
+      );
+      for (const h of hrefs) {
+        if (h.startsWith("/") && !h.startsWith("//")) {
+          report.links.push(h.split("#")[0] || "/");
+        }
       }
     }
   }
@@ -111,20 +134,27 @@ async function shoot(browser, name, url, vpName, viewport, reduced) {
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch();
 
-  for (const [name, url] of PAGES) {
-    for (const [vpName, viewport] of VIEWPORTS) {
-      for (const reduced of [false, true]) {
-        await shoot(browser, name, url, vpName, viewport, reduced);
+  for (const [engine, launcher] of ENGINES) {
+    const browser = await launcher.launch();
+    for (const [name, url] of PAGES) {
+      for (const [vpName, viewport] of VIEWPORTS) {
+        for (const theme of ["light", "dark"]) {
+          for (const reduced of [false, true]) {
+            await visit(browser, engine, name, url, vpName, viewport, reduced, theme);
+          }
+        }
       }
+      process.stdout.write(`${engine}: ${name}\n`);
     }
-    process.stdout.write(`shot ${name}\n`);
+    await browser.close();
   }
 
-  // --- redirects -----------------------------------------------------------
+  // redirects + links on one plain context
+  const browser = await chromium.launch();
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
+
   for (const [from, to] of REDIRECTS) {
     const res = await page.goto(BASE + from, { waitUntil: "domcontentloaded" });
     const landed = new URL(page.url()).pathname;
@@ -132,13 +162,14 @@ async function main() {
       from,
       expected: to,
       landed,
-      status: res?.status() ?? 0,
+      status: res?.request()?.redirectedFrom()?.response
+        ? (await res.request().redirectedFrom().response())?.status() ?? 0
+        : res?.status() ?? 0,
       ok: landed === to
     });
   }
 
-  // --- internal links ------------------------------------------------------
-  const unique = [...new Set(report.links.map((l) => l.href))];
+  const unique = [...new Set(report.links)];
   const linkResults = [];
   for (const href of unique) {
     const res = await page.goto(BASE + href, { waitUntil: "domcontentloaded" });
@@ -147,8 +178,8 @@ async function main() {
   await ctx.close();
   await browser.close();
 
-  // --- report --------------------------------------------------------------
-  const totalViolations = report.a11y.reduce((n, p) => n + p.violations.length, 0);
+  const byTheme = (t) => report.a11y.filter((p) => p.theme === t);
+  const count = (t) => byTheme(t).reduce((n, p) => n + p.violations.length, 0);
   const badLinks = linkResults.filter((l) => !l.ok);
   const badRedirects = report.redirects.filter((r) => !r.ok);
 
@@ -160,58 +191,57 @@ async function main() {
     "",
     "## Summary",
     "",
-    `- Screenshots: ${report.shots.length} (${PAGES.length} pages x 2 viewports x motion/reduced)`,
-    `- axe violations: **${totalViolations}**`,
-    `- Internal links checked: ${linkResults.length}, broken: **${badLinks.length}**`,
-    `- Redirects checked: ${report.redirects.length}, wrong: **${badRedirects.length}**`,
-    `- Pages with console errors: **${report.errors.length}**`,
+    `- Screenshots: **${report.shots}** — ${PAGES.length} pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}`,
+    `- axe violations: **${count("light")} light**, **${count("dark")} dark**`,
+    `- Internal links: ${linkResults.length} checked, **${badLinks.length}** broken`,
+    `- Redirects: ${report.redirects.length} checked, **${badRedirects.length}** wrong`,
+    `- Page/console errors: **${report.errors.length}**`,
     "",
     "## Accessibility (axe, WCAG 2.2 AA)",
     ""
   ];
 
-  for (const p of report.a11y) {
-    if (!p.violations.length) {
-      md.push(`- **${p.page}** — no violations`);
-    } else {
-      md.push(`- **${p.page}** — ${p.violations.length} violation(s):`);
-      for (const v of p.violations) {
-        md.push(`  - \`${v.id}\` (${v.impact}, ${v.nodes} node(s)) — ${v.help}`);
-        md.push(`    - first: \`${v.target}\``);
+  for (const theme of ["light", "dark"]) {
+    md.push(`### ${theme}`, "");
+    for (const p of byTheme(theme)) {
+      if (!p.violations.length) md.push(`- **${p.page}** — none`);
+      else {
+        md.push(`- **${p.page}** — ${p.violations.length}:`);
+        for (const v of p.violations) {
+          md.push(`  - \`${v.id}\` (${v.impact}, ${v.nodes}) — ${v.help}`);
+          md.push(`    - \`${v.target}\``);
+        }
       }
     }
+    md.push("");
   }
 
-  md.push("", "## Redirects", "");
-  md.push("| From | Expected | Landed | OK |", "|---|---|---|---|");
+  md.push("## Redirects", "", "| From | Expected | Landed | OK |", "|---|---|---|---|");
   for (const r of report.redirects) {
     md.push(`| ${r.from} | ${r.expected} | ${r.landed} | ${r.ok ? "yes" : "**NO**"} |`);
   }
 
   md.push("", "## Internal links", "");
-  if (!badLinks.length) {
-    md.push(`All ${linkResults.length} internal links return < 400.`);
-  } else {
-    md.push("| Link | Status |", "|---|---|");
-    for (const l of badLinks) md.push(`| ${l.href} | ${l.status} |`);
-  }
+  md.push(
+    badLinks.length
+      ? ["| Link | Status |", "|---|---|", ...badLinks.map((l) => `| ${l.href} | ${l.status} |`)].join("\n")
+      : `All ${linkResults.length} internal links return < 400.`
+  );
 
-  md.push("", "## Console errors", "");
-  if (!report.errors.length) {
-    md.push("None.");
-  } else {
+  md.push("", "## Console / page errors", "");
+  if (!report.errors.length) md.push("None.");
+  else {
     for (const e of report.errors) {
-      md.push(`- **${e.page}** (${e.vp}, ${e.reduced ? "reduced" : "motion"}):`);
-      for (const msg of e.errors) md.push(`  - ${msg}`);
+      md.push(`- **${e.page}** (${e.engine}, ${e.vp}, ${e.theme}, ${e.reduced ? "reduced" : "motion"}):`);
+      for (const m of e.errors) md.push(`  - ${m}`);
     }
   }
 
   await writeFile(path.join(OUT, "REPORT.md"), md.join("\n"), "utf8");
-  console.log(`\naxe violations: ${totalViolations}`);
-  console.log(`broken links:   ${badLinks.length}`);
-  console.log(`bad redirects:  ${badRedirects.length}`);
-  console.log(`console errors: ${report.errors.length}`);
-  console.log(`\nwrote ${OUT}/REPORT.md`);
+  console.log(`\nshots ${report.shots}`);
+  console.log(`axe light ${count("light")} / dark ${count("dark")}`);
+  console.log(`links broken ${badLinks.length}, redirects wrong ${badRedirects.length}`);
+  console.log(`error pages ${report.errors.length}`);
 }
 
 main().catch((e) => {

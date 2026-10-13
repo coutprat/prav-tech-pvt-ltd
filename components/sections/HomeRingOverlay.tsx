@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, type RefObject } from "react";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import {
   SequenceOverlay,
   glowDot,
@@ -38,6 +39,11 @@ export function HomeRingOverlay({
   frameCount: number;
   active: boolean;
 }) {
+  // positions.json is 144-344 KB. Worth it for the effect on a large
+  // screen; not worth it on a phone, where the particles are barely
+  // visible and those bytes compete with the hero frames.
+  const wideEnough = useMediaQuery("(min-width: 900px)");
+
   const draw = useCallback(
     (
       ctx: CanvasRenderingContext2D,
@@ -98,7 +104,7 @@ export function HomeRingOverlay({
       frameRef={frameRef}
       frameCount={frameCount}
       draw={draw}
-      active={active}
+      active={active && wideEnough}
     />
   );
 }

@@ -85,6 +85,43 @@ Works in Higgsfield, Veo, Kling or Runway. Supplying the same still as the end
 frame gives the cleanest loop and makes the crossfade in `make-loop.sh`
 near-invisible.
 
+### Optional cut-away shots
+
+The film cuts to these between chapters **if** the files exist at
+`public/media/mennie/shots/`. Nothing breaks if they do not.
+
+| File | Length |
+|---|---|
+| `01-wide.mp4` | 5–8 s |
+| `02-over-shoulder.mp4` | 5–8 s |
+| `03-spine-closeup.mp4` | 5–8 s |
+
+Same character and look as the still in every shot: matte white ceramic shell,
+brushed-silver joints, shoulder-length dark-brown hair, thin teal (#4BD6C4)
+light seams down the spine, bright modern hospital interior, early-morning
+light. **Her face is never visible.** Calm, realistic motion; no cuts inside a
+shot, no camera shake, no speed ramps, nothing stylised. No text, no logos, no
+other identifiable people in focus.
+
+**01 — wide.** She stands at the glass balustrade on the hospital mezzanine,
+seen from behind and slightly to the right, small in a large bright atrium.
+The camera drifts almost imperceptibly to the left. People move far below, out
+of focus. She stays still except for the faintest shift of weight. 6 s.
+
+**02 — over the shoulder.** Closer, framed from mid-back upward, slightly
+behind her right shoulder, looking past her into the atrium. Her head turns
+very slightly to the left as if noticing someone below, then returns. Her hair
+moves gently in an air-conditioning breeze. The background separates into soft
+bokeh. 7 s.
+
+**03 — spine close-up.** Tight on the upper back and the base of the neck.
+The teal seams pulse once, slowly, travelling upward. A few strands of hair
+lift and settle. Shallow depth of field; the shoulder line stays sharp and the
+room behind dissolves. No camera movement beyond a breath of drift. 5 s.
+
+If the tool supports an end frame, use the opening frame as the end frame so
+each shot loops cleanly.
+
 ---
 
 ## 2. Pre-rendered hero sequences

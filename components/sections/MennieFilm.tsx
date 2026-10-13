@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
@@ -33,13 +33,58 @@ export function MennieFilm() {
   const highPower = useHighPower();
   const [progress, setProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  /**
+   * Prefetch the three.js chunk when the browser is idle, but do not mount it
+   * until the visitor actually scrolls.
+   *
+   * The film is entirely scroll-driven: someone who never scrolls never sees a
+   * frame of it, so mounting it on load spent ~500ms of main-thread time and
+   * 4.8s of LCP on something they would not have looked at. Prefetching keeps
+   * the upgrade instant the moment they do scroll, because the chunk is
+   * already in cache — the poster is a complete hero in the meantime.
+   */
+  useEffect(() => {
+    if (highPower !== true) return;
+
+    let idle = 0;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+      cancelIdleCallback?: (h: number) => void;
+    };
+
+    const prefetch = () => {
+      void import("@/components/three/MennieScene").catch(() => {
+        /* the poster stands on its own */
+      });
+    };
+    const schedule = () => {
+      idle = w.requestIdleCallback
+        ? w.requestIdleCallback(prefetch, { timeout: 4000 })
+        : window.setTimeout(prefetch, 1500);
+    };
+
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+
+    const onIntent = () => setReady(true);
+    window.addEventListener("scroll", onIntent, { once: true, passive: true });
+    window.addEventListener("wheel", onIntent, { once: true, passive: true });
+    window.addEventListener("touchstart", onIntent, { once: true, passive: true });
+
+    return () => {
+      window.removeEventListener("load", schedule);
+      window.removeEventListener("scroll", onIntent);
+      window.removeEventListener("wheel", onIntent);
+      window.removeEventListener("touchstart", onIntent);
+      if (idle) (w.cancelIdleCallback ?? window.clearTimeout)(idle);
+    };
+  }, [highPower]);
 
   useGSAP(
     () => {
-      if (!highPower || prefersReducedMotion()) return;
-
-      // The film is the hero, so it is on screen from the start: mount as soon
-      // as the gate passes rather than waiting for a scroll callback.
+      if (!highPower || !ready || prefersReducedMotion()) return;
       setMounted(true);
 
       const cancel = afterPaint(() => {
@@ -68,11 +113,12 @@ export function MennieFilm() {
 
       return cancel;
     },
-    { scope: root, dependencies: [highPower] }
+    { scope: root, dependencies: [highPower, ready] }
   );
 
-  // Not capable, reduced motion, or still measuring → the image hero.
-  if (highPower !== true) return <MennieHero />;
+  // Not capable, reduced motion, still measuring, or not yet idle → the image
+  // hero, which is a complete hero in its own right.
+  if (highPower !== true || !ready) return <MennieHero />;
 
   // chapter windows
   const title = progress < 0.1;

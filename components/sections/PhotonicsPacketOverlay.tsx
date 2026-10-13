@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, type RefObject } from "react";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import {
   SequenceOverlay,
   glowDot,
@@ -54,6 +55,11 @@ export function PhotonicsPacketOverlay({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [active]);
+
+  // positions.json is 144-344 KB. Worth it for the effect on a large
+  // screen; not worth it on a phone, where the particles are barely
+  // visible and those bytes compete with the hero frames.
+  const wideEnough = useMediaQuery("(min-width: 900px)");
 
   const draw = useCallback(
     (
@@ -135,7 +141,7 @@ export function PhotonicsPacketOverlay({
       frameRef={frameRef}
       frameCount={frameCount}
       draw={draw}
-      active={active}
+      active={active && wideEnough}
     />
   );
 }

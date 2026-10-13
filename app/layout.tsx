@@ -67,8 +67,12 @@ export default function RootLayout({
           Cookieless Core Web Vitals from real visitors. Sets no cookies and
           builds no cross-site profile, so it needs no consent banner — the
           privacy page says exactly this.
+
+          Only rendered on Vercel: its script is served from /_vercel/..., which
+          exists nowhere else, so including it locally or on any other host just
+          puts a 404 in everyone's console.
         */}
-        <SpeedInsights />
+        {process.env.VERCEL ? <SpeedInsights /> : null}
       </body>
     </html>
   );

@@ -1,29 +1,47 @@
 # QA report
 
 Base: http://localhost:3000
-Generated: 2026-10-13T15:37:13.452Z
+Generated: 2026-10-13T17:02:09.852Z
 
 ## Summary
 
-- Screenshots: 44 (11 pages x 2 viewports x motion/reduced)
-- axe violations: **0**
-- Internal links checked: 11, broken: **0**
-- Redirects checked: 8, wrong: **0**
-- Pages with console errors: **0**
+- Screenshots: **192** — 12 pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}
+- axe violations: **0 light**, **0 dark**
+- Internal links: 12 checked, **0** broken
+- Redirects: 8 checked, **0** wrong
+- Page/console errors: **0**
 
 ## Accessibility (axe, WCAG 2.2 AA)
 
-- **home** — no violations
-- **enterprise-ai** — no violations
-- **pharma** — no violations
-- **mennie** — no violations
-- **photonics** — no violations
-- **research** — no violations
-- **company** — no violations
-- **contact** — no violations
-- **start-a-project** — no violations
-- **privacy** — no violations
-- **terms** — no violations
+### light
+
+- **home** — none
+- **enterprise-ai** — none
+- **pharma** — none
+- **mennie** — none
+- **photonics** — none
+- **research** — none
+- **company** — none
+- **careers** — none
+- **contact** — none
+- **start-a-project** — none
+- **privacy** — none
+- **terms** — none
+
+### dark
+
+- **home** — none
+- **enterprise-ai** — none
+- **pharma** — none
+- **mennie** — none
+- **photonics** — none
+- **research** — none
+- **company** — none
+- **careers** — none
+- **contact** — none
+- **start-a-project** — none
+- **privacy** — none
+- **terms** — none
 
 ## Redirects
 
@@ -40,8 +58,8 @@ Generated: 2026-10-13T15:37:13.452Z
 
 ## Internal links
 
-All 11 internal links return < 400.
+All 12 internal links return < 400.
 
-## Console errors
+## Console / page errors
 
 None.
