@@ -4018,3 +4018,554 @@ body::before {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   AGENT CONSOLE — Enterprise AI signature
+   ========================================================================== */
+/*
+ * A permanently dark surface on both themes. It is a console: the thing it
+ * depicts is dark in real life, and an enterprise buyer reads "product" from
+ * that instantly in a way no light-mode diagram achieves. Because the panel
+ * never changes, every colour inside it is checked against the panel rather
+ * than against the page tokens - which is why the accent here is
+ * --acc-ent-bright and not --acc-ent.
+ */
+.ac {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 72px 0;
+  overflow: hidden;
+}
+.ac-stage {
+  width: min(1180px, 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+.ac-shell {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0a0f1d;
+  border: 1px solid #1d2740;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 80px -40px rgba(4, 8, 18, 0.9);
+}
+
+/* ---------------------------------------------------------- title bar */
+.ac-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  background: #0d1424;
+  border-bottom: 1px solid #1d2740;
+}
+.ac-dots {
+  display: flex;
+  gap: 6px;
+}
+.ac-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #27324c;
+}
+.ac-bar p {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #7b87a3;
+}
+.ac-live {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6ee7b7;
+}
+.ac-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18);
+}
+
+/* -------------------------------------------------------------- body */
+.ac-body {
+  display: grid;
+  gap: 0;
+}
+@media (min-width: 900px) {
+  .ac-body {
+    grid-template-columns: 1.35fr 1fr;
+  }
+  .ac-side {
+    border-left: 1px solid #1d2740;
+  }
+}
+
+.ac-eyebrow {
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #7b87a3;
+}
+
+/* ------------------------------------------------------------ the run */
+.ac-run {
+  padding: 22px 20px;
+}
+.ac-trigger {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #1a2338;
+}
+.ac-trigger-main {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #e7ecf6;
+}
+.ac-trigger-main span {
+  color: #a9b6cf;
+}
+.ac-trigger-meta {
+  margin: 8px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #7b87a3;
+}
+
+.ac-steps {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.ac-step {
+  --done: 0;
+  display: grid;
+  grid-template-columns: 30px 1fr 18px;
+  gap: 12px;
+  align-items: start;
+}
+.ac-step-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #121b2e;
+  border: 1px solid #222d49;
+  color: var(--acc-ent-bright);
+}
+.ac-step-main {
+  display: block;
+  min-width: 0;
+}
+.ac-step-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ac-step-head b {
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--acc-ent-bright);
+  font-weight: 500;
+}
+.ac-step-head code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: #d6def0;
+}
+.ac-step-ms {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #7b87a3;
+}
+.ac-bar-track {
+  display: block;
+  height: 3px;
+  margin: 9px 0 7px;
+  border-radius: 999px;
+  background: #162034;
+  overflow: hidden;
+}
+.ac-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4c3fb5, var(--acc-ent-bright));
+}
+.ac-step-result {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #8e9bb6;
+}
+.ac-step-tick {
+  color: #34d399;
+  opacity: var(--done);
+  transition: opacity 0.2s linear;
+  margin-top: 7px;
+}
+
+/* ----------------------------------------------------------- the gate */
+.ac-side {
+  padding: 22px 20px;
+  display: grid;
+  gap: 22px;
+  align-content: start;
+}
+.ac-gate {
+  position: relative;
+  border: 1px solid #2a3558;
+  border-radius: 12px;
+  padding: 16px;
+  background: #0e1526;
+}
+.ac-gate-line {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #a9b6cf;
+}
+.ac-reviewer {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #1a2338;
+}
+.ac-avatar {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1b2440;
+  border: 1px solid #2b3658;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: #cbd5ea;
+}
+.ac-reviewer b {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e7ecf6;
+}
+.ac-reviewer small {
+  display: block;
+  font-size: 11.5px;
+  color: #7b87a3;
+  margin-top: 1px;
+}
+.ac-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.ac-approve,
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: default;
+  border: 1px solid #2b3658;
+}
+.ac-approve {
+  background: #141d33;
+  color: #d6def0;
+  border-color: #3a3a7d;
+}
+.ac-btn {
+  background: transparent;
+  color: #9aa7c2;
+}
+.ac-cursor {
+  position: absolute;
+  left: 58px;
+  bottom: 22px;
+  width: 15px;
+  height: 20px;
+  pointer-events: none;
+  background: #fff;
+  clip-path: polygon(0 0, 0 72%, 26% 55%, 46% 96%, 66% 86%, 46% 46%, 78% 44%);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6));
+}
+
+/* ---------------------------------------------------------- the ledger */
+.ac-ledger table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ac-ledger td {
+  padding: 8px 10px 8px 0;
+  font-size: 12px;
+  color: #a9b6cf;
+  border-bottom: 1px solid #1a2338;
+  vertical-align: top;
+}
+.ac-ledger td.mono {
+  font-size: 11px;
+  color: #7b87a3;
+  white-space: nowrap;
+}
+.ac-ledger tr:last-child td {
+  border-bottom: 0;
+}
+
+.ac-note {
+  margin: 14px 2px 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-step-tick {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   RESPONSE BUILDER — Pharma signature
+   ========================================================================== */
+/*
+ * Paper, not console. The Enterprise AI signature is a dark machine running;
+ * this buyer lives in documents, so this one is a document workspace. Two
+ * pages side by side - what the inspector wrote, and what gets filed back -
+ * with the records underneath lighting up as each paragraph cites them.
+ */
+.rb {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 72px 0;
+  overflow: hidden;
+}
+.rb-stage {
+  width: min(1180px, 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+.rb-grid {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 920px) {
+  .rb-grid {
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: 26px;
+  }
+}
+
+.rb-eyebrow {
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* -------------------------------------------------------------- pages */
+.rb-doc {
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px 22px;
+  box-shadow: 0 18px 44px -34px rgba(11, 16, 32, 0.4);
+}
+.rb-doc-obs {
+  align-self: start;
+  border-left: 3px solid var(--acc-pha);
+}
+.rb-obs-text {
+  margin: 0;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.62;
+  color: var(--ink);
+}
+/*
+ * The highlight wipes in with background-size, so it reads as a hand moving a
+ * marker across the line rather than a box switching on.
+ *
+ * Mixed with the page surface rather than with transparent. A 30% accent over
+ * transparent is a pale green on paper but an acid lime on navy, and the light
+ * ink of the dark theme sat on it at well under 3:1. Blending into --paper-3
+ * instead gives a pale green in light and a deep green in dark, so whichever
+ * ink the theme is using keeps its contrast.
+ */
+.rb-mark {
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--acc-pha) 30%, var(--paper-3)),
+    color-mix(in srgb, var(--acc-pha) 30%, var(--paper-3))
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 3px;
+}
+.rb-fine {
+  margin: 18px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--ink-2);
+}
+
+/* ----------------------------------------------------- the response */
+.rb-paras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+.rb-para h3 {
+  margin: 0 0 5px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  color: var(--acc-pha-ink);
+}
+.rb-para p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.rb-cite {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--acc-pha-ink);
+  background: color-mix(in srgb, var(--acc-pha) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--acc-pha) 30%, transparent);
+}
+.rb-sign {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--acc-pha-ink);
+}
+.rb-sign b {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.rb-sign small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 54ch;
+}
+
+/* ---------------------------------------------------- evidence rail */
+.rb-rail {
+  margin-top: 24px;
+}
+.rb-rail ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 720px) {
+  .rb-rail ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.rb-record {
+  --lit: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 11px;
+  background: var(--paper-3);
+  border: 1px solid
+    color-mix(in srgb, var(--acc-pha) calc(var(--lit) * 55%), var(--line));
+  box-shadow: 0 0 0 calc(var(--lit) * 3px)
+    color-mix(in srgb, var(--acc-pha) calc(var(--lit) * 14%), transparent);
+}
+.rb-record-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--acc-pha) calc(8% + var(--lit) * 10%), var(--paper-2));
+  color: var(--acc-pha-ink);
+}
+.rb-record b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.rb-record small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+/*
+ * The audit log is real tabular data, so it gets real column headers rather
+ * than bare <td>s. Small and quiet, but present for screen readers and for
+ * anyone scanning the four columns.
+ */
+.ac-ledger th {
+  text-align: left;
+  padding: 0 10px 7px 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7b87a3;
+  border-bottom: 1px solid #1a2338;
+}

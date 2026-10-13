@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import { EvidenceThread } from "@/components/sections/EvidenceThread";
+import { ResponseBuilder } from "@/components/sections/ResponseBuilder";
 import { Verify } from "@/components/ui/Verify";
 import { Headline } from "@/components/ui/Headline";
 import {
@@ -27,7 +27,7 @@ export const metadata: Metadata = pageMeta({
 export default function PharmaPage() {
   return (
     <div data-acc="pharma">
-      <EvidenceThread />
+      <ResponseBuilder />
 
       <section className="section">
         <div className="wrap">

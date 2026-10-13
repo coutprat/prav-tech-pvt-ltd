@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import { Checkpoint } from "@/components/sections/Checkpoint";
+import { AgentConsole } from "@/components/sections/AgentConsole";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMeta({
 export default function EnterpriseAIPage() {
   return (
     <div data-acc="enterprise">
-      <Checkpoint />
+      <AgentConsole />
 
       <section className="section">
         <div className="wrap">
