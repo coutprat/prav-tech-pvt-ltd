@@ -411,8 +411,11 @@ textarea {
   background: var(--paper-3);
 }
 
+/* Sits on .cta / .footer, which are dark in BOTH themes. It must therefore
+   use the on-dark tokens: --paper flips dark in dark mode, which made this a
+   dark button on a dark panel (1.05:1). */
 .btn-on-dark {
-  background: var(--paper);
+  background: var(--on-navy);
   color: var(--navy);
 }
 .btn-on-dark:hover {

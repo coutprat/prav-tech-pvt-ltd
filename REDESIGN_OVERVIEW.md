@@ -117,12 +117,25 @@ blender -b -P scripts/blender/home_core.py -- --out /tmp/home/desktop --res 1600
 bash scripts/media/frames.sh /tmp/home/desktop public/media/home/desktop 80
 ```
 
+Each scene renders in **two themes**. The light render is a bright studio
+plate; against dark chrome it read as a glowing white block, so `--dark` swaps
+the world gradient, ground and fill levels. Geometry, animation and camera are
+identical, so the hero says exactly the same thing in either theme. Only one
+set is ever downloaded.
+
 | Sequence | Frames | Total | Per frame | Budget |
 |---|---|---|---|---|
 | Home desktop | 120 @ 1600×900 | 1.7 MB | 14 KB | ≤ 45 KB ✅ |
 | Home mobile | 60 @ 900×506 | 464 KB | 7 KB | ≤ 25 KB ✅ |
+| Home desktop (dark) | 120 @ 1600×900 | 2.3 MB | 19 KB | ≤ 45 KB ✅ |
+| Home mobile (dark) | 60 @ 900×506 | 668 KB | 11 KB | ≤ 25 KB ✅ |
 | Photonics desktop | 120 @ 1600×900 | 2.7 MB | 22 KB | ≤ 45 KB ✅ |
 | Photonics mobile | 60 @ 900×506 | 764 KB | 12 KB | ≤ 25 KB ✅ |
+| Photonics desktop (dark) | 120 @ 1600×900 | 4.3 MB | 36 KB | ≤ 45 KB ✅ |
+| Photonics mobile (dark) | 60 @ 900×506 | 1.2 MB | 19 KB | ≤ 25 KB ✅ |
+
+Dark frames are heavier — smooth dark gradients give WebP less to work with —
+but still inside budget.
 
 `<ScrollSequence>` takes any frame folder, so a 3D artist's render drops in
 with **no code change**.
@@ -227,7 +240,15 @@ enquiries.
 Tokens in `app/globals.css`. Light is the brief's palette verbatim. **Dark was
 authored for this redesign** — you chose to keep the toggle, and the brief
 defines no dark palette, so dark is the same ceramic studio with the lights
-down rather than a second brand. Same teal, same amber, inverted ground.
+down rather than a second brand. Same teal, same amber, inverted ground. It
+goes all the way down: both hero sequences have their own dark renders, so
+nothing on the page is a light plate pasted onto a dark background.
+
+Dark was verified, not assumed: `scripts/qa/theme-check.mjs` runs axe against
+it. It found one real bug — `.btn-on-dark` took its background from `--paper`,
+which flips dark in dark mode, so the CTA button was dark-on-dark at 1.05:1.
+It now uses the on-dark tokens, which stay light in both themes. **Dark mode:
+0 axe violations.**
 
 Every pair was computed against WCAG 2.2 AA before use:
 
@@ -263,13 +284,15 @@ so no runtime request to Google.
 ## 8. Accessibility and performance
 
 ### Accessibility — clean
-- **axe: 0 violations** across all 11 pages (WCAG 2.0/2.1/2.2 A + AA)
+- **axe: 0 violations** across all 11 pages (WCAG 2.0/2.1/2.2 A + AA), light
+  **and** dark
 - Lighthouse accessibility **94–96**
 - skip link, visible focus rings, `aria-current` on nav, labelled forms,
   `aria-pressed` theme toggle, Escape closes the drawer, alt text throughout
-- one violation was found and fixed: the evidence-thread source cards started
-  at `opacity: 0.35`, dropping the teal label below AA. They now light their
-  border instead of dimming their text.
+- two violations were found and fixed: the evidence-thread source cards
+  started at `opacity: 0.35`, dropping the teal label below AA (they now light
+  their border instead of dimming their text), and the dark-mode CTA button
+  described in §7.
 
 ### Performance — two budgets missed, honestly
 

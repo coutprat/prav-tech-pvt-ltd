@@ -94,8 +94,14 @@ they regenerate from source on any machine with Blender.
 
 | Hero | Script | Output |
 |---|---|---|
-| Home — "Four lines, one core" | `scripts/blender/home_core.py` | `public/media/home/{desktop,mobile}` |
-| Photonics — "Light across the hall" | `scripts/blender/photonics_hall.py` | `public/media/photonics/{desktop,mobile}` |
+| Home — "Four lines, one core" | `scripts/blender/home_core.py` | `public/media/home/{desktop,mobile}[-dark]` |
+| Photonics — "Light across the hall" | `scripts/blender/photonics_hall.py` | `public/media/photonics/{desktop,mobile}[-dark]` |
+
+**Each scene renders in two themes.** `--dark` swaps the world gradient, the
+ground/plinth/floor colours and the fill levels; geometry, animation and camera
+are identical, so the two sets stay in sync and the hero says the same thing
+either way. Without this the light studio plate reads as a glowing white block
+on a dark page.
 
 ### Regenerate
 
@@ -103,9 +109,13 @@ they regenerate from source on any machine with Blender.
 # look test first — renders frames 1 / 40 / 80 / 120 only
 blender -b -P scripts/blender/home_core.py -- --out /tmp/look --res 960x540 --contact
 
-# full sequences
+# full sequences — light
 blender -b -P scripts/blender/home_core.py -- --out /tmp/home/desktop --res 1600x900 --frames 120 --samples 32
 blender -b -P scripts/blender/home_core.py -- --out /tmp/home/mobile  --res 900x506  --frames 60  --samples 24
+
+# ...and dark
+blender -b -P scripts/blender/home_core.py -- --out /tmp/home/desktop-dark --res 1600x900 --frames 120 --samples 32 --dark
+blender -b -P scripts/blender/home_core.py -- --out /tmp/home/mobile-dark  --res 900x506  --frames 60  --samples 24 --dark
 
 # PNG -> WebP, reports total and per-frame weight
 bash scripts/media/frames.sh /tmp/home/desktop public/media/home/desktop 80

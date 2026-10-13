@@ -25,7 +25,10 @@ export default function HomePage() {
       <ScrollSequence
         desktop={homeFrames.desktop}
         mobile={homeFrames.mobile}
+        desktopDark={homeFrames.desktopDark}
+        mobileDark={homeFrames.mobileDark}
         poster={homeFrames.poster}
+        posterDark={homeFrames.posterDark}
         alt="A white ceramic core on a plinth. An orbital ring draws around it and four modules dock onto the ring in turn, each lighting its teal seams: Enterprise AI, Pharma AI, Healthcare AI, Photonics."
         scrollLength={420}
         chapters={[

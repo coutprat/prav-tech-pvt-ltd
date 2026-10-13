@@ -56,7 +56,7 @@ def ring_point(angle_rad, radius=RING_R):
     return (x, y_t, z_t)
 
 
-def build_plinth():
+def build_plinth(dark=False):
     """Low, wide cylinder. Darker than the ground so the core sits on something."""
     bpy.ops.mesh.primitive_cylinder_add(radius=3.1, depth=0.34, location=(0, 0, 0.17))
     plinth = bpy.context.object
@@ -65,7 +65,8 @@ def build_plinth():
     bev.width = 0.045
     bev.segments = 8
     bev.limit_method = "ANGLE"
-    plinth.data.materials.append(mat_ceramic("PlinthMat", (0.80, 0.795, 0.785, 1.0)))
+    plinth_col = (0.105, 0.125, 0.195, 1.0) if dark else (0.80, 0.795, 0.785, 1.0)
+    plinth.data.materials.append(mat_ceramic("PlinthMat", plinth_col))
     smooth(plinth, angle=30)
 
     # Polished ceramic recess. A frosted-glass disc here renders as flat
@@ -75,7 +76,8 @@ def build_plinth():
     )
     inlay = bpy.context.object
     inlay.name = "PlinthInlay"
-    inlay_mat = mat_ceramic("PlinthInlayMat", (0.62, 0.625, 0.635, 1.0))
+    inlay_col = (0.150, 0.175, 0.260, 1.0) if dark else (0.62, 0.625, 0.635, 1.0)
+    inlay_mat = mat_ceramic("PlinthInlayMat", inlay_col)
     inlay_mat.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.12
     inlay.data.materials.append(inlay_mat)
     smooth(inlay, angle=30)
@@ -239,9 +241,9 @@ def main():
 
     scene = reset_scene()
     set_render(scene, width, height, args.frames, args.samples)
-    build_studio(scene, ground=True)
+    build_studio(scene, ground=True, dark=args.dark)
 
-    build_plinth()
+    build_plinth(dark=args.dark)
     core = build_core()
     ring = build_ring()
     modules = [build_module(spec, i) for i, spec in enumerate(MODULES)]

@@ -40,6 +40,8 @@ def parse_args():
     p.add_argument("--samples", type=int, default=24)
     p.add_argument("--contact", action="store_true",
                    help="render only frames 1/40/80/120 as a look test")
+    p.add_argument("--dark", action="store_true",
+                   help="render the dark-theme variant of the studio")
     return p.parse_args(argv)
 
 
@@ -202,8 +204,15 @@ def emission_input(mat):
 
 # ------------------------------------------------------------------------ studio
 
-def build_studio(scene, ground=True, ground_colour=None):
-    """Soft studio: gradient world matching --paper plus large area lights."""
+def build_studio(scene, ground=True, ground_colour=None, dark=False):
+    """
+    Soft studio: gradient world matching --paper plus large area lights.
+
+    `dark=True` renders the same geometry on the dark-theme ground so the hero
+    does not sit in the page as a bright white block when the site is in dark
+    mode. Geometry, animation and camera are identical — only the ground,
+    world gradient and fill levels change, so the two sets stay in sync.
+    """
     world = scene.world
     world.use_nodes = True
     nt = world.node_tree
@@ -219,11 +228,18 @@ def build_studio(scene, ground=True, ground_colour=None):
     # Darker at the bottom, bright above: gives the subject an edge to sit
     # against instead of dissolving into a uniform white field.
     mapping.inputs["Rotation"].default_value = (math.radians(90), 0, 0)
-    ramp.color_ramp.elements[0].position = 0.30
-    ramp.color_ramp.elements[0].color = (0.40, 0.40, 0.40, 1.0)
-    ramp.color_ramp.elements[1].position = 0.92
-    ramp.color_ramp.elements[1].color = (0.95, 0.95, 0.94, 1.0)
-    bg.inputs["Strength"].default_value = 0.85
+    if dark:
+        ramp.color_ramp.elements[0].position = 0.28
+        ramp.color_ramp.elements[0].color = (0.012, 0.015, 0.028, 1.0)
+        ramp.color_ramp.elements[1].position = 0.95
+        ramp.color_ramp.elements[1].color = (0.075, 0.090, 0.150, 1.0)
+        bg.inputs["Strength"].default_value = 0.55
+    else:
+        ramp.color_ramp.elements[0].position = 0.30
+        ramp.color_ramp.elements[0].color = (0.40, 0.40, 0.40, 1.0)
+        ramp.color_ramp.elements[1].position = 0.92
+        ramp.color_ramp.elements[1].color = (0.95, 0.95, 0.94, 1.0)
+        bg.inputs["Strength"].default_value = 0.85
 
     nt.links.new(tex_co.outputs["Generated"], mapping.inputs["Vector"])
     nt.links.new(mapping.outputs["Vector"], grad.inputs["Vector"])
@@ -233,11 +249,16 @@ def build_studio(scene, ground=True, ground_colour=None):
 
     # Key is tight and strong for a readable shadow; fill stays soft and low
     # so the form keeps its modelling instead of flattening out.
-    for name, loc, rot, size, power in (
+    lights = (
         ("Key", (4.6, -5.2, 6.8), (math.radians(40), 0, math.radians(40)), 5.0, 2600),
         ("Fill", (-6.4, -3.6, 3.0), (math.radians(68), 0, math.radians(-56)), 12.0, 260),
         ("Rim", (-1.8, 6.8, 5.2), (math.radians(118), 0, math.radians(10)), 7.0, 900),
-    ):
+    )
+    # Dark: pull the fill right down so the form is modelled by the key and
+    # rim, and the teal/amber seams carry the frame.
+    dim = {"Key": 0.42, "Fill": 0.10, "Rim": 0.55} if dark else {}
+    for name, loc, rot, size, power in lights:
+        power = power * dim.get(name, 1.0)
         data = bpy.data.lights.new(name, type="AREA")
         data.shape = "RECTANGLE"
         data.size = size
@@ -252,8 +273,9 @@ def build_studio(scene, ground=True, ground_colour=None):
         bpy.ops.mesh.primitive_plane_add(size=60, location=(0, 0, 0))
         plane = bpy.context.object
         plane.name = "Ground"
+        default_ground = (0.055, 0.070, 0.125, 1.0) if dark else PAPER
         plane.data.materials.append(
-            mat_ceramic("GroundMat", ground_colour or PAPER)
+            mat_ceramic("GroundMat", ground_colour or default_ground)
         )
 
 

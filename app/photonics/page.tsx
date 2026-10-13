@@ -39,7 +39,10 @@ export default function PhotonicsPage() {
       <ScrollSequence
         desktop={photonicsFrames.desktop}
         mobile={photonicsFrames.mobile}
+        desktopDark={photonicsFrames.desktopDark}
+        mobileDark={photonicsFrames.mobileDark}
         poster={photonicsFrames.poster}
+        posterDark={photonicsFrames.posterDark}
         alt="An empty data-hall floor. Rows of racks rise, amber copper links light inside each rack, teal optical fibres race across the rows to the spine switches, and the camera lifts to a top view of the hall."
         scrollLength={420}
         chapters={[

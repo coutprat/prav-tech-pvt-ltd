@@ -14,21 +14,33 @@ function frames(
   variant: "desktop" | "mobile",
   count: number,
   width: number,
-  height: number
+  height: number,
+  dark = false
 ): FrameSet {
-  return { dir: `/media/${slug}/${variant}`, count, width, height };
+  return {
+    dir: `/media/${slug}/${variant}${dark ? "-dark" : ""}`,
+    count,
+    width,
+    height
+  };
 }
 
 export const homeFrames = {
   desktop: frames("home", "desktop", 120, 1600, 900),
   mobile: frames("home", "mobile", 60, 900, 506),
-  poster: "/media/home/poster.webp"
+  desktopDark: frames("home", "desktop", 120, 1600, 900, true),
+  mobileDark: frames("home", "mobile", 60, 900, 506, true),
+  poster: "/media/home/poster.webp",
+  posterDark: "/media/home/poster-dark.webp"
 };
 
 export const photonicsFrames = {
   desktop: frames("photonics", "desktop", 120, 1600, 900),
   mobile: frames("photonics", "mobile", 60, 900, 506),
-  poster: "/media/photonics/poster.webp"
+  desktopDark: frames("photonics", "desktop", 120, 1600, 900, true),
+  mobileDark: frames("photonics", "mobile", 60, 900, 506, true),
+  poster: "/media/photonics/poster.webp",
+  posterDark: "/media/photonics/poster-dark.webp"
 };
 
 export const mennieMedia = {

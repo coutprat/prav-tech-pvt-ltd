@@ -45,11 +45,12 @@ def rack_position(row, i):
     return x, y
 
 
-def build_floor():
+def build_floor(dark=False):
     bpy.ops.mesh.primitive_plane_add(size=90, location=(0, 0, 0))
     floor = bpy.context.object
     floor.name = "HallFloor"
-    mat = mat_ceramic("HallFloorMat", (0.80, 0.80, 0.79, 1.0))
+    floor_col = (0.055, 0.070, 0.120, 1.0) if dark else (0.80, 0.80, 0.79, 1.0)
+    mat = mat_ceramic("HallFloorMat", floor_col)
     mat.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.28
     floor.data.materials.append(mat)
     return floor
@@ -258,8 +259,8 @@ def main():
 
     scene = reset_scene()
     set_render(scene, width, height, args.frames, args.samples)
-    build_studio(scene, ground=False)
-    build_floor()
+    build_studio(scene, ground=False, dark=args.dark)
+    build_floor(dark=args.dark)
 
     racks = []
     copper_mats = []

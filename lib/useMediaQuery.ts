@@ -38,3 +38,27 @@ export function useScrolled(threshold = 8): boolean {
     () => false
   );
 }
+
+/**
+ * The current theme, read from <html data-theme>.
+ *
+ * External state again: the pre-paint script sets it before React exists, and
+ * the toggle mutates the attribute directly.
+ */
+export function useTheme(): "light" | "dark" {
+  return useSyncExternalStore(
+    (onChange) => {
+      const obs = new MutationObserver(onChange);
+      obs.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+      return () => obs.disconnect();
+    },
+    () =>
+      document.documentElement.getAttribute("data-theme") === "dark"
+        ? "dark"
+        : "light",
+    () => "light"
+  );
+}

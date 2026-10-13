@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
-import { useReducedMotion } from "@/lib/useMediaQuery";
+import { useReducedMotion, useTheme } from "@/lib/useMediaQuery";
 
 /**
  * Must stay plain data: this crosses the server → client boundary, and a
@@ -54,15 +54,22 @@ export type Chapter = {
 export function ScrollSequence({
   desktop,
   mobile,
+  desktopDark,
+  mobileDark,
   chapters = [],
   poster,
+  posterDark,
   alt,
   scrollLength = 400
 }: {
   desktop: FrameSet;
   mobile: FrameSet;
+  /** Dark-theme renders of the same scene. Same geometry, dark studio. */
+  desktopDark?: FrameSet;
+  mobileDark?: FrameSet;
   chapters?: Chapter[];
   poster: string;
+  posterDark?: string;
   /** Describes the whole sequence for assistive tech. */
   alt: string;
   /** Scroll distance of the pinned section, in % of viewport height. */
@@ -74,10 +81,19 @@ export function ScrollSequence({
   const [active, setActive] = useState(0);
   const [painted, setPainted] = useState(false);
   const reduced = useReducedMotion();
+  const theme = useTheme();
+  const isDark = theme === "dark" && Boolean(desktopDark);
+
+  // The light render is a bright studio plate; against dark chrome it reads as
+  // a glowing block. The dark set is the same geometry and camera lit for a
+  // dark page, so switching themes does not change what the hero says.
+  const desktopSet = isDark && desktopDark ? desktopDark : desktop;
+  const mobileSet = isDark && mobileDark ? mobileDark : mobile;
+  const posterSrc = isDark && posterDark ? posterDark : poster;
 
   // Rendered into the HTML so it is not discovered late. Mobile gets its own
   // smaller frame via the CSS below; this is the desktop one.
-  const firstFrame = `${desktop.dir}/${desktop.prefix ?? "frame-"}${String(1).padStart(desktop.pad ?? 4, "0")}.${desktop.ext ?? "webp"}`;
+  const firstFrame = frameUrl(desktopSet, 1);
 
   useGSAP(
     () => {
@@ -89,8 +105,10 @@ export function ScrollSequence({
       if (!ctx) return;
 
       const isMobile = window.matchMedia("(max-width: 899px)").matches;
-      const set = isMobile ? mobile : desktop;
+      const set = isMobile ? mobileSet : desktopSet;
 
+      paintedRef.current = false;
+      setPainted(false);
       const images: (HTMLImageElement | undefined)[] = new Array(set.count);
       const loaded = new Set<number>();
       let current = 0;
@@ -229,7 +247,7 @@ export function ScrollSequence({
         tween?.kill();
       };
     },
-    { scope: rootRef }
+    { scope: rootRef, dependencies: [isDark], revertOnUpdate: true }
   );
 
   return (
@@ -249,10 +267,10 @@ export function ScrollSequence({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="sequence-poster"
-          src={reduced ? poster : firstFrame}
+          src={reduced ? posterSrc : firstFrame}
           alt={alt}
-          width={desktop.width}
-          height={desktop.height}
+          width={desktopSet.width}
+          height={desktopSet.height}
           fetchPriority="high"
           decoding="async"
           data-hidden={painted && !reduced}
