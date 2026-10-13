@@ -1,0 +1,12 @@
+{
+  "page": "home",
+  "cpuThrottle": 4,
+  "frames": 270,
+  "medianMs": 16.7,
+  "p95Ms": 16.8,
+  "worstMs": 33.4,
+  "over20ms": 7,
+  "over34ms": 0,
+  "droppedPct": 2.6,
+  "estFps": 59.9
+}

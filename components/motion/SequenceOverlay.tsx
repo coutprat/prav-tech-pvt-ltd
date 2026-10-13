@@ -1,40 +1,154 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
+import { gsap } from "@/lib/gsap";
 
 /**
  * Screen-space tracks exported by the Blender scenes alongside the frames.
  * Positions are 0..1 from the top-left of the rendered image. Points behind
  * the camera come back as (-9, -9).
  */
-export type Tracks = {
+export type Point = [number, number];
+
+type RawTracks = {
   frames: number;
   resolution: [number, number];
   tracks: Record<string, Point[] | Point[][]>;
 };
-export type Point = [number, number];
-
-export type Packet = {
-  /** Track key, or a pair of keys to travel between. */
-  path: string;
-  color: string;
-  /** 0..1 along the path. */
-  t: number;
-  speed: number;
-  size: number;
-};
-
-const offScreen = (p: Point | undefined) => !p || p[0] < -1;
 
 /**
- * Draws moving light particles on top of a <ScrollSequence>, using the
- * per-frame screen positions the render exported.
+ * Tracks flattened into typed arrays once, at load.
  *
- * This is what makes the overlay sit *exactly* on the render rather than
- * approximating it: the Blender camera flies, and these tracks fly with it.
+ * The first version held the parsed JSON and rebuilt JS arrays on every
+ * frame — `at.map(p => [x, y])` for a 72-point ring and four 24-point fibre
+ * paths, sixty times a second. That is thousands of short-lived arrays a
+ * second of pure GC pressure for data that never changes.
+ */
+type Track = {
+  /** Points per frame: 1 for a moving object, N for a polyline. */
+  stride: number;
+  /** frames * stride * 2 floats, normalised 0..1. */
+  data: Float32Array;
+};
+
+export type Tracks = {
+  frames: number;
+  resolution: [number, number];
+  tracks: Record<string, Track>;
+};
+
+function flatten(raw: RawTracks): Tracks {
+  const out: Record<string, Track> = {};
+  for (const [key, frames] of Object.entries(raw.tracks)) {
+    if (!frames.length) continue;
+    const first = frames[0];
+    const stride = Array.isArray(first[0]) ? (first as Point[]).length : 1;
+    const data = new Float32Array(frames.length * stride * 2);
+    for (let f = 0; f < frames.length; f++) {
+      const at = frames[f];
+      if (stride === 1) {
+        const p = at as Point;
+        data[f * 2] = p[0];
+        data[f * 2 + 1] = p[1];
+      } else {
+        const pts = at as Point[];
+        for (let i = 0; i < stride; i++) {
+          data[(f * stride + i) * 2] = pts[i][0];
+          data[(f * stride + i) * 2 + 1] = pts[i][1];
+        }
+      }
+    }
+    out[key] = { stride, data };
+  }
+  return { frames: raw.frames, resolution: raw.resolution, tracks: out };
+}
+
+/**
+ * A pre-rendered radial glow, drawn once per colour and blitted with
+ * drawImage thereafter.
  *
- * The canvas matches the sequence canvas's own contain-fit box, so the two
- * stay aligned at any viewport size.
+ * `createRadialGradient` per particle per frame was the single most expensive
+ * thing in the overlay: Photonics draws ~100 particles, so that was ~100
+ * gradient objects built and thrown away every frame.
+ */
+const SPRITE_SIZE = 64;
+const spriteCache = new Map<string, HTMLCanvasElement>();
+
+function glowSprite(color: string): HTMLCanvasElement {
+  const cached = spriteCache.get(color);
+  if (cached) return cached;
+
+  const c = document.createElement("canvas");
+  c.width = SPRITE_SIZE;
+  c.height = SPRITE_SIZE;
+  const ctx = c.getContext("2d");
+  if (ctx) {
+    const r = SPRITE_SIZE / 2;
+    const g = ctx.createRadialGradient(r, r, 0, r, r, r);
+    g.addColorStop(0, color);
+    g.addColorStop(0.18, color);
+    g.addColorStop(1, "transparent");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(r, r, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  spriteCache.set(color, c);
+  return c;
+}
+
+/** Blit a pre-rendered glow. `r` is the core radius; the sprite extends ~4x. */
+export function glowDot(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  color: string,
+  alpha = 1
+) {
+  if (alpha <= 0.01) return;
+  const sprite = glowSprite(color);
+  const size = r * 8;
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(sprite, x - size / 2, y - size / 2, size, size);
+}
+
+/** Point at fraction `t` along a flat [x,y,x,y,...] path, written into `out`. */
+export function alongPath(path: Float32Array, count: number, t: number, out: Point): Point {
+  if (count < 2) {
+    out[0] = path[0];
+    out[1] = path[1];
+    return out;
+  }
+  const clamped = t < 0 ? 0 : t > 0.9999 ? 0.9999 : t;
+  const seg = clamped * (count - 1);
+  const i = seg | 0;
+  const f = seg - i;
+  const ax = path[i * 2];
+  const ay = path[i * 2 + 1];
+  const bx = path[(i + 1) * 2];
+  const by = path[(i + 1) * 2 + 1];
+  out[0] = ax + (bx - ax) * f;
+  out[1] = ay + (by - ay) * f;
+  return out;
+}
+
+export type Resolver = {
+  /** Resolved screen position of a single-point track, or null if off-screen. */
+  point: (key: string, out: Point) => Point | null;
+  /** Fills `out` with a polyline in canvas pixels; returns the point count. */
+  path: (key: string, out: Float32Array) => number;
+};
+
+/**
+ * Draws light particles on top of a <ScrollSequence>, using the per-frame
+ * screen positions the render exported.
+ *
+ * Runs on **gsap.ticker**, not its own requestAnimationFrame. ScrollTrigger,
+ * Lenis and the sequence canvas all already run there, so sharing the loop
+ * guarantees the overlay paints in the same tick as the frame it belongs to.
+ * With two independent loops the dots could resolve against a different frame
+ * than the one on screen, which is exactly the trailing the owner reported.
  */
 export function SequenceOverlay({
   tracksUrl,
@@ -44,17 +158,11 @@ export function SequenceOverlay({
   active
 }: {
   tracksUrl: string;
-  /**
-   * Live sequence frame, written by ScrollSequence on every scrub tick.
-   * A ref rather than a prop: the frame changes dozens of times a second and
-   * re-rendering React that often would cost far more than the overlay does.
-   */
   frameRef: RefObject<number>;
   frameCount: number;
-  /** Per-frame painter, given resolved track positions in canvas pixels. */
   draw: (
     ctx: CanvasRenderingContext2D,
-    get: (key: string) => Point | Point[] | undefined,
+    resolve: Resolver,
     t: number,
     size: { w: number; h: number }
   ) => void;
@@ -64,17 +172,15 @@ export function SequenceOverlay({
   const tracksRef = useRef<Tracks | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    // Fetched after the first paint, and only when the overlay is wanted —
-    // it is data for an enhancement, never required to show the hero.
     if (!active) return;
+    let cancelled = false;
     fetch(tracksUrl)
       .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (!cancelled) tracksRef.current = j;
+      .then((j: RawTracks | null) => {
+        if (!cancelled && j) tracksRef.current = flatten(j);
       })
       .catch(() => {
-        /* overlay is decorative; the sequence stands on its own */
+        /* the overlay is an enhancement; the sequence stands on its own */
       });
     return () => {
       cancelled = true;
@@ -84,14 +190,20 @@ export function SequenceOverlay({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !active) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let raf = 0;
-    let disposed = false;
+    // Reusable scratch, so the draw loop allocates nothing.
+    let ox = 0;
+    let oy = 0;
+    let dw = 0;
+    let dh = 0;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Cap DPR: above 2 the particle layer costs 2-3x the fill for a
+      // difference nobody can see on a soft glow.
+      const cap = window.innerWidth < 900 ? 1.5 : 2;
+      const dpr = Math.min(window.devicePixelRatio || 1, cap);
       const r = canvas.getBoundingClientRect();
       canvas.width = Math.round(r.width * dpr);
       canvas.height = Math.round(r.height * dpr);
@@ -99,90 +211,72 @@ export function SequenceOverlay({
     resize();
     window.addEventListener("resize", resize);
 
-    const tick = () => {
-      if (disposed) return;
-      raf = requestAnimationFrame(tick);
+    const resolver: Resolver = {
+      point(key, out) {
+        const data = tracksRef.current;
+        if (!data) return null;
+        const track = data.tracks[key];
+        if (!track) return null;
+        const f = clampFrame(frameRef.current ?? 0, data.frames, track);
+        const i = f * 2;
+        const nx = track.data[i];
+        const ny = track.data[i + 1];
+        if (nx < -1) return null;
+        out[0] = ox + nx * dw;
+        out[1] = oy + ny * dh;
+        return out;
+      },
+      path(key, out) {
+        const data = tracksRef.current;
+        if (!data) return 0;
+        const track = data.tracks[key];
+        if (!track) return 0;
+        const f = clampFrame(frameRef.current ?? 0, data.frames, track);
+        const n = Math.min(track.stride, out.length >> 1);
+        const base = f * track.stride * 2;
+        for (let i = 0; i < n; i++) {
+          out[i * 2] = ox + track.data[base + i * 2] * dw;
+          out[i * 2 + 1] = oy + track.data[base + i * 2 + 1] * dh;
+        }
+        return n;
+      }
+    };
 
+    const tick = () => {
       const data = tracksRef.current;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (!data) return;
 
       const [rw, rh] = data.resolution;
-      // The sequence canvas draws its frames "contain"-fitted; match that box
-      // so overlay coordinates land on the same pixels.
+      // Match the sequence canvas's contain-fit box so overlay coordinates
+      // land on the same pixels as the rendered frame.
       const scale = Math.min(canvas.width / rw, canvas.height / rh);
-      const w = rw * scale;
-      const h = rh * scale;
-      const ox = (canvas.width - w) / 2;
-      const oy = (canvas.height - h) / 2;
+      dw = rw * scale;
+      dh = rh * scale;
+      ox = (canvas.width - dw) / 2;
+      oy = (canvas.height - dh) / 2;
 
-      const f = Math.max(
-        0,
-        Math.min(frameCount - 1, Math.round(frameRef.current ?? 0))
-      );
-
-      const get = (key: string): Point | Point[] | undefined => {
-        const track = data.tracks[key];
-        if (!track) return undefined;
-        const at = track[Math.min(f, track.length - 1)];
-        if (!at) return undefined;
-        if (Array.isArray(at[0])) {
-          return (at as Point[]).map(
-            (p) => [ox + p[0] * w, oy + p[1] * h] as Point
-          );
-        }
-        const p = at as Point;
-        if (offScreen(p)) return undefined;
-        return [ox + p[0] * w, oy + p[1] * h] as Point;
-      };
-
-      draw(ctx, get, performance.now() / 1000, { w: canvas.width, h: canvas.height });
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = "lighter";
+      draw(ctx, resolver, gsap.ticker.time, { w: canvas.width, h: canvas.height });
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = "source-over";
     };
 
-    raf = requestAnimationFrame(tick);
+    // Same loop as ScrollTrigger, Lenis and the frame canvas.
+    gsap.ticker.add(tick);
     return () => {
-      disposed = true;
-      cancelAnimationFrame(raf);
+      gsap.ticker.remove(tick);
       window.removeEventListener("resize", resize);
     };
   }, [draw, frameCount, active, frameRef]);
 
   if (!active) return null;
-
   return <canvas className="sequence-overlay" ref={canvasRef} aria-hidden="true" />;
 }
 
-/** Draw a glowing dot. Shared by the Home and Photonics overlays. */
-export function glowDot(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  r: number,
-  color: string,
-  alpha = 1
-) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.globalCompositeOperation = "lighter";
-  const g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
-  g.addColorStop(0, color);
-  g.addColorStop(0.35, color);
-  g.addColorStop(1, "transparent");
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(x, y, r * 4, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-/** Point at fraction `t` along a polyline, plus the local direction. */
-export function alongPath(points: Point[], t: number): Point {
-  if (points.length < 2) return points[0] ?? [0, 0];
-  const clamped = Math.max(0, Math.min(0.9999, t));
-  const seg = clamped * (points.length - 1);
-  const i = Math.floor(seg);
-  const f = seg - i;
-  const a = points[i];
-  const b = points[i + 1] ?? a;
-  return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+function clampFrame(frame: number, frames: number, track: Track): number {
+  const total = track.data.length / (track.stride * 2);
+  const max = Math.min(frames, total) - 1;
+  const f = Math.round(frame);
+  return f < 0 ? 0 : f > max ? max : f;
 }

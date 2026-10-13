@@ -6,7 +6,8 @@ import {
   SequenceOverlay,
   glowDot,
   alongPath,
-  type Point
+  type Point,
+  type Resolver
 } from "@/components/motion/SequenceOverlay";
 
 const AMBER = "#F59E0B";
@@ -15,6 +16,7 @@ const TEAL = "#4BD6C4";
 const ROWS = 4;
 const PER_ROW = 7;
 const RACKS = ROWS * PER_ROW;
+const FIBRE_POINTS = 24;
 
 const COPPER_LIT_FROM = 0.24;
 const FIBRE_FROM = 0.48;
@@ -22,12 +24,16 @@ const FIBRE_FROM = 0.48;
 /**
  * Light packets over the Photonics hero.
  *
- * Amber packets make short hops inside each rack — that is what copper is for.
- * Teal packets run the long fibre paths across the hall to the spine. The two
- * speeds and distances are the page's actual argument, drawn rather than said.
+ * Amber makes short hops inside each rack — that is what copper is for. Teal
+ * runs the long fibre paths across the hall to the spine. The two distances
+ * are the page's argument, drawn rather than said.
  *
- * Packet speed is tied to scroll velocity, so the hall visibly surges as you
- * move and settles to an idle drift when you stop.
+ * Packet speed follows scroll velocity, so the hall surges as you move and
+ * settles when you stop.
+ *
+ * Performance: ~100 particles a frame, so nothing here allocates. Buffers are
+ * made once, glows are pre-rendered sprites blitted with drawImage, and the
+ * whole thing runs on gsap.ticker alongside the frame canvas.
  */
 export function PhotonicsPacketOverlay({
   frameRef,
@@ -38,10 +44,19 @@ export function PhotonicsPacketOverlay({
   frameCount: number;
   active: boolean;
 }) {
+  const wideEnough = useMediaQuery("(min-width: 900px)");
   const velocity = useRef(0);
 
+  /** Scratch reused across frames; created on first draw, not during render. */
+  const buffersRef = useRef<{
+    fibre: Float32Array;
+    a: Point;
+    b: Point;
+    p: Point;
+  } | null>(null);
+
   useEffect(() => {
-    if (!active) return;
+    if (!active || !wideEnough) return;
     let last = window.scrollY;
     let raf = 0;
     const tick = () => {
@@ -49,25 +64,26 @@ export function PhotonicsPacketOverlay({
       const now = window.scrollY;
       const delta = Math.abs(now - last);
       last = now;
-      // Smoothed so the surge eases in and out instead of strobing.
       velocity.current += (Math.min(delta, 90) - velocity.current) * 0.12;
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [active]);
-
-  // positions.json is 144-344 KB. Worth it for the effect on a large
-  // screen; not worth it on a phone, where the particles are barely
-  // visible and those bytes compete with the hero frames.
-  const wideEnough = useMediaQuery("(min-width: 900px)");
+  }, [active, wideEnough]);
 
   const draw = useCallback(
     (
       ctx: CanvasRenderingContext2D,
-      get: (key: string) => Point | Point[] | undefined,
+      resolve: Resolver,
       t: number,
       size: { w: number; h: number }
     ) => {
+      const buffers = (buffersRef.current ??= {
+        fibre: new Float32Array(FIBRE_POINTS * 2),
+        a: [0, 0],
+        b: [0, 0],
+        p: [0, 0]
+      });
+
       const u = size.w / 620;
       const progress = (frameRef.current ?? 0) / Math.max(1, frameCount - 1);
       const surge = 1 + velocity.current * 0.05;
@@ -76,16 +92,17 @@ export function PhotonicsPacketOverlay({
       if (progress >= COPPER_LIT_FROM) {
         const strength = Math.min(1, (progress - COPPER_LIT_FROM) / 0.12);
         for (let i = 0; i < RACKS; i++) {
-          const a = get(`cu${i}a`) as Point | undefined;
-          const b = get(`cu${i}b`) as Point | undefined;
-          if (!a || !b) continue;
-          // two packets per rack, offset so the hall does not pulse in unison
+          const a = resolve.point(`cu${i}a`, buffers.a);
+          if (!a) continue;
+          const ax = a[0];
+          const ay = a[1];
+          const b = resolve.point(`cu${i}b`, buffers.b);
+          if (!b) continue;
           for (let k = 0; k < 2; k++) {
             const phase = (t * 0.55 * surge + i * 0.137 + k * 0.5) % 1;
-            const x = a[0] + (b[0] - a[0]) * phase;
-            const y = a[1] + (b[1] - a[1]) * phase;
-            const fade = Math.sin(phase * Math.PI);
-            glowDot(ctx, x, y, 1.4 * u, AMBER, 0.7 * strength * fade);
+            const x = ax + (b[0] - ax) * phase;
+            const y = ay + (b[1] - ay) * phase;
+            glowDot(ctx, x, y, 1.4 * u, AMBER, 0.7 * strength * Math.sin(phase * Math.PI));
           }
         }
       }
@@ -94,29 +111,28 @@ export function PhotonicsPacketOverlay({
       if (progress >= FIBRE_FROM) {
         const strength = Math.min(1, (progress - FIBRE_FROM) / 0.16);
         for (let row = 0; row < ROWS; row++) {
-          const path = get(`fibre${row}`) as Point[] | undefined;
-          if (!path || path.length < 4) continue;
+          const n = resolve.path(`fibre${row}`, buffers.fibre);
+          if (n < 4) continue;
 
-          ctx.save();
-          ctx.globalCompositeOperation = "lighter";
+          ctx.globalAlpha = 1;
           ctx.beginPath();
-          path.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+          ctx.moveTo(buffers.fibre[0], buffers.fibre[1]);
+          for (let i = 1; i < n; i++) {
+            ctx.lineTo(buffers.fibre[i * 2], buffers.fibre[i * 2 + 1]);
+          }
           ctx.strokeStyle = `rgba(75,214,196,${0.1 * strength})`;
           ctx.lineWidth = Math.max(1, u * 0.9);
           ctx.stroke();
-          ctx.restore();
 
           for (let k = 0; k < 2; k++) {
-            // Slower than copper in cycles-per-second, but covering far more
+            // Slower in cycles per second than copper, but covering far more
             // distance — the reach difference, shown.
             const phase = (t * 0.22 * surge + row * 0.2 + k * 0.5) % 1;
-            const p = alongPath(path, phase);
             const fade = 0.4 + 0.6 * Math.sin(phase * Math.PI);
-            glowDot(ctx, p[0], p[1], 2.1 * u, TEAL, 0.95 * strength * fade);
-
-            // short trail behind the packet
-            const trail = alongPath(path, Math.max(0, phase - 0.03));
-            glowDot(ctx, trail[0], trail[1], 1.3 * u, TEAL, 0.35 * strength * fade);
+            alongPath(buffers.fibre, n, phase, buffers.p);
+            glowDot(ctx, buffers.p[0], buffers.p[1], 2.1 * u, TEAL, 0.95 * strength * fade);
+            alongPath(buffers.fibre, n, phase - 0.03, buffers.p);
+            glowDot(ctx, buffers.p[0], buffers.p[1], 1.3 * u, TEAL, 0.35 * strength * fade);
           }
         }
       }
@@ -125,7 +141,7 @@ export function PhotonicsPacketOverlay({
       if (progress >= FIBRE_FROM) {
         const strength = Math.min(1, (progress - FIBRE_FROM) / 0.2);
         for (let i = 0; i < RACKS; i++) {
-          const p = get(`port${i}`) as Point | undefined;
+          const p = resolve.point(`port${i}`, buffers.p);
           if (!p) continue;
           const breathe = 0.5 + 0.5 * Math.sin(t * 1.4 + i * 0.4);
           glowDot(ctx, p[0], p[1], 1.1 * u, TEAL, 0.4 * strength * breathe);

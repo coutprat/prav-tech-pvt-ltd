@@ -1,0 +1,12 @@
+{
+  "page": "photonics",
+  "cpuThrottle": 1,
+  "frames": 220,
+  "medianMs": 16.7,
+  "p95Ms": 16.7,
+  "worstMs": 16.8,
+  "over20ms": 0,
+  "over34ms": 0,
+  "droppedPct": 0,
+  "estFps": 59.9
+}

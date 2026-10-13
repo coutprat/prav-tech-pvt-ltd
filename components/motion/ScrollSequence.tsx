@@ -115,7 +115,11 @@ export function ScrollSequence({
 
       paintedRef.current = false;
       setPainted(false);
-      const images: (HTMLImageElement | undefined)[] = new Array(set.count);
+      // ImageBitmap, not HTMLImageElement: createImageBitmap decodes off the
+      // main thread, so scrubbing never stalls on a frame that has arrived but
+      // not yet been decoded. Falls back to Image() where it is unavailable.
+      type Frame = ImageBitmap | HTMLImageElement;
+      const images: (Frame | undefined)[] = new Array(set.count);
       const loaded = new Set<number>();
       let current = 0;
       let disposed = false;
@@ -129,6 +133,11 @@ export function ScrollSequence({
         canvas.height = Math.round(rect.height * dpr);
         draw(current);
       };
+
+      const frameWidth = (f: Frame) =>
+        "naturalWidth" in f ? f.naturalWidth : f.width;
+      const frameHeight = (f: Frame) =>
+        "naturalHeight" in f ? f.naturalHeight : f.height;
 
       /** Draw frame `i`, falling back to the nearest frame already decoded. */
       const draw = (i: number) => {
@@ -152,9 +161,11 @@ export function ScrollSequence({
         const cw = canvas.width;
         const ch = canvas.height;
         // contain
-        const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
-        const w = img.naturalWidth * scale;
-        const h = img.naturalHeight * scale;
+        const iw = frameWidth(img);
+        const ih = frameHeight(img);
+        const scale = Math.min(cw / iw, ch / ih);
+        const w = iw * scale;
+        const h = ih * scale;
         const styles = getComputedStyle(document.body);
         ctx.fillStyle = styles.getPropertyValue("--paper").trim() || "#eeedea";
         ctx.fillRect(0, 0, cw, ch);
@@ -167,21 +178,44 @@ export function ScrollSequence({
 
       /* ---------------------------------------------------------- loading */
 
-      const load = (i: number) =>
-        new Promise<void>((resolve) => {
-          if (images[i]) return resolve();
+      const store = (i: number, frame: Frame) => {
+        if (disposed) {
+          if ("close" in frame) frame.close();
+          return;
+        }
+        images[i] = frame;
+        loaded.add(i);
+        // Redraw if this is what we are currently meant to be showing.
+        if (Math.abs(i - current) <= 1) draw(current);
+      };
+
+      const load = async (i: number): Promise<void> => {
+        if (images[i]) return;
+        const url = frameUrl(set, i + 1);
+
+        if (typeof createImageBitmap === "function") {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) return;
+            const bitmap = await createImageBitmap(await res.blob());
+            store(i, bitmap);
+            return;
+          } catch {
+            // fall through to the Image() path
+          }
+        }
+
+        await new Promise<void>((resolve) => {
           const img = new Image();
           img.decoding = "async";
           img.onload = () => {
-            images[i] = img;
-            loaded.add(i);
-            // Redraw if this is what we are currently meant to be showing.
-            if (Math.abs(i - current) <= 1) draw(current);
+            store(i, img);
             resolve();
           };
           img.onerror = () => resolve();
-          img.src = frameUrl(set, i + 1);
+          img.src = url;
         });
+      };
 
       const loadAll = async () => {
         await load(0);
@@ -229,7 +263,11 @@ export function ScrollSequence({
             start: "top top",
             end: `+=${scrollLength}%`,
             pin: true,
-            scrub: 0.5,
+            // scrub: true, not a number. Lenis already smooths the scroll;
+            // adding ScrollTrigger's own easing on top meant the frame
+            // trailed the wheel and the overlay trailed the frame. One
+            // smoothing source only.
+            scrub: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
@@ -249,6 +287,10 @@ export function ScrollSequence({
       return () => {
         disposed = true;
         cancel();
+        // ImageBitmaps hold GPU memory until closed.
+        for (const f of images) {
+          if (f && "close" in f) f.close();
+        }
         window.removeEventListener("resize", resize);
         tween?.scrollTrigger?.kill();
         tween?.kill();
