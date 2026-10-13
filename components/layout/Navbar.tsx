@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { List, X } from "@phosphor-icons/react";
 import { Mark } from "@/components/ui/Mark";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -75,23 +76,11 @@ export function Navbar() {
             aria-controls="nav-drawer"
             aria-label={open ? "Close menu" : "Open menu"}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-              {open ? (
-                <path
-                  d="M5 5l14 14M19 5L5 19"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              ) : (
-                <path
-                  d="M3 7h18M3 17h18"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              )}
-            </svg>
+            {open ? (
+              <X size={18} weight="bold" aria-hidden="true" />
+            ) : (
+              <List size={18} weight="bold" aria-hidden="true" />
+            )}
           </button>
         </div>
       </nav>

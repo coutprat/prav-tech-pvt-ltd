@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { Moon, Sun } from "@phosphor-icons/react";
 
 const KEY = "praverse-theme";
 
@@ -55,41 +56,11 @@ export function ThemeToggle() {
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
       title={dark ? "Light theme" : "Dark theme"}
     >
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        {dark ? (
-          <>
-            <circle cx="12" cy="12" r="4.4" stroke="currentColor" strokeWidth="1.6" />
-            {[
-              [12, 2, 12, 4.4],
-              [12, 19.6, 12, 22],
-              [2, 12, 4.4, 12],
-              [19.6, 12, 22, 12],
-              [4.9, 4.9, 6.6, 6.6],
-              [17.4, 17.4, 19.1, 19.1],
-              [19.1, 4.9, 17.4, 6.6],
-              [6.6, 17.4, 4.9, 19.1]
-            ].map(([x1, y1, x2, y2]) => (
-              <line
-                key={`${x1}-${y1}`}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              />
-            ))}
-          </>
-        ) : (
-          <path
-            d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2Z"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinejoin="round"
-          />
-        )}
-      </svg>
+      {dark ? (
+        <Sun size={17} weight="duotone" aria-hidden="true" />
+      ) : (
+        <Moon size={17} weight="duotone" aria-hidden="true" />
+      )}
     </button>
   );
 }
