@@ -710,3 +710,335 @@ deep-linking, and confirming a 4 GB Android is routed away from 3D.
 - [x] QA: build, lint, axe both themes, links, redirects, 192 screenshots
 - [x] `qa/DEVICE_CHECKLIST.md`
 - [ ] **SMTP credentials set and a real enquiry confirmed** — needs you
+
+---
+
+# Prompt 3 — meaning, smoothness, themes, story
+
+Nine things were asked for. What follows is what each turned into, the numbers
+before and after, and what is still open.
+
+## Q1. The Photonics scroll lag
+
+**Measured before touching anything.** Chrome DevTools tracing over a scripted
+scroll, at 1× and 4× CPU throttle, recording every frame interval:
+
+| | median | p95 | worst | frames > 20ms |
+|---|---|---|---|---|
+| photonics, 4× CPU, before | 18.4ms | 41ms | 133ms | 20.8% |
+| photonics, 4× CPU, after | 16.7ms | 16.8ms | 16.8ms | **0%** |
+| photonics, 1× CPU, after | 16.7ms | 16.8ms | 16.8ms | **0%** |
+
+Four separate causes, none of them the obvious one:
+
+1. **~100 `createRadialGradient` calls per frame.** Every light-packet dot built
+   its own gradient object. Now one glow sprite is pre-rendered per colour and
+   blitted with `drawImage`.
+2. **Per-frame array allocation** while resolving animation tracks. The JSON
+   tracks are flattened into a `Float32Array` once at load and read into
+   reusable buffers.
+3. **Two independent rAF loops.** The overlay ran on its own
+   `requestAnimationFrame` while the frame canvas ran on `gsap.ticker`, so the
+   dots were drawn against a frame that had already changed. Both are on
+   `gsap.ticker` now.
+4. **Double smoothing.** Lenis was easing the scroll and ScrollTrigger was
+   easing it again at `scrub: 0.5`. That is the drift — the overlay lagging the
+   frame underneath it. `scrub: true` leaves Lenis as the only source.
+
+Plus a DPR cap (2, or 1.5 on mobile) and `createImageBitmap` for off-thread
+decode.
+
+**Jank and drift were treated as separate bugs**, as asked. Causes 1 to 3 were
+jank; 4 was drift, and no amount of making the drawing faster would have fixed
+it.
+
+## Q2. The hero means something now
+
+The complaint was fair: a cube, a ring and some moving dots do not say "four
+business lines around one intelligence core".
+
+Three Blender iterations proved that **shape alone cannot carry it**. At hero
+framing each module is about 60px wide, and a vial and a voice coil are the same
+grey blob at that size. What fixed it:
+
+- **Domain-shaped modules** anyway (agent, vial, voice, optic), because they do
+  read on the close-up frames;
+- **colour**, which survives 60px — each module carries its line's accent;
+- **real HTML labels** that track the render. `HomeHeroLabels` positions actual
+  `<Link>` elements from the same `positions.json` the renderer exported, on
+  `gsap.ticker`. They are keyboard-reachable and crawlable, not canvas pixels,
+  and each lights as its module docks;
+- a **closing caption** — "One intelligence core. Four industries." — with the
+  four labels as clickable hotspots into each page.
+
+The Praverse mark sits on the core.
+
+## Q3. Light and dark are art-directed separately
+
+Dark is not light with the colours inverted. The two themes have **different
+Blender light rigs**, not one rig with a different background:
+
+| | key | fill | rim |
+|---|---|---|---|
+| light | 8.0 size, 1150 W | 13.0, 330 W | 8.0, 780 W |
+| dark | 6.0 size, 620 W | 12.0, 70 W | 7.5, 820 W |
+
+The single 2600 W key used before was clipping everything to white, which is why
+module tints and coloured rim light kept vanishing in light mode.
+
+New surface tokens, light then dark:
+
+```
+--paper   #f6f7f9 / #070b16      --ink    #0b1020 / #eef1f7
+--paper-2 #eceef2 / #0e1424      --ink-2  #4a5266 / #a3abbd
+--paper-3 #ffffff / #141b2e      --line   #dadde3 / #1e2638
+```
+
+Accents read as **coloured light** rather than coloured paint: they are mixed
+into the surface token, not laid over it. `--acc-ent-bright` (#9B85FF) exists
+because the light-mode violet is only 4.09:1 on the permanently-dark panels.
+
+**`qa/theme-board.png`** renders nine signature surfaces in both themes at the
+same scroll position, side by side. Built by `scripts/qa/theme-board.mjs`.
+
+> Worth knowing for anyone else screenshotting this site: headless Chromium
+> composites `<canvas>` correctly into a **fullPage** capture but not into a
+> viewport or element one. The canvas comes out solid black while
+> `getImageData` on that same element returns the right pixels, which looks
+> exactly like a real rendering bug. The board freezes each canvas into an
+> `<img>` of its own `toDataURL` first. The committed 192-shot QA matrix is
+> fullPage, so it was never affected.
+
+## Q4. Enterprise AI and Pharma — rebuilt twice
+
+The icon flowchart went first, replaced by a product-UI checkpoint. The owner
+then rejected **both** signatures on animation, writing and layout, with one
+instruction: *do not make rubbish flow*. The honest reading is that boxes with
+arrows between them are what every AI company's website already looks like.
+
+Both were replaced again, deliberately in **two different visual languages**,
+because they are two different buyers.
+
+**Enterprise AI — an agent run, in the console you would watch it in.** A real
+trigger, the four tools the agent reached for, what each returned, how long each
+took, and then the part that matters: it stops. Nothing is sent until a named
+reviewer approves, and the run is logged either way. The left column is the
+machine working; the right column needed a human. Permanently dark on both
+themes, because the thing it depicts is dark in real life and an enterprise
+buyer reads "product" from that instantly.
+
+**Pharma — a 483 observation becoming a response that survives a room.** Paper,
+not console. A QA head preparing for an inspection is not thinking about tool
+calls, they are thinking about whether every sentence they file is defensible.
+Observation on the left, response assembling on the right, each paragraph
+arriving with the record it rests on, the evidence rail lighting up as each is
+cited, nothing filed until QA signs.
+
+Both runs and observations are invented and labelled as such: no real
+inspection, company, product, person or timing.
+
+A **video slot** exists for both (`content/media.ts` → `signatureVideo`), null by
+default. Both sections are complete without footage, and a null entry renders no
+video layer at all, so a missing file can never leave a black rectangle on a
+live page.
+
+### Icons
+
+**Phosphor Icons** — MIT licence — https://phosphoricons.com — used at `duotone`
+weight. The business-line card motifs stay hand-drawn on purpose: each is a small
+diagram of what that line actually does, and a generic pictogram would say less.
+
+## Q5. MENNIE is one continuous shot
+
+The owner's call, and the right one. The section used to hand its second half to
+a 2.5D depth plate built from a still, so it showed the same product twice in two
+visual languages and pulled in three.js to do it.
+
+Now: **one piece of footage**, scrubbed from first frame to last, with everything
+surfacing on top — the title, the voice panels, the three surfaces, the closing
+caption. A scrim fades in only while text is on screen, because the shot ends on
+a blown-out sunrise and white-on-sky is not a contrast ratio.
+
+Deleted: `components/three/MennieScene.tsx`, `scripts/media/depth.py`,
+`depth.png`, `spine-mask.png`. The page no longer loads a 3D engine at all.
+
+The supplied clip carried a generator watermark. `scripts/media/cinematic.sh`
+removes it with ffmpeg `delogo` and re-encodes at a 6-frame GOP — a normal ~2s
+keyframe interval makes every scrub seek decode a long run of P-frames, which is
+what makes scrubbed video feel like treacle.
+
+## Q6. Ashwani's portrait
+
+Re-cut from the original 4284×5712 frame he supplied. Background removed with
+rembg (`birefnet-portrait`), composited onto the same warm-grey plate as the
+other two, framed tight so all three faces are the same size — his call when
+shown the alternatives.
+
+Upsampled 1.44× with plain Lanczos. **No generative face enhancement and no AI
+upscaler**, per the brief: those invent detail and change what a real person
+looks like.
+
+## Q7. Story and content
+
+- **Locations are team members, not offices.** One registered office, in
+  Vadodara; everywhere else on the list is a person. `Footprint` on Company ranks
+  India's data-centre markets and marks the four where Praverse has people — four
+  of the top five. Third-party market data, so the sources and the deck's own
+  "forecasts vary widely" caveat sit directly under it.
+- **No India outline anywhere.** A national boundary on a commercial site has to
+  use the official Survey of India map and we do not have it. The outline was
+  never carrying the argument.
+- **Nexgen is the pharma advantage**, named in text only.
+- **Photonics is a three-phase roadmap** (Now / Next / Planned). Phases 2 and 3
+  are plans, not facilities, and say so.
+- **"Small team" is gone** everywhere, without being replaced by inflation.
+- **"What this means for you"** under each of the six capabilities — what the
+  buyer gets, in their terms. Operational claims only: no time savings, accuracy
+  figures or costs, none of which we can evidence.
+- **Core team section** exists and is consent-gated: `content/site.ts` → `team` is
+  empty and stays empty until each person agrees to be named and photographed.
+  Adding an entry is a data change with no design work behind it.
+- **Markets narrowed** to India, the US and Europe. An earlier draft of
+  `content/site.ts` also claimed Australia and Asia; both decks say three markets
+  and nothing supports the other two.
+
+## Q8. The real logo, and two real facts
+
+The site had been shipping an **invented logo** — a generic rounded-square orbit
+glyph — while the actual company mark sat unused in the decks.
+
+No vector original exists. The only copies are rasters: a flat PNG in the company
+profile deck, and a 3D signage render. The deck PNG is geometrically accurate but
+carries compression damage exactly where the P's bowl rejoins the stem — the teal
+is eaten away to grey mush and the arm is severed outright, so an automatic
+contour trace reproduces that tear faithfully.
+
+So the glyph is **authored from measurements taken off the raster** — row-by-row
+edge extents, every number checkable against the source — with only the damaged
+junction reconstructed, and the signage render used to confirm that the bowl does
+rejoin the stem there. Rings, nodes and all 32 dots are undamaged, so their
+positions, radii and colours are read straight out of the raster. An overlay of
+the result against the source lines up to a hairline.
+
+```
+scripts/media/logo.py    regenerates everything from assets-incoming/
+public/logo.svg          full mark, 3.5 KB (JSON-LD, link previews)
+public/favicon.svg       same glyph path, reduced — the rings and 32 nodes turn
+                         to mush below ~32px. Legible at 16px.
+components/ui/Mark.tsx   inlined in header and footer so it cannot flash in
+                         after first paint
+```
+
+The owner also supplied company signage artwork carrying **two facts the site had
+been withholding** behind `<Verify>`:
+
+- **CIN** `U62020GJ2026PTC175386`
+- **Registered office** Office No. 413, Tower 2, PL No. 71, Prince Cube,
+  Nr. Gangotri Exotica, T B Sanatorium, Vadodara 390021, Gujarat, India
+
+Both now ship in the footer. The CIN decomposes consistently — U62020 (computer
+programming and consultancy), GJ, 2026 (incorporation year), PTC (private
+limited) — which is a useful check that it was read off the artwork correctly.
+`VerifyItem` gained an optional `source` field, because `content/verify.ts`
+already said to flip `confirmed` only with a source and had nowhere to record
+one.
+
+No photonics-specific logo exists in either deck. The icons in the decks are
+generic stock pictograms, not a product mark.
+
+## Q9. QA and performance
+
+### Mobile Lighthouse
+
+| page | before | after | LCP | CLS | TBT |
+|---|---|---|---|---|---|
+| home | 95 | **95** | 2.92s | 0.000 | 17ms |
+| enterprise-ai | 95 | **95** | 3.02s | 0.000 | 24ms |
+| pharma | 95 | **94** | 3.10s | 0.000 | 8ms |
+| photonics | **84** | **96** | 2.76s | 0.000 | 11ms |
+| mennie | 92 | **93** | 3.19s | 0.000 | 89ms |
+| company | 95 | **95** | 3.00s | 0.000 | 8ms |
+| contact | 96 | **96** | 2.77s | 0.000 | 5ms |
+
+Accessibility is **100** on every page, in both themes, with zero axe violations.
+
+**The Photonics regression was the find of this round.** It was not frame weight
+and not render cost. `ModuleSection` imported `PARTS` from `ModuleExploded` — one
+*static* import that pulled three.js, @react-three/fiber, drei and postprocessing
+into the page bundle, so the scroll-intent IntersectionObserver below it was
+lazily loading a chunk the browser had already fetched and compiled. The LCP
+element had 1134ms of load delay on Photonics and 0ms on Home.
+
+Separately, `next/dynamic` emits a modulepreload for its chunk, which made
+MennieFilm's carefully gated `requestIdleCallback` prefetch a no-op. Both
+sections now use a bare runtime `import()` stored in state, which that machinery
+cannot see.
+
+Lesson worth keeping: **a single static import of a data constant can silently
+defeat every lazy path in a file.**
+
+### New checks
+
+**`scripts/qa/overflow-check.mjs`** asserts that no page can be scrolled
+sideways, across 12 pages × 4 widths. It found a real defect immediately:
+`/pharma` scrolled sideways on every phone width. Two causes — the spec table's
+scroll container could not shrink below the table's intrinsic width (no
+`min-width: 0` inside its grid parent), and the table's `.sr-only` spans are
+`position: absolute`, so with the container `static` their containing block was
+an ancestor *outside* it and the overflow never clipped them. That is why
+`overflow: hidden` on the container did nothing while `contain: paint` did.
+
+Screenshots cannot catch this. A horizontally scrolling page still renders
+perfectly at scroll position 0, so all 192 shots in the QA matrix looked fine.
+The check tests whether the page *actually scrolls*, not whether any box is wider
+than the viewport, because the latter reports false positives on correct markup
+like a scrollable table.
+
+**`scripts/qa/theme-board.mjs`** builds the light/dark board described above.
+
+### Still in place from prompt 2
+
+`scripts/qa/qa.mjs` (192 shots: 12 pages × 2 browsers × 2 viewports × 2 themes ×
+2 motion settings), `text-check.mjs`, `scroll-perf.mjs`, `theme-check.mjs`.
+
+## Open `[VERIFY]` items and launch blockers
+
+Added this round:
+
+| id | what it needs |
+|---|---|
+| `founded-vs-incorporated` | Both decks say founded 2023; the CIN encodes 2026 as the year of incorporation. Both can be true — work started in 2023, the private limited company was registered in 2026 — but "Founded in 2023" sitting next to a 2026 CIN is exactly what a US or EU buyer's diligence picks up. Confirm the wording. |
+| `nexgen-relationship` | Sister company, group company, or consulting partner? The site says "our pharma consulting partner", which is true either way. |
+| `nexgen-logo` | Permission and a source URL. Text only until then. |
+| `photonics-india-qualification` | Which Phase 1 activities are running *today* versus planned. |
+
+Confirmed this round: `cin` and `registered-address`, both from owner-supplied
+signage artwork, both still worth one check against the MCA register before
+launch, since a wrong CIN is a wrong legal identifier.
+
+Still open from earlier rounds: see §6 and §P12.
+
+**`whatsappNumber` is still marked TEMPORARY** in `content/site.ts`. It matches
+the number printed on both decks, so it is at least a real published business
+contact, but it has not been confirmed as *the* WhatsApp line.
+
+## Acceptance checklist (prompt 3)
+
+- [x] Photonics lag measured first, then fixed — 0% dropped frames at 1× and 4×
+- [x] Jank and drift treated as separate bugs
+- [x] Hero means something: domain shapes, colour, live labels, clickable hotspots
+- [x] Light and dark art-directed separately, with per-theme light rigs
+- [x] `qa/theme-board.png`
+- [x] Enterprise AI and Pharma rebuilt as product UI, not flows
+- [x] Phosphor Icons, MIT, source and licence recorded
+- [x] MENNIE is one continuous video with the interface over it
+- [x] Watermark removed from the supplied clip
+- [x] Ashwani's photo, no generative enhancement
+- [x] British/International English throughout
+- [x] "Small team" removed; locations are team members
+- [x] Nexgen as the pharma advantage; Photonics three-phase roadmap
+- [x] Real logo, favicon and inline mark, from the owner's own artwork
+- [x] Accessibility 100 on every page, both themes, zero axe violations
+- [x] No page scrolls sideways at 360 / 390 / 420 / 768
+- [x] No route deletions
+- [x] Branch `redesign-2026` only — `main` untouched

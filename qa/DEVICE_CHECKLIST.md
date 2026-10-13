@@ -114,3 +114,57 @@ Turn it on: **iOS** Settings → Accessibility → Motion → Reduce Motion.
 For each failure: the page, device and OS version, what you did, what
 happened, and a screen recording if the problem is motion-related — a still
 rarely shows a scrolling bug.
+
+---
+
+## Prompt 3 additions
+
+Things that changed enough in this round to be worth a human looking at on a
+real device. Everything here is already covered by an automated check except
+where noted; these are the ones where a machine can confirm the mechanics but
+not the feel.
+
+### Home hero
+
+- [ ] The four labels sit **on** their modules as the camera pushes in, not
+      beside them, and do not jitter. Hidden below 900px by design.
+- [ ] Each label flips to the inboard side rather than running off the right
+      edge.
+- [ ] Tapping a label navigates to that page. They are real links.
+- [ ] The closing caption appears only at the end, not over the modules.
+
+### MENNIE
+
+- [ ] The film is **one continuous shot** — if you see a cut to a different
+      scene, something has regressed.
+- [ ] Scrubbing back and forth stays smooth. Treacle means the short-GOP
+      re-encode did not take.
+- [ ] Text stays readable over the sunrise at the end. That is the scrim.
+- [ ] On a low-power phone or with reduced motion you get the image hero
+      instead, carrying the same lines.
+
+### Enterprise AI and Pharma signatures
+
+- [ ] The console reads as a product, not a diagram, at phone width.
+- [ ] The approval gate is clearly the pivot: machine above/left, human
+      below/right.
+- [ ] Pharma highlights wipe in like a marker, and the text on them is readable
+      in **both** themes. Dark was a real failure before it was fixed.
+- [ ] The evidence rail lights the record each paragraph cites.
+
+### Theme switching
+
+- [ ] Switch theme **mid-scroll**, inside a pinned section. Nothing should jump,
+      re-pin, or lose its place.
+- [ ] Switch theme on the hero: the frame sequence swaps light/dark frames
+      without a flash of the wrong one.
+- [ ] Compare against `qa/theme-board.png` — if a surface looks different from
+      the board, the board is stale or the surface regressed.
+
+### Everywhere
+
+- [ ] No page scrolls sideways. Automated by `scripts/qa/overflow-check.mjs`,
+      but worth a thumb-swipe on a real phone, especially `/pharma` where the
+      spec table lives.
+- [ ] The logo in the header is crisp at every pixel ratio and does not flash in
+      after the rest of the page.
