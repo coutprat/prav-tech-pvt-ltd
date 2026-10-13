@@ -467,6 +467,55 @@ export const people = [
   }
 ] as const;
 
+/**
+ * The group around Praverse.
+ *
+ * Nexgen is the differentiator for pharma buyers: the AI is built alongside
+ * people who stand in front of inspectors for a living. Only what Nexgen
+ * actually does is stated - no client names, no results.
+ */
+export const ecosystem = [
+  {
+    name: "Praverse Tech",
+    role: "AI and photonics",
+    body: "Enterprise AI, pharma and regulatory AI, MENNIE, and the interconnect layer for AI data centres."
+  },
+  {
+    name: "Nexgen Pharma Solutions",
+    role: "Pharma quality and regulatory consulting",
+    body: "QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). Led by Ashwani Shrivastav."
+  },
+  {
+    name: "SWATI Spentose",
+    role: "Pharma advisory",
+    body: "V-Group, established 1952. USFDA, EU-GMP, PMDA Japan and WHO-GMP approvals; three units in Vapi, Gujarat."
+  },
+  {
+    name: "Our US technology partner",
+    role: "Interconnect technology",
+    body: "AI-cluster copper and optical interconnect, supplied into Indian data-centre projects."
+  }
+] as const;
+
+/** The three-phase interconnect roadmap. Nothing here claims a plant exists. */
+export const photonicsPhases = [
+  {
+    stage: "PHASE 1 · NOW",
+    title: "Supply and design-in",
+    body: "Interconnect supplied with our US technology partner, with India-side programming, testing, labelling and qualification, and support on local time."
+  },
+  {
+    stage: "PHASE 2 · NEXT",
+    title: "Semi-finished assembly in India",
+    body: "Assembly of semi-finished interconnect in India, close to the clusters being built."
+  },
+  {
+    stage: "PHASE 3 · PLANNED",
+    title: "Indian manufacturing",
+    body: "An Indian manufacturing facility for copper interconnect first, then optical, as volumes justify it."
+  }
+] as const;
+
 export const partners = [
   {
     name: "Infraeo Inc. (USA)",

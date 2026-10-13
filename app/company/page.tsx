@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
-import { company, founderStory, partners, people } from "@/content/company";
-import { site } from "@/content/site";
+import { company, ecosystem, founderStory, partners, people } from "@/content/company";
+import { locations, site } from "@/content/site";
 
 export const metadata: Metadata = pageMeta({
   title: "Company",
@@ -21,11 +21,10 @@ export default function CompanyPage() {
         <div className="wrap">
           <SectionLabel accent="teal">Company</SectionLabel>
           <Headline as="h1" className="display">
-            Small team. Long résumés.
+            Built by people who have done the work.
           </Headline>
           <p className="lede" style={{ marginTop: 32 }}>
-            Founded in {company.founded}, headquartered in {company.hq}, working
-            across {company.markets}.
+            Founded in {company.founded}. {locations.line} {locations.markets}
           </p>
         </div>
       </section>
@@ -52,6 +51,37 @@ export default function CompanyPage() {
               <p key={p.slice(0, 40)}>{p}</p>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* --------------------------------------------------------- ecosystem */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel>The group</SectionLabel>
+          <Headline onScroll>More than one kind of expertise.</Headline>
+          <p className="body-2" style={{ marginTop: 18 }}>
+            Buying AI for a regulated business usually means hiring the
+            engineers and the compliance people separately, and hoping they
+            understand each other. Here they already do.
+          </p>
+
+          <div className="grid-4">
+            {ecosystem.map((e) => (
+              <article className="card" key={e.name}>
+                <p className="line-card-n">{e.role}</p>
+                <h3 className="h3" style={{ fontSize: 19, marginTop: 12 }}>
+                  {e.name}
+                </h3>
+                <p className="body-2" style={{ marginTop: 10, fontSize: 14 }}>
+                  {e.body}
+                </p>
+              </article>
+            ))}
+          </div>
+          <p className="body-2" style={{ marginTop: 24, fontSize: 14 }}>
+            Named in text only. We do not display a partner&rsquo;s logo without
+            written permission.
+          </p>
         </div>
       </section>
 

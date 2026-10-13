@@ -3,6 +3,9 @@
 import { useRef } from "react";
 import { ScrollSequence, type FrameSet } from "@/components/motion/ScrollSequence";
 import { HomeRingOverlay } from "@/components/sections/HomeRingOverlay";
+import { HomeHeroLabels } from "@/components/sections/HomeHeroLabels";
+import { useTheme } from "@/lib/useMediaQuery";
+import { HeroFinalCaption } from "@/components/sections/HeroFinalCaption";
 import { useReducedMotion } from "@/lib/useMediaQuery";
 
 /**
@@ -26,6 +29,8 @@ export function HomeHero({
 }) {
   const frameRef = useRef(0);
   const reduced = useReducedMotion();
+  const theme = useTheme();
+  const dir = theme === "dark" ? "desktop-dark" : "desktop";
 
   return (
     <ScrollSequence
@@ -39,11 +44,20 @@ export function HomeHero({
       scrollLength={420}
       frameRef={frameRef}
       overlay={
-        <HomeRingOverlay
-          frameRef={frameRef}
-          frameCount={frames.desktop.count}
-          active={!reduced}
-        />
+        <>
+          <HomeRingOverlay
+            frameRef={frameRef}
+            frameCount={frames.desktop.count}
+            active={!reduced}
+          />
+          <HeroFinalCaption frameRef={frameRef} frameCount={frames.desktop.count} />
+          <HomeHeroLabels
+            frameRef={frameRef}
+            frameCount={frames.desktop.count}
+            tracksUrl={`/media/home/${dir}/positions.json`}
+            active={!reduced}
+          />
+        </>
       }
       chapters={[
         {

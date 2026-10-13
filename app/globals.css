@@ -10,15 +10,18 @@
 
 :root {
   /* --- surface ------------------------------------------------------- */
-  --paper: #eeedea;
-  --paper-2: #e4e3df;
-  --paper-3: #f6f5f3; /* raised: cards that need to read above --paper */
-  --line: #d3d2ce; /* decorative hairline */
+  /* Light is art-directed as a bright, high-key studio: a premium cool white
+     rather than a warm grey, with the raised surface going to pure white so
+     cards lift off the page instead of sinking into it. */
+  --paper: #f6f7f9;
+  --paper-2: #eceef2;
+  --paper-3: #ffffff; /* raised: cards that need to read above --paper */
+  --line: #dadde3; /* decorative hairline */
   --line-strong: #7f7d77; /* 3.5:1 — inputs, focus, meaningful borders */
 
   /* --- ink ----------------------------------------------------------- */
-  --ink: #0e1220;
-  --ink-2: #4a5063;
+  --ink: #0b1020;
+  --ink-2: #4a5266;
 
   /* --- brand --------------------------------------------------------- */
   --navy: #12172a;
@@ -84,14 +87,16 @@
    All pairs verified ≥ 4.5:1.
    -------------------------------------------------------------------------- */
 [data-theme="dark"] {
-  --paper: #0e1220;
-  --paper-2: #171c2e;
-  --paper-3: #1c2235;
-  --line: #2a3043;
+  /* Dark is designed on its own terms, not as inverted light: a deep navy-ink
+     ground rather than black, so emissive accents have somewhere to glow. */
+  --paper: #070b16;
+  --paper-2: #0e1424;
+  --paper-3: #141b2e;
+  --line: #1e2638;
   --line-strong: #646c80; /* 3.6:1 on dark paper */
 
-  --ink: #ecebe7;
-  --ink-2: #a6acbc;
+  --ink: #eef1f7;
+  --ink-2: #a3abbd;
 
   --navy: #080b14; /* CTA/footer go deeper than the page */
   --teal: #4bd6c4;
@@ -3342,4 +3347,125 @@ body::before {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* ==========================================================================
+   HOME HERO — live labels and hotspots
+   Real links positioned from the render's exported screen coordinates, so
+   each one sits on its module as the camera moves.
+   ========================================================================== */
+
+.hero-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.hero-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: auto;
+  will-change: transform;
+}
+.hero-label[data-on="true"] {
+  opacity: 1;
+}
+.hero-label-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 22%, transparent);
+  transition: box-shadow 0.3s ease;
+}
+.hero-label-body {
+  display: block;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--acc);
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow-2);
+  white-space: nowrap;
+}
+.hero-label-body b {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.hero-label-body span {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+/* flip to the other side when the module nears the right edge */
+.hero-label[data-side="left"] {
+  flex-direction: row-reverse;
+  transform-origin: right center;
+}
+.hero-label[data-side="left"] .hero-label-body {
+  border-left: 1px solid var(--line);
+  border-right: 2px solid var(--acc);
+  transform: translateX(-100%);
+}
+.hero-label[data-side="left"] .hero-label-dot {
+  transform: translateX(-100%);
+}
+.hero-label:hover .hero-label-dot,
+.hero-label:focus-visible .hero-label-dot {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--acc) 30%, transparent);
+}
+.hero-label:focus-visible .hero-label-body {
+  outline: 2px solid var(--acc-ink);
+  outline-offset: 3px;
+}
+
+@media (max-width: 899px) {
+  /* On a phone the labels would cover the subject; the chapter text already
+     names each line as it docks. */
+  .hero-labels {
+    display: none;
+  }
+}
+
+/* closing caption on the final frame */
+.hero-final {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  z-index: 4;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+.hero-final[data-on="true"] {
+  opacity: 1;
+}
+.hero-final p {
+  font-size: clamp(17px, 2vw, 23px);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.hero-final small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-top: 10px;
 }

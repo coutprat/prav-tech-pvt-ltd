@@ -30,8 +30,7 @@ export default function CareersPage() {
             Build things that get used.
           </Headline>
           <p className="lede" style={{ marginTop: 32 }}>
-            We are a small team in {company.hq}{" "}
-            building enterprise AI for
+            We build enterprise AI for
             healthcare, pharma and regulated industries — and the interconnect
             layer underneath India&rsquo;s sovereign AI data centres.
           </p>
@@ -60,7 +59,7 @@ export default function CareersPage() {
             </article>
             <article className="card">
               <h2 className="h3" style={{ fontSize: 20 }}>
-                Small team, wide surface
+                Wide surface
               </h2>
               <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
                 Founded {company.founded}. You will not be handed one narrow

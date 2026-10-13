@@ -13,10 +13,11 @@ import {
   CTASection
 } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
+import { locations } from "@/content/site";
 import { photonicsFrames } from "@/content/media";
 import {
   formFactors,
-  photonicsMilestones,
+  photonicsPhases,
   portfolio,
   speedRoadmap,
   whySovereign
@@ -24,7 +25,7 @@ import {
 
 export const metadata: Metadata = pageMeta({
   title: "Photonics & AI Data Centres",
-  description: "High-speed copper and optical interconnect for India's sovereign AI data centres: architecture, design-in, qualification and support.",
+  description: "India's partner for high-speed AI interconnect: supply and design-in today, Indian manufacturing on a staged roadmap.",
   path: '/photonics',
   og: 'photonics'
 });
@@ -56,9 +57,10 @@ export default function PhotonicsPage() {
             The layer every AI cluster runs on.
           </Headline>
           <p className="lede" style={{ marginTop: 32 }}>
-            An AI cluster is only as fast as the links between its GPUs. We supply
-            and design in the copper and optical interconnect that carries that
-            traffic — with the architecture, qualification and support done in India.
+            An AI cluster is only as fast as the links between its GPUs. We are
+            India&rsquo;s partner for the copper and optical interconnect that
+            carries that traffic — supplying and designing it in today, and
+            building the capability to manufacture it here.
           </p>
         </div>
       </section>
@@ -157,7 +159,9 @@ export default function PhotonicsPage() {
       <section className="section">
         <div className="wrap">
           <SectionLabel accent="line">Our model</SectionLabel>
-          <Headline onScroll>What we actually do.</Headline>
+          <Headline onScroll>
+            Building India&rsquo;s AI interconnect capability — in three phases.
+          </Headline>
 
           <div className="grid-2" style={{ alignItems: "start" }}>
             <div>
@@ -167,10 +171,13 @@ export default function PhotonicsPage() {
                 integration, qualification and support, for sovereign AI data centres.
               </p>
               <p className="body-2" style={{ marginTop: 24 }}>
-                <strong>We do not manufacture in India today.</strong> Local testing
-                and qualification come first; assembly follows when volumes justify
-                it. We would rather say that plainly than imply a factory we do not
-                have.
+                Each phase is unlocked by customer demand, so capacity arrives
+                when India&rsquo;s AI build-out needs it — not before.
+              </p>
+              <p className="body-2" style={{ marginTop: 16, fontSize: 15 }}>
+                Our team works from the cities that hold most of India&rsquo;s
+                data-centre capacity, close to where deployments happen.
+                Vadodara to Mumbai is about {locations.hqToMumbaiKm} km.
               </p>
             </div>
 
@@ -192,8 +199,13 @@ export default function PhotonicsPage() {
           <SectionLabel accent="line">Roadmap</SectionLabel>
           <Headline onScroll>Where this goes.</Headline>
           <div style={{ marginTop: 48 }}>
-            <MilestoneTracker items={photonicsMilestones} />
+            <MilestoneTracker items={photonicsPhases} />
           </div>
+          <p className="body-2" style={{ marginTop: 28, fontSize: 15 }}>
+            Phases 2 and 3 are plans, not facilities. We will not show you a
+            factory we do not have, and we will not quote a location, a
+            capacity or a date until one is signed.
+          </p>
         </div>
       </section>
 

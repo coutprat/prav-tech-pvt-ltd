@@ -26,7 +26,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import bpy  # noqa: E402
 from mathutils import Vector  # noqa: E402
 from _common import (  # noqa: E402
-    CERAMIC,
+    CERAMIC, TEAL,
     add_camera, build_studio, ease_all, emission_input, evaluated_location,
     export_positions, key, key_socket,
     mat_aluminium, mat_ceramic, mat_glass, mat_seam,
@@ -42,10 +42,14 @@ CORE_Z = 1.18          # core centre height above the plinth top
 # business line's accent so the hero and the page speak the same colour
 # language: violet -> emerald -> sky -> amber.
 MODULES = [
-    {"name": "EnterpriseAI", "angle": 48, "colour": (0.486, 0.361, 1.000, 1.0)},   # #7C5CFF
-    {"name": "PharmaAI", "angle": 138, "colour": (0.063, 0.725, 0.506, 1.0)},      # #10B981
-    {"name": "Healthcare", "angle": 228, "colour": (0.220, 0.741, 0.973, 1.0)},    # #38BDF8
-    {"name": "Photonics", "angle": 318, "colour": (0.961, 0.620, 0.043, 1.0)},     # #F59E0B
+    {"name": "EnterpriseAI", "angle": 48, "kind": "agent",
+     "colour": (0.486, 0.361, 1.000, 1.0)},   # #7C5CFF violet
+    {"name": "PharmaAI", "angle": 138, "kind": "vial",
+     "colour": (0.063, 0.725, 0.506, 1.0)},   # #10B981 emerald
+    {"name": "Healthcare", "angle": 228, "kind": "voice",
+     "colour": (0.220, 0.741, 0.973, 1.0)},   # #38BDF8 sky
+    {"name": "Photonics", "angle": 318, "kind": "optic",
+     "colour": (0.961, 0.620, 0.043, 1.0)},   # #F59E0B amber
 ]
 
 
@@ -69,7 +73,7 @@ def build_plinth(dark=False):
     bev.width = 0.045
     bev.segments = 8
     bev.limit_method = "ANGLE"
-    plinth_col = (0.105, 0.125, 0.195, 1.0) if dark else (0.80, 0.795, 0.785, 1.0)
+    plinth_col = (0.075, 0.095, 0.165, 1.0) if dark else (0.855, 0.865, 0.885, 1.0)
     plinth.data.materials.append(mat_ceramic("PlinthMat", plinth_col))
     smooth(plinth, angle=30)
 
@@ -80,7 +84,7 @@ def build_plinth(dark=False):
     )
     inlay = bpy.context.object
     inlay.name = "PlinthInlay"
-    inlay_col = (0.150, 0.175, 0.260, 1.0) if dark else (0.62, 0.625, 0.635, 1.0)
+    inlay_col = (0.115, 0.140, 0.225, 1.0) if dark else (0.70, 0.715, 0.745, 1.0)
     inlay_mat = mat_ceramic("PlinthInlayMat", inlay_col)
     inlay_mat.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.12
     inlay.data.materials.append(inlay_mat)
@@ -151,21 +155,21 @@ def build_module(spec, index):
     bpy.ops.mesh.primitive_cube_add(size=1.0, location=pos)
     body = bpy.context.object
     body.name = f"Module_{spec['name']}"
-    body.scale = (0.52, 0.34, 0.44)
+    body.scale = (0.60, 0.40, 0.50)
     body.rotation_euler = (RING_TILT * math.cos(a), 0, a)
     bev = body.modifiers.new("Bevel", "BEVEL")
     bev.width = 0.045
     bev.segments = 6
     bev.limit_method = "ANGLE"
     bev.harden_normals = True
-    body.data.materials.append(mat_ceramic(f"ModBody_{index}", (0.91, 0.91, 0.90, 1.0)))
+    body.data.materials.append(tinted(f"ModBody_{index}", spec["colour"], 0.22))
     smooth(body, angle=45)
 
     # brushed collar where it meets the ring
     bpy.ops.mesh.primitive_cube_add(size=1.0, location=pos)
     collar = bpy.context.object
     collar.name = f"Collar_{spec['name']}"
-    collar.scale = (0.22, 0.39, 0.49)
+    collar.scale = (0.25, 0.46, 0.56)
     collar.rotation_euler = body.rotation_euler
     collar.data.materials.append(mat_aluminium(f"ModCollar_{index}"))
     smooth(collar, angle=45)
@@ -175,10 +179,17 @@ def build_module(spec, index):
     bpy.ops.mesh.primitive_cube_add(size=1.0, location=pos)
     seam = bpy.context.object
     seam.name = f"Seam_{spec['name']}"
-    seam.scale = (0.555, 0.098, 0.225)
+    seam.scale = (0.635, 0.110, 0.255)
     seam.rotation_euler = body.rotation_euler
     seam_mat = mat_seam(f"SeamMat_{index}", spec["colour"], strength=0.0, tint=0.92)
     seam.data.materials.append(seam_mat)
+
+    # --- the part that says which business this is ----------------------
+    # An abstract block tells a visitor nothing. Each module carries a shape
+    # its industry would recognise, in that line's colour.
+    parts = [body, collar, seam] + build_module_detail(
+        spec, index, pos, body.rotation_euler, seam_mat
+    )
 
     # Rim light on the core in the same colour, so the core picks up each
     # line's accent as that module locks in rather than staying inert white.
@@ -194,7 +205,172 @@ def build_module(spec, index):
     rim.rotation_euler = (math.radians(86), 0, a + math.pi / 2)
     bpy.context.scene.collection.objects.link(rim)
 
-    return [body, collar, seam], seam_mat, pos, a, rim
+    return parts, seam_mat, pos, a, rim
+
+
+def tinted(name, colour, amount=0.80):
+    """Soft matte in a line's colour. Keeps the ceramic feel, adds identity."""
+    base = tuple(
+        0.93 * (1 - amount) + colour[i] * amount for i in range(3)
+    ) + (1.0,)
+    return mat_ceramic(name, base)
+
+
+def build_module_detail(spec, index, pos, rot, seam_mat):
+    """
+    The domain-recognisable part of each module.
+
+      agent  Enterprise AI - a slim slab with two floating document cards
+      vial   Pharma AI     - a capsule with a hex-lattice etch band
+      voice  Healthcare    - a shell segment with a sound-wave strip
+      optic  Photonics     - a transceiver block with a short fibre tail
+
+    Each sits on the outward face of its module, so the camera sees it as the
+    module docks.
+    """
+    kind = spec["kind"]
+    colour = spec["colour"]
+    x, y, z = pos
+    yaw = rot[2]
+    out = []
+
+    def place(obj, dx=0.0, dy=0.0, dz=0.0):
+        """Offset along the module's own axes, keeping its rotation."""
+        obj.location = (
+            x + dx * math.cos(yaw) - dy * math.sin(yaw),
+            y + dx * math.sin(yaw) + dy * math.cos(yaw),
+            z + dz,
+        )
+        obj.rotation_euler = rot
+        out.append(obj)
+        return obj
+
+    if kind == "agent":
+        # two document cards hanging above the module, fanned
+        for i, (dy, dz, sc) in enumerate(((-0.17, 0.78, 1.0), (0.19, 0.95, 0.82))):
+            bpy.ops.mesh.primitive_cube_add(size=1.0)
+            card = bpy.context.object
+            card.name = f"Doc_{index}_{i}"
+            card.scale = (0.022, 0.30 * sc, 0.38 * sc)
+            card.data.materials.append(
+                tinted(f"DocMat_{index}_{i}", colour, 0.30)
+            )
+            place(card, 0.0, dy, dz)
+            # lines of text, the top one lit: the agent has read this page
+            for j, (ly, lw, lit) in enumerate(
+                ((0.10, 0.20, True), (0.02, 0.24, False), (-0.06, 0.16, False))
+            ):
+                bpy.ops.mesh.primitive_cube_add(size=1.0)
+                line = bpy.context.object
+                line.name = f"DocLine_{index}_{i}_{j}"
+                line.scale = (0.027, lw * sc, 0.022 * sc)
+                line.data.materials.append(
+                    seam_mat
+                    if lit
+                    else tinted(f"DocLineMat_{index}_{i}_{j}", colour, 0.55)
+                )
+                place(line, 0.0, dy, dz + ly * sc)
+
+    elif kind == "vial":
+        # a capsule standing above the module
+        bpy.ops.mesh.primitive_cylinder_add(radius=0.19, depth=0.60, vertices=48)
+        cap = bpy.context.object
+        cap.name = f"Vial_{index}"
+        bev = cap.modifiers.new("Bevel", "BEVEL")
+        bev.width = 0.085
+        bev.segments = 10
+        bev.limit_method = "ANGLE"
+        cap.data.materials.append(tinted(f"VialMat_{index}", colour, 0.62))
+        smooth(cap, angle=40)
+        place(cap, 0.0, 0.0, 0.88)
+
+        # hex-lattice band around its waist
+        for i in range(10):
+            ang = (i / 10) * math.tau
+            bpy.ops.mesh.primitive_cube_add(size=1.0)
+            hexb = bpy.context.object
+            hexb.name = f"Hex_{index}_{i}"
+            hexb.scale = (0.030, 0.030, 0.075)
+            hexb.data.materials.append(seam_mat)
+            o = place(
+                hexb,
+                math.cos(ang) * 0.195,
+                math.sin(ang) * 0.195,
+                0.88,
+            )
+            o.rotation_euler = (rot[0], rot[1], yaw + ang)
+
+    elif kind == "voice":
+        # a smooth shell segment above the module
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.33, segments=44, ring_count=22)
+        shell = bpy.context.object
+        shell.name = f"Shell_{index}"
+        shell.scale = (0.46, 1.0, 1.05)
+        shell.data.materials.append(
+            tinted(f"ShellMat_{index}", colour, 0.34)
+        )
+        smooth(shell, angle=50)
+        place(shell, 0.0, 0.0, 0.86)
+
+        # sound-wave strip across its face, echoing MENNIE's spine seam
+        heights = (0.06, 0.13, 0.23, 0.15, 0.30, 0.17, 0.10, 0.19, 0.07)
+        for i, h in enumerate(heights):
+            bpy.ops.mesh.primitive_cube_add(size=1.0)
+            bar = bpy.context.object
+            bar.name = f"Wave_{index}_{i}"
+            bar.scale = (0.020, 0.022, h)
+            bar.data.materials.append(seam_mat)
+            place(bar, 0.17, (i - 4) * 0.062, 0.86)
+
+    elif kind == "optic":
+        # a transceiver block above the module
+        bpy.ops.mesh.primitive_cube_add(size=1.0)
+        tx = bpy.context.object
+        tx.name = f"Tx_{index}"
+        tx.scale = (0.24, 0.44, 0.24)
+        bev = tx.modifiers.new("Bevel", "BEVEL")
+        bev.width = 0.028
+        bev.segments = 5
+        bev.limit_method = "ANGLE"
+        tx.data.materials.append(tinted(f"TxMat_{index}", colour, 0.58))
+        smooth(tx, angle=45)
+        place(tx, 0.0, 0.0, 0.86)
+
+        # amber contact fingers on its electrical edge
+        for i in range(7):
+            bpy.ops.mesh.primitive_cube_add(size=1.0)
+            fing = bpy.context.object
+            fing.name = f"Fing_{index}_{i}"
+            fing.scale = (0.026, 0.022, 0.042)
+            fing.data.materials.append(seam_mat)
+            place(fing, 0.225, (i - 3) * 0.058, 0.80)
+
+        # a fibre tail arcing away, carrying light
+        curve = bpy.data.curves.new(f"FibreTailCurve_{index}", type="CURVE")
+        curve.dimensions = "3D"
+        curve.bevel_depth = 0.022
+        curve.bevel_resolution = 5
+        sp = curve.splines.new("POLY")
+        n = 18
+        sp.points.add(n - 1)
+        for i in range(n):
+            t = i / (n - 1)
+            dy = 0.22 + t * 0.95
+            dz = 0.86 + math.sin(t * 1.5) * 0.30 - t * 0.55
+            sp.points[i].co = (
+                x - dy * math.sin(yaw),
+                y + dy * math.cos(yaw),
+                z + dz,
+                1.0,
+            )
+        fib = bpy.data.objects.new(f"FibreTail_{index}", curve)
+        bpy.context.scene.collection.objects.link(fib)
+        fib.data.materials.append(
+            mat_seam(f"FibreTailMat_{index}", TEAL, strength=2.6, tint=0.92)
+        )
+        out.append(fib)
+
+    return out
 
 
 def animate(scene, ring, modules, core, cam, target, frames):

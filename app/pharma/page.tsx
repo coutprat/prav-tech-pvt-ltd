@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { EvidenceThread } from "@/components/sections/EvidenceThread";
+import { Verify } from "@/components/ui/Verify";
 import { Headline } from "@/components/ui/Headline";
 import {
   SectionLabel,
@@ -39,6 +40,52 @@ export default function PharmaPage() {
             that shows its working, points at the record it came from, and waits
             for a qualified person to sign it.
           </p>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------------- nexgen */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel accent="line">Why us</SectionLabel>
+          <Headline onScroll>AI built with the people who face the inspectors.</Headline>
+
+          <div className="grid-2" style={{ alignItems: "start" }}>
+            <div>
+              <p className="lede">
+                Praverse builds the AI. Nexgen Pharma Solutions, our pharma
+                consulting partner <Verify id="nexgen-relationship" />, brings
+                inspection-floor practice — QMS, QA and QC, DMF filings in eCTD
+                format, audit readiness, and inspection support across USFDA,
+                EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea).
+              </p>
+              <p className="body-2" style={{ marginTop: 24 }}>
+                It is led by Ashwani Shrivastav, who also advises Praverse on
+                quality systems. One engagement can cover audit readiness and
+                the systems that keep you ready, without two vendors blaming
+                each other.
+              </p>
+            </div>
+            <ul className="why-list">
+              <li>
+                <h3>The draft is written by people who know the finding</h3>
+                <p>
+                  Not a general-purpose model guessing at what an investigator
+                  wanted to see.
+                </p>
+              </li>
+              <li>
+                <h3>Review is done by the same practice</h3>
+                <p>
+                  The consultants who would sit with you in an inspection also
+                  shape what the system drafts.
+                </p>
+              </li>
+              <li>
+                <h3>One accountable engagement</h3>
+                <p>The software and the quality advice answer to each other.</p>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 

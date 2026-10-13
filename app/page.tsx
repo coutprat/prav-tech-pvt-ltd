@@ -124,7 +124,7 @@ export default function HomePage() {
         <div className="wrap">
           <SectionLabel>Who you work with</SectionLabel>
           <div className="leader-head">
-            <Headline onScroll>Small team. Long résumés.</Headline>
+            <Headline onScroll>People who have done the work.</Headline>
             <Link className="btn btn-ghost" href="/company">
               Meet the team
             </Link>

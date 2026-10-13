@@ -20,7 +20,7 @@ import bpy
 from mathutils import Vector
 
 # Brand colours, linear-ish sRGB values fed straight to Principled.
-PAPER = (0.933, 0.929, 0.918, 1.0)      # #EEEDEA
+PAPER = (0.965, 0.969, 0.976, 1.0)      # #F6F7F9, matches --paper
 TEAL = (0.294, 0.839, 0.769, 1.0)       # #4BD6C4
 AMBER = (0.910, 0.635, 0.227, 1.0)      # #E8A23A
 CERAMIC = (0.94, 0.94, 0.93, 1.0)
@@ -229,17 +229,20 @@ def build_studio(scene, ground=True, ground_colour=None, dark=False):
     # against instead of dissolving into a uniform white field.
     mapping.inputs["Rotation"].default_value = (math.radians(90), 0, 0)
     if dark:
-        ramp.color_ramp.elements[0].position = 0.28
-        ramp.color_ramp.elements[0].color = (0.012, 0.015, 0.028, 1.0)
-        ramp.color_ramp.elements[1].position = 0.95
-        ramp.color_ramp.elements[1].color = (0.075, 0.090, 0.150, 1.0)
-        bg.inputs["Strength"].default_value = 0.55
+        # deep navy-ink, never flat black, so the scene has air behind it
+        ramp.color_ramp.elements[0].position = 0.26
+        ramp.color_ramp.elements[0].color = (0.010, 0.014, 0.030, 1.0)
+        ramp.color_ramp.elements[1].position = 0.96
+        ramp.color_ramp.elements[1].color = (0.055, 0.075, 0.140, 1.0)
+        bg.inputs["Strength"].default_value = 0.42
     else:
-        ramp.color_ramp.elements[0].position = 0.30
-        ramp.color_ramp.elements[0].color = (0.40, 0.40, 0.40, 1.0)
-        ramp.color_ramp.elements[1].position = 0.92
-        ramp.color_ramp.elements[1].color = (0.95, 0.95, 0.94, 1.0)
-        bg.inputs["Strength"].default_value = 0.85
+        # bright, but with a graded floor so the subject has something to sit
+        # against rather than floating in a white void
+        ramp.color_ramp.elements[0].position = 0.26
+        ramp.color_ramp.elements[0].color = (0.46, 0.47, 0.50, 1.0)
+        ramp.color_ramp.elements[1].position = 0.94
+        ramp.color_ramp.elements[1].color = (0.97, 0.975, 0.99, 1.0)
+        bg.inputs["Strength"].default_value = 1.0
 
     nt.links.new(tex_co.outputs["Generated"], mapping.inputs["Vector"])
     nt.links.new(mapping.outputs["Vector"], grad.inputs["Vector"])
@@ -249,16 +252,29 @@ def build_studio(scene, ground=True, ground_colour=None, dark=False):
 
     # Key is tight and strong for a readable shadow; fill stays soft and low
     # so the form keeps its modelling instead of flattening out.
-    lights = (
-        ("Key", (4.6, -5.2, 6.8), (math.radians(40), 0, math.radians(40)), 5.0, 2600),
-        ("Fill", (-6.4, -3.6, 3.0), (math.radians(68), 0, math.radians(-56)), 12.0, 260),
-        ("Rim", (-1.8, 6.8, 5.2), (math.radians(118), 0, math.radians(10)), 7.0, 900),
-    )
-    # Dark: pull the fill right down so the form is modelled by the key and
-    # rim, and the teal/amber seams carry the frame.
-    dim = {"Key": 0.42, "Fill": 0.10, "Rim": 0.55} if dark else {}
+    # Two rigs, art-directed separately.
+    #
+    # Light was a single 2600W key, which clipped everything to pure white -
+    # the module tints, the ceramic modelling and the coloured rim light all
+    # vanished into the highlight. A broader, softer key at less than half the
+    # power keeps the high-key studio feel while leaving headroom for colour.
+    #
+    # Dark is not that rig dimmed: the key drops much further, the fill almost
+    # out, and the rim stays relatively strong so the silhouette separates from
+    # the background and the emissive seams carry the frame.
+    if dark:
+        lights = (
+            ("Key", (4.8, -5.4, 6.6), (math.radians(42), 0, math.radians(40)), 6.0, 620),
+            ("Fill", (-6.4, -3.6, 3.0), (math.radians(68), 0, math.radians(-56)), 12.0, 70),
+            ("Rim", (-2.0, 6.6, 5.0), (math.radians(116), 0, math.radians(10)), 7.5, 820),
+        )
+    else:
+        lights = (
+            ("Key", (4.6, -5.2, 6.8), (math.radians(40), 0, math.radians(40)), 8.0, 1150),
+            ("Fill", (-6.4, -3.6, 3.0), (math.radians(68), 0, math.radians(-56)), 13.0, 330),
+            ("Rim", (-1.8, 6.8, 5.2), (math.radians(118), 0, math.radians(10)), 8.0, 780),
+        )
     for name, loc, rot, size, power in lights:
-        power = power * dim.get(name, 1.0)
         data = bpy.data.lights.new(name, type="AREA")
         data.shape = "RECTANGLE"
         data.size = size
@@ -273,7 +289,7 @@ def build_studio(scene, ground=True, ground_colour=None, dark=False):
         bpy.ops.mesh.primitive_plane_add(size=60, location=(0, 0, 0))
         plane = bpy.context.object
         plane.name = "Ground"
-        default_ground = (0.055, 0.070, 0.125, 1.0) if dark else PAPER
+        default_ground = (0.027, 0.043, 0.086, 1.0) if dark else PAPER  # #070B16
         plane.data.materials.append(
             mat_ceramic("GroundMat", ground_colour or default_ground)
         )

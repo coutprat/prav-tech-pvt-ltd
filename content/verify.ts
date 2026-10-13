@@ -123,6 +123,33 @@ export const verifyItems = [
     confirmed: false
   },
   {
+    id: "nexgen-relationship",
+    where: "Pharma AI — why us; Company — the group",
+    claim: "Nexgen Pharma Solutions is a sister/group company of Praverse Tech",
+    fallback: "",
+    needs:
+      "Is Nexgen a sister company, a group company, or a consulting partner? Until confirmed the site says \"our pharma consulting partner\", which is true either way.",
+    confirmed: false
+  },
+  {
+    id: "nexgen-logo",
+    where: "Company — the group",
+    claim: "Nexgen Pharma Solutions logo",
+    fallback: "",
+    needs:
+      "Permission and a source URL for Nexgen's logo (likely nexgenpharmasolutions.com). Text only until then.",
+    confirmed: false
+  },
+  {
+    id: "photonics-india-qualification",
+    where: "Photonics — Phase 1",
+    claim: "India-side programming, testing, labelling and qualification are live today",
+    fallback: "India-side programming, testing, labelling and qualification",
+    needs:
+      "Confirm which of these are actually running today versus planned, so Phase 1 does not overstate current capability.",
+    confirmed: false
+  },
+  {
     id: "careers-compensation",
     where: "Careers — open role",
     claim: "Compensation range for the Full Stack Engineer role",
