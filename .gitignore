@@ -10,3 +10,8 @@ qa/*.png
 qa/scroll/
 qa/*.report.html
 qa/*.report.json
+
+# Secrets — .env.example documents the shape, never the values
+.env
+.env.local
+.env*.local

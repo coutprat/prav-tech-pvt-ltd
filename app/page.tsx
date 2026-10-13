@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { HomeHero } from "@/components/sections/HomeHero";
@@ -17,12 +18,12 @@ import { businessLines, company, howWeWork, people, pillars } from "@/content/co
 const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
 const LINE_GLOWS = ["#7C5CFF", "#10B981", "#38BDF8", "#F59E0B"];
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Praverse Tech — Intelligence, engineered for industry.",
-  description:
-    "Enterprise AI for healthcare, pharma and regulated industries, and the high-speed interconnect layer for India's sovereign AI data centres.",
-  alternates: { canonical: "/" }
-};
+  description: "Enterprise AI for healthcare, pharma and regulated industries, and the high-speed interconnect for India's sovereign AI data centres.",
+  path: '/',
+  og: 'home'
+});
 
 export default function HomePage() {
   return (

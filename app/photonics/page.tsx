@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { PhotonicsHero } from "@/components/sections/PhotonicsHero";
 import { ModuleSection } from "@/components/sections/ModuleSection";
 import { ReachRace } from "@/components/sections/ReachRace";
@@ -21,11 +22,12 @@ import {
   whySovereign
 } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Photonics & AI Data Centres",
-  description:
-    "High-speed copper and optical interconnect for India's sovereign AI data centres — architecture, design-in, qualification and support."
-};
+  description: "High-speed copper and optical interconnect for India's sovereign AI data centres: architecture, design-in, qualification and support.",
+  path: '/photonics',
+  og: 'photonics'
+});
 
 export default function PhotonicsPage() {
   return (

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Checkpoint } from "@/components/sections/Checkpoint";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Enterprise AI & Agents",
-  description:
-    "Agents, copilots, RAG search and production ML inside real workflows — with a human gate and an audit trail in the architecture."
-};
+  description: "Agents, copilots, RAG search and production ML inside real workflows — with a human gate and an audit trail in the architecture.",
+  path: '/enterprise-ai',
+  og: 'enterprise-ai'
+});
 
 export default function EnterpriseAIPage() {
   return (

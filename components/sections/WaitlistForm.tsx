@@ -1,10 +1,10 @@
 "use client";
 
-import { MailForm } from "@/components/sections/MailForm";
+import { EnquiryForm } from "@/components/sections/EnquiryForm";
 
 export function WaitlistForm() {
   return (
-    <MailForm
+    <EnquiryForm
       subject="MENNIE waitlist"
       submitLabel="Join the waitlist"
       fields={[
@@ -18,7 +18,7 @@ export function WaitlistForm() {
           options: ["Clinician", "Hospital administration", "IT", "Other"]
         },
         {
-          name: "context",
+          name: "message",
           label: "What does the queue look like today?",
           type: "textarea",
           placeholder: "Rough daily volume, where patients get stuck, languages spoken."

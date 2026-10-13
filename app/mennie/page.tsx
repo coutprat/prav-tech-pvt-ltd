@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { MennieFilm } from "@/components/sections/MennieFilm";
 import { Aurora } from "@/components/ui/Aurora";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
@@ -12,11 +13,12 @@ import {
 import { Verify } from "@/components/ui/Verify";
 import { mennie } from "@/content/company";
 
-export const metadata: Metadata = {
-  title: "MENNIE",
-  description:
-    "MENNIE — a voice-first patient assistant that meets patients at the door, the kiosk or on their phone, and hands clinicians a structured picture."
-};
+export const metadata: Metadata = pageMeta({
+  title: "MENNIE — voice-first patient assistant",
+  description: "MENNIE meets patients at the door, the kiosk or on their phone, and hands clinicians a structured picture. In research and development.",
+  path: '/mennie',
+  og: 'mennie'
+});
 
 export default function MenniePage() {
   return (

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { MailForm } from "@/components/sections/MailForm";
+import { pageMeta } from "@/lib/seo";
+import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Contact",
-  description: "Talk to Praverse Tech about enterprise AI, pharma AI, MENNIE or photonics."
-};
+  description: "Talk to Praverse Tech about enterprise AI, pharma AI, MENNIE or photonics. A written plan within two business days.",
+  path: '/contact'
+});
 
 export default function ContactPage() {
   return (
@@ -51,7 +53,7 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <MailForm
+            <EnquiryForm
               subject="Enquiry from praversetech.com"
               submitLabel="Send enquiry"
               fields={[

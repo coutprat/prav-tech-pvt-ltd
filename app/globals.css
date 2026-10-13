@@ -3300,3 +3300,31 @@ body::before {
     transition: none;
   }
 }
+
+/* honeypot: out of sight, out of the a11y tree, still fillable by bots */
+.hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.form-error {
+  color: #b3261e;
+}
+[data-theme="dark"] .form-error {
+  color: #ffb4ab;
+}
+.form-sent {
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--teal-ink);
+  border-radius: var(--r-md);
+  background: var(--paper-3);
+}
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}

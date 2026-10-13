@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { EvidenceThread } from "@/components/sections/EvidenceThread";
 import { Headline } from "@/components/ui/Headline";
 import {
@@ -15,11 +16,12 @@ import {
   regulatedMarkets
 } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Pharma & Regulatory AI",
-  description:
-    "FDA 483 responses, CAPA, data integrity and inspection readiness — AI-drafted, expert-reviewed, traceable to evidence."
-};
+  description: "FDA 483 responses, CAPA, data integrity and inspection readiness. AI-drafted, expert-reviewed, and traceable to the evidence.",
+  path: '/pharma',
+  og: 'pharma'
+});
 
 export default function PharmaPage() {
   return (

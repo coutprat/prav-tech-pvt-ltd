@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
 import { company } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Terms",
-  description: "Terms of use for the Praverse Tech website."
-};
+  description: "Terms of use for the Praverse Tech website.",
+  path: '/terms'
+});
 
 export default function TermsPage() {
   return (

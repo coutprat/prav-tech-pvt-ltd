@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
 import { company } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Privacy",
-  description:
-    "How Praverse Tech Pvt Ltd handles personal data, under the GDPR and India's DPDP Act 2023."
-};
+  description: "How Praverse Tech handles personal data under the GDPR and India's DPDP Act 2023. No cookies, no analytics trackers.",
+  path: '/privacy'
+});
 
 /**
- * This describes what the site actually does today: it sets no cookies, runs
- * no analytics, and has no form backend — enquiry forms compose an email in
- * the visitor's own mail client. If any of that changes, this page and the
- * cookie position must change with it.
+ * This describes what the site actually does today: no cookies, cookieless
+ * speed measurement only, and an enquiry form that posts to our own endpoint
+ * and is relayed by email. If any of that changes — in particular if anything
+ * starts setting cookies — this page and the consent position must change
+ * with it.
  */
 export default function PrivacyPage() {
   return (
@@ -45,19 +47,37 @@ export default function PrivacyPage() {
 
           <h2>What this website collects</h2>
           <p>
-            <strong>No cookies and no analytics.</strong> This site sets no
-            cookies, embeds no advertising or analytics trackers, and does not
-            profile visitors. Fonts are served from our own domain, so loading a
-            page does not call out to a third-party font service. Because we set
-            no non-essential cookies, there is no consent banner to click
-            through.
+            <strong>No cookies and no advertising trackers.</strong> This site
+            sets no cookies, embeds no advertising trackers, and does not build
+            a profile of you or follow you across other sites. Fonts are served
+            from our own domain, so loading a page does not call out to a
+            third-party font service. Because we set no non-essential cookies,
+            there is no consent banner to click through.
           </p>
           <p>
-            <strong>Enquiry forms.</strong> The forms on this site have no
-            backend. When you submit one, your browser opens your own email
-            client with the message pre-filled. Nothing is transmitted to us
-            until you choose to send that email. If you never send it, we never
-            receive it.
+            <strong>Speed measurement.</strong> We use Vercel Speed Insights to
+            see how quickly pages actually load for real visitors. It is
+            cookieless: it records page performance timings and coarse context
+            such as route, country and device type, and it does not set
+            identifiers or track you between sites. We use it only to find slow
+            pages.
+          </p>
+          <p>
+            <strong>Enquiry and waitlist forms.</strong> When you submit a form,
+            the details you enter — typically your name, work email,
+            organisation and what you write in the message — are sent to our
+            server and emailed to our enquiry mailbox, which is hosted on Zoho
+            Mail. They are not stored in a separate database and are not shared
+            with anyone else. Each form also carries a hidden anti-spam field
+            and a short per-address rate limit; your IP address is used in
+            memory for that check and is not written to disk.
+          </p>
+          <p>
+            Enquiry correspondence lives in that mailbox for as long as the
+            conversation is useful and for a reasonable period afterwards for
+            our records, and you can ask us to delete it sooner. CVs sent to our
+            careers address are kept only for the role you applied for unless
+            you tell us to keep them on file.
           </p>
           <p>
             <strong>Server logs.</strong> Our hosting provider records standard
@@ -116,8 +136,8 @@ export default function PrivacyPage() {
 
           <h2>Changes</h2>
           <p>
-            If we add analytics, a hosted form backend, or any other processing,
-            we will update this page before turning it on.
+            If we add cookie-based analytics, a CRM, or any other processing, we
+            will update this page before turning it on.
           </p>
         </div>
       </div>

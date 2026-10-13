@@ -7,6 +7,8 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { themeScript } from "@/components/layout/theme";
 import { company } from "@/content/company";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -50,6 +52,7 @@ export default function RootLayout({
       <head>
         {/* Sets the theme before first paint so dark loads don't flash light. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <OrganizationJsonLd />
       </head>
       <body>
         <a className="skip-link" href="#main">
@@ -60,6 +63,12 @@ export default function RootLayout({
         <Footer />
         <WhatsAppButton />
         <SmoothScroll />
+        {/*
+          Cookieless Core Web Vitals from real visitors. Sets no cookies and
+          builds no cross-site profile, so it needs no consent banner — the
+          privacy page says exactly this.
+        */}
+        <SpeedInsights />
       </body>
     </html>
   );

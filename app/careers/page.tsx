@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
@@ -6,11 +7,12 @@ import { Verify } from "@/components/ui/Verify";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Careers",
-  description:
-    "Work at Praverse Tech in Vadodara. Open role: Full Stack Engineer. Skilled interns welcome."
-};
+  description: "Work at Praverse Tech in Vadodara. Open role: Full Stack Engineer. Some experience preferred; skilled interns welcome.",
+  path: '/careers',
+  og: 'careers'
+});
 
 export default function CareersPage() {
   return (

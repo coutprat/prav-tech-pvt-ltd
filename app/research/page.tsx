@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
 import { exploratoryTracks, publications, trackRecord } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Research",
-  description:
-    "Peer-reviewed work in medical imaging, edge AI and simulation — plus the exploratory tracks we are still investigating."
-};
+  description: "Peer-reviewed work in medical imaging, edge AI and simulation, plus the exploratory tracks we are still investigating.",
+  path: '/research',
+  og: 'research'
+});
 
 export default function ResearchPage() {
   return (

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { MailForm } from "@/components/sections/MailForm";
+import { pageMeta } from "@/lib/seo";
+import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { company, howWeWork } from "@/content/company";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Start a project",
-  description: "Tell us the problem. You get a written plan within two business days."
-};
+  description: "Tell us the problem. You get a written plan within two business days — no pitch deck, no discovery retainer.",
+  path: '/start-a-project'
+});
 
 export default function StartAProjectPage() {
   return (
@@ -23,7 +25,7 @@ export default function StartAProjectPage() {
             plan you can take to your team and act on, whoever builds it.
           </p>
 
-          <MailForm
+          <EnquiryForm
             subject="New project enquiry"
             submitLabel="Send the brief"
             fields={[

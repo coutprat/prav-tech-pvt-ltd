@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
@@ -6,11 +7,12 @@ import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, founderStory, partners, people } from "@/content/company";
 import { site } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Company",
-  description:
-    "Praverse Tech Pvt Ltd — founded 2023, headquartered in Vadodara, Gujarat. Leadership, advisors and partners."
-};
+  description: "Praverse Tech Pvt Ltd — founded 2023, headquartered in Vadodara, Gujarat. Leadership, advisors and partners.",
+  path: '/company',
+  og: 'company'
+});
 
 export default function CompanyPage() {
   return (
