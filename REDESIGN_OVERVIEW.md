@@ -771,7 +771,13 @@ grey blob at that size. What fixed it:
 - a **closing caption** — "One intelligence core. Four industries." — with the
   four labels as clickable hotspots into each page.
 
-The Praverse mark sits on the core.
+**Not done:** the brief also asked for the Praverse mark on the core itself.
+The mark now exists as clean vector (Q8), but putting it on the core means
+either re-rendering all 480 Blender frames (120 x desktop/mobile x light/dark)
+with it as a decal, or tracking it in the DOM over the core the way the labels
+are tracked. The DOM route is crisper at any resolution and theme-able, and
+costs no render; the decal route is more physically honest because it would
+catch the scene light. This is the one item of Q2 still open.
 
 ## Q3. Light and dark are art-directed separately
 
@@ -1027,6 +1033,7 @@ contact, but it has not been confirmed as *the* WhatsApp line.
 - [x] Photonics lag measured first, then fixed — 0% dropped frames at 1× and 4×
 - [x] Jank and drift treated as separate bugs
 - [x] Hero means something: domain shapes, colour, live labels, clickable hotspots
+- [ ] **Praverse mark on the hero core — not done.** See Q2.
 - [x] Light and dark art-directed separately, with per-theme light rigs
 - [x] `qa/theme-board.png`
 - [x] Enterprise AI and Pharma rebuilt as product UI, not flows
