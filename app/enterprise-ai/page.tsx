@@ -45,6 +45,7 @@ export default function EnterpriseAIPage() {
                 <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
                   {c.body}
                 </p>
+                <p className="card-means">{c.means}</p>
               </article>
             ))}
           </div>

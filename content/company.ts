@@ -101,30 +101,43 @@ export const howWeWork = [
 
 /* ---------------------------------------------------------------- Enterprise AI */
 
+/**
+ * Each capability carries a `means` line: what the buyer actually gets, in
+ * their terms rather than ours. "RAG and knowledge graphs" is what we build;
+ * "stop paying people to re-read the same binder" is why anyone would want it.
+ * The claims stay operational - no time savings, accuracy figures or costs,
+ * none of which we can evidence.
+ */
 export const capabilities = [
   {
     title: "Machine learning & applied AI",
-    body: "NLP, predictive ML and MLOps built for production, not notebooks."
+    body: "NLP, predictive ML and MLOps built for production, not notebooks.",
+    means: "The model is still running, and still being watched, a year after the pilot ends."
   },
   {
     title: "AI agents & copilots",
-    body: "Agents that work inside your tools, with a human gate before action."
+    body: "Agents that work inside your tools, with a human gate before action.",
+    means: "Your team keeps the final click, and the system keeps the record of who made it."
   },
   {
     title: "Document intelligence",
-    body: "RAG, knowledge graphs and search across the documents you already have."
+    body: "RAG, knowledge graphs and search across the documents you already have.",
+    means: "Ask the archive a question instead of paying someone to re-read it."
   },
   {
     title: "Vision & medical imaging",
-    body: "Fundus, ultrasound, inspection and multimodal models."
+    body: "Fundus, ultrasound, inspection and multimodal models.",
+    means: "A second pair of eyes that never gets to the end of a long shift."
   },
   {
     title: "Decision intelligence",
-    body: "Dashboards and forecasting that explain how they got there."
+    body: "Dashboards and forecasting that explain how they got there.",
+    means: "You can defend the number in the meeting, because the workings come with it."
   },
   {
     title: "Federated & edge AI",
-    body: "Privacy-preserving training, on-site inference, DPDP-aware by design."
+    body: "Privacy-preserving training, on-site inference, DPDP-aware by design.",
+    means: "The data never leaves your site, so the legal review is a short conversation."
   }
 ] as const;
 

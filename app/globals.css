@@ -3250,8 +3250,17 @@ body::before {
  * schematic on this page is not that India is building capacity - it is that
  * we are in four of the five places doing it.
  */
-.hubs-legend li[data-team="false"] {
-  opacity: 0.6;
+/*
+ * Dim the marker, never the text. Fading the whole row with opacity:0.6 took
+ * "152 MW" down to 3.63:1 on the dark surface - a real AA failure for the one
+ * city we are not in, which is a silly thing to make unreadable.
+ */
+.hubs-legend li[data-team="false"] b,
+.hubs-legend li[data-team="false"] .num {
+  color: var(--ink-2);
+}
+.hubs-legend li[data-team="false"] .hubs-dot {
+  opacity: 0.45;
 }
 .hubs-team {
   font-family: var(--font-mono);
@@ -3882,4 +3891,30 @@ body::before {
   .fp-mw {
     text-align: right;
   }
+}
+
+/*
+ * "What this means for you" under a capability.
+ *
+ * Set apart from the description rather than appended to it: the line above
+ * says what we build, this one says why a buyer would want it, and running
+ * them together loses both.
+ */
+.card-means {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.card-means::before {
+  content: "What this means for you";
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--acc-ent-ink);
+  margin-bottom: 6px;
 }
