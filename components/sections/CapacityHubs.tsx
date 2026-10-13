@@ -14,11 +14,11 @@ import { gsap, prefersReducedMotion } from "@/lib/gsap";
  * and the layout is labelled as a schematic.
  */
 const HUBS = [
-  { id: "mumbai", label: "Mumbai", mw: 790, x: 22, y: 58 },
-  { id: "chennai", label: "Chennai", mw: 305, x: 54, y: 84 },
-  { id: "bengaluru", label: "Bengaluru", mw: 182, x: 42, y: 78 },
-  { id: "hyderabad", label: "Hyderabad", mw: 152, x: 47, y: 64 },
-  { id: "delhi", label: "Delhi NCR", mw: 76, x: 38, y: 18 }
+  { id: "mumbai", label: "Mumbai", mw: 790, x: 22, y: 58, team: true },
+  { id: "chennai", label: "Chennai", mw: 305, x: 54, y: 84, team: true },
+  { id: "bengaluru", label: "Bengaluru", mw: 182, x: 42, y: 78, team: true },
+  { id: "hyderabad", label: "Hyderabad", mw: 152, x: 47, y: 64, team: false },
+  { id: "delhi", label: "Delhi NCR", mw: 76, x: 38, y: 18, team: true }
 ] as const;
 
 const HQ = { id: "vadodara", label: "Vadodara — Praverse HQ", x: 20, y: 40 };
@@ -54,7 +54,7 @@ export function CapacityHubs() {
   return (
     <div className="hubs" ref={root}>
       <svg viewBox="0 0 100 100" className="hubs-svg" role="img"
-        aria-label="Schematic of Indian data-centre hubs by operational capacity: Mumbai 790 megawatts, Chennai 305, Bengaluru 182, Hyderabad 152, Delhi NCR 76, with Praverse headquarters in Vadodara.">
+        aria-label="Schematic of Indian data-centre hubs by operational capacity: Mumbai 790 megawatts, Chennai 305, Bengaluru 182, Hyderabad 152, Delhi NCR 76, with Praverse headquarters in Vadodara. Praverse has team members in Mumbai, Chennai, Bengaluru and Delhi NCR.">
         {/* links from HQ outward — relationships, not routes */}
         {HUBS.map((h) => (
           <line
@@ -73,7 +73,7 @@ export function CapacityHubs() {
         {HUBS.map((h) => {
           const r = radius(h.mw) / 10;
           return (
-            <g className="hub" key={h.id}>
+            <g className="hub" key={h.id} data-team={h.team}>
               <circle cx={h.x} cy={h.y} r={r * 1.9} className="hub-halo" />
               <circle cx={h.x} cy={h.y} r={r} className="hub-core" />
             </g>
@@ -88,10 +88,11 @@ export function CapacityHubs() {
 
       <ul className="hubs-legend">
         {HUBS.map((h) => (
-          <li key={h.id}>
+          <li key={h.id} data-team={h.team}>
             <span className="hubs-dot" />
             <b>{h.label}</b>
             <span className="num">{h.mw} MW</span>
+            {h.team ? <em className="hubs-team">team</em> : null}
           </li>
         ))}
         <li data-hq="true">
