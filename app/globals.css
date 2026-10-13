@@ -3520,14 +3520,24 @@ body::before {
   padding: 16px 18px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
 }
+/*
+ * Now that the footage runs under every chapter, this sits on whatever the
+ * frame happens to be - often a blown-out sunrise sky. Bare cyan type was
+ * unreadable there, so it carries its own plate like the line above it.
+ */
 .film-panel-meaning {
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--acc-men);
-  margin-top: 10px;
-  padding-left: 4px;
+  color: #bfeaff;
+  margin-top: 8px;
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: rgba(10, 18, 32, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* three surfaces */
@@ -3975,5 +3985,36 @@ body::before {
 @media (min-width: 760px) {
   .team-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Scrim behind the film's overlay chapters.
+ *
+ * The footage now runs under all of them, so the panels can land on a
+ * blown-out sunrise. This darkens the frame just enough to hold text, and
+ * only while text is actually on screen.
+ */
+.film-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 12, 24, 0.55) 0%,
+    rgba(6, 12, 24, 0.3) 38%,
+    rgba(6, 12, 24, 0.42) 100%
+  );
+}
+.film-scrim[data-on="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-scrim {
+    transition: none;
   }
 }

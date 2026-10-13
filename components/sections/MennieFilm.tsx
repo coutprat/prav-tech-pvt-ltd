@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
@@ -9,82 +9,52 @@ import { ScrubVideo } from "@/components/motion/ScrubVideo";
 import { mennie } from "@/content/company";
 
 /**
- * three.js only loads here, only on this page, only when it can be used.
- *
- * Loaded with a bare runtime import() rather than next/dynamic, because
- * next/dynamic emits a modulepreload for the chunk: the 267 KB bundle was
- * downloading and compiling during first paint, which made the careful idle
- * gate below a no-op and cost ~1.1s of LCP.
- */
-type SceneProps = { progress: number };
-
-/**
  * MENNIE as a short scroll-driven film.
  *
- * Chapters, in order:
- *   0  black, the title blooms in
- *   1  the cinematic, scrubbed by scroll — rooftop, city, golden hour
- *   2  "her view" — the 2.5D plate indoors, glass HUD panels at depth
- *   3  the panels resolve into the three surfaces
- *   4  the concept caption
+ * One shot, scrubbed by scroll from first frame to last, with everything else
+ * surfacing over it:
  *
- * Two different moments, not the same one twice: the cinematic is the wide
- * exterior opening (real footage, real hair movement), and the depth plate is
- * the close interior where the HUD belongs.
+ *   0  the title, over the opening frames
+ *   1  "her view" — what she is hearing, as glass panels
+ *   2  the panels resolve into the three surfaces
+ *   3  the concept caption
+ *
+ * Deliberately a single piece of footage. An earlier cut handed the second
+ * half to a 2.5D depth plate built from a still, so the section showed the
+ * same product twice in two visual languages and loaded three.js to do it.
+ * The film is stronger as one continuous shot with the interface arriving on
+ * top of it, and the page no longer ships a 3D engine at all.
  *
  * Low-power devices and reduced motion never reach any of this: they get the
- * existing image hero, which carries every line of the same content.
+ * image hero, which carries every line of the same content.
  */
 const SURFACES = mennie.surfaces;
 
-/** Scroll window the cinematic occupies, as a fraction of the pinned scroll. */
-const CINE_FROM = 0.06;
-const CINE_TO = 0.38;
+/**
+ * The footage runs the whole way. A short lead-in and run-out hold the first
+ * and last frames while the title and the closing caption read, rather than
+ * the shot being over before the words are.
+ */
+const CINE_FROM = 0.04;
+const CINE_TO = 0.96;
 
 export function MennieFilm() {
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
   const [progress, setProgress] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
-  const [Scene, setScene] = useState<ComponentType<SceneProps> | null>(null);
-  /** 0..1 within the cinematic, written on the ticker; never re-renders. */
+  /** 0..1 within the clip, written on the ticker; never re-renders. */
   const cineRef = useRef(0);
 
   /**
-   * Prefetch the three.js chunk when the browser is idle, but do not mount it
-   * until the visitor actually scrolls.
+   * Upgrade from the image hero to the film on the first sign of scrolling.
    *
-   * The film is entirely scroll-driven: someone who never scrolls never sees a
-   * frame of it, so mounting it on load spent ~500ms of main-thread time and
-   * 4.8s of LCP on something they would not have looked at. Prefetching keeps
-   * the upgrade instant the moment they do scroll, because the chunk is
-   * already in cache — the poster is a complete hero in the meantime.
+   * Someone who never scrolls never sees a frame of it, so there is no reason
+   * to spend their first paint on a 3 MB video. The poster is a complete hero
+   * until then, and ScrubVideo preloads metadata only.
    */
   useEffect(() => {
     if (highPower !== true) return;
-
-    let idle = 0;
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
-      cancelIdleCallback?: (h: number) => void;
-    };
-
-    const prefetch = () => {
-      void import("@/components/three/MennieScene")
-        .then((m) => setScene(() => m.default))
-        .catch(() => {
-          /* the poster stands on its own */
-        });
-    };
-    const schedule = () => {
-      idle = w.requestIdleCallback
-        ? w.requestIdleCallback(prefetch, { timeout: 4000 })
-        : window.setTimeout(prefetch, 1500);
-    };
-
-    if (document.readyState === "complete") schedule();
-    else window.addEventListener("load", schedule, { once: true });
 
     const onIntent = () => setReady(true);
     window.addEventListener("scroll", onIntent, { once: true, passive: true });
@@ -92,18 +62,15 @@ export function MennieFilm() {
     window.addEventListener("touchstart", onIntent, { once: true, passive: true });
 
     return () => {
-      window.removeEventListener("load", schedule);
       window.removeEventListener("scroll", onIntent);
       window.removeEventListener("wheel", onIntent);
       window.removeEventListener("touchstart", onIntent);
-      if (idle) (w.cancelIdleCallback ?? window.clearTimeout)(idle);
     };
   }, [highPower]);
 
   useGSAP(
     () => {
       if (!highPower || !ready || prefersReducedMotion()) return;
-      setMounted(true);
 
       const cancel = afterPaint(() => {
         const st = gsap.to(
@@ -175,8 +142,8 @@ export function MennieFilm() {
           aria-hidden="true"
         />
 
-        {/* 1 — the cinematic, scrubbed */}
-        <div className="film-canvas" data-on={progress < CINE_TO}>
+        {/* the shot, scrubbed, running under everything else */}
+        <div className="film-canvas" data-on={true}>
           <ScrubVideo
             className="film-video"
             src="/media/mennie/cine-1280.mp4"
@@ -187,15 +154,19 @@ export function MennieFilm() {
           />
         </div>
 
-        {/* 2 — the depth plate, indoors, where the HUD panels sit */}
-        <div className="film-canvas" data-on={progress >= CINE_TO}>
-          {mounted && Scene ? (
-            <Scene progress={Math.max(0, (progress - CINE_TO) / (1 - CINE_TO))} />
-          ) : null}
-        </div>
-
         {/* grade + grain over everything */}
         <div className="film-grade" aria-hidden="true" />
+
+        {/*
+          A scrim that fades in only while something is being read over the
+          footage. The shot ends on a blown-out sunrise, and white-on-sky is
+          not a contrast ratio.
+        */}
+        <div
+          className="film-scrim"
+          data-on={progress >= hudFrom || progress < 0.12}
+          aria-hidden="true"
+        />
 
         {/* 0 — title */}
         <div className="film-title" data-on={title} aria-hidden={!title}>
