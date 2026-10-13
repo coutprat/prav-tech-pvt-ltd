@@ -1049,3 +1049,134 @@ contact, but it has not been confirmed as *the* WhatsApp line.
 - [x] No page scrolls sideways at 360 / 390 / 420 / 768
 - [x] No route deletions
 - [x] Branch `redesign-2026` only — `main` untouched
+
+---
+
+# Prompt 4 — footage, two new pages, and the founding story
+
+## R1. The supplied footage, behind both signature sections
+
+Two clips, both exactly to brief: a slow drift across a dark empty boardroom at
+night for Enterprise AI, and a push past stacked records and archive boxes for
+Pharma.
+
+Both carried the generator's sparkle watermark bottom-right, and the two needed
+different treatment — which is now a switch on `scripts/media/cinematic.sh`:
+
+| | mode | why |
+|---|---|---|
+| enterprise-ai | `delogo` | The mark sat over a dark chair and floor. The interpolation is invisible at 1:1. |
+| pharma | `MODE=crop` | The mark sat over the hard edges of a paper stack. **delogo cannot reconstruct an edge** — the patch read as a blurred rectangle across the pages. Crop re-frames so the corner falls outside, keeps 16:9 and scales back. Costs a little framing and a little sharpness; leaves no smear. |
+
+The scrim was retuned at the same time. A single 78% wash made the footage
+almost invisible, which is the worst of both outcomes — 2 MB for a grey
+rectangle. It is now a radial hold in the middle for the panel to sit on,
+fading hard to the page colour at the edges, so the clip reads as a room the
+console is standing in rather than a video pasted into a box.
+
+Cost, honestly: enterprise-ai 95 → 93 and pharma 94 → 92 on mobile Lighthouse.
+That is the footage, it was asked for, and both are still well inside the band.
+
+## R2. Careers is a real job board
+
+`content/jobs.ts` is the whole thing. Add an entry and the role appears with its
+own anchor, its own Apply button and its own JSON-LD `JobPosting` — which is
+what puts a role into Google Jobs and the aggregators candidates actually
+search. Set `open: false` and it leaves the page and the index at once, without
+breaking a link anyone has already shared.
+
+`/api/apply` takes multipart because of the CV. The file is validated, held in
+memory, attached to one email to careers@ and dropped. **Nothing is written to
+disk and nothing is stored** — a CV is personal data under both the DPDP Act and
+the GDPR, and the safest store is the one that does not exist. The form says so
+in as many words, so a candidate knows where their document lands.
+
+The CV is optional on purpose: plenty of good engineers would rather send a
+repository than a formatted document, and demanding a PDF filters for the wrong
+thing. 5 MB cap and a PDF/DOC/DOCX allowlist, enforced on both sides so a phone
+connection does not upload a file the server will reject. The role must be one
+we actually advertise, so the endpoint cannot be used to push arbitrary subject
+lines into the careers inbox.
+
+`content/jobs.ts` also records why `salary` is optional rather than a
+"competitive" placeholder: under several US state laws and EU pay-transparency
+rules, an advert reaching a candidate there without a range is a problem. Say a
+range or say nothing.
+
+> `overflow-check.mjs` earned itself inside an hour. The hidden file input was
+> `position: absolute` with no inset, so it sat at its static position and
+> pushed every phone width 23px sideways — exactly the bug the check was written
+> for, caught before the commit instead of after launch.
+
+## R3. Sovereign AI data centres
+
+A new page that connects the market to what we actually supply. It opens by
+saying what *sovereign* means rather than assuming it — compute, data and
+operator under Indian jurisdiction, so a regulated Indian business can train
+without its data leaving the country's legal reach — then four questions an
+operator should be able to answer, the capacity data, three situations where the
+interconnect is what decides it, and the three-phase roadmap linking through to
+Photonics.
+
+The three stories are written as the shape of a real decision: the question that
+gets asked, the constraint that turns out to be the real one, what changes. Each
+card is labelled **Illustrative scenario** on its face, with a note underneath
+saying they are not customers. `content/sovereign.ts` carries a `kind` field so a
+real deployment can be added the day there is written permission to name one,
+and the label changes without the page being touched.
+
+## R4. The founding story, told properly
+
+Three related corrections:
+
+- **/research is gone**, 301 to `/company`, as are `/innovate` and `/insights`
+  which pointed at it. The work behind it is not gone — it is now the origin
+  story, rewritten to say what several years of research in medical imaging,
+  edge inference and simulation taught the founder: that the models were never
+  the problem, and the missing half was the workflow, the reviewer and the audit
+  trail. **No individual projects are named**, which was the instruction.
+- **Two dates, because they are two different things.** The idea began in 2023;
+  Praverse Tech Pvt Ltd was incorporated in 2026, which is what the CIN in the
+  footer encodes. `company.ideaFrom` and `company.founded` are now separate, and
+  schema.org `foundingDate` keeps the legal date, which is what that field
+  means. This closes the `founded-vs-incorporated` VERIFY item.
+- **The Partners section is removed** from Company. The group section above it
+  already named the same organisations in text.
+
+## R5. MENNIE is patented
+
+Changed from patent-pending throughout, per the owner.
+
+The VERIFY entry stays **open**, and deliberately so: what is missing is the
+patent number and jurisdiction. "Patented" with no number is the single claim on
+this site a competitor's counsel is most likely to go and check, and in several
+jurisdictions marking something as patented when it is not is an offence in its
+own right. Publish the number and it stops being an exposure and starts being a
+strength.
+
+## Numbers after this round
+
+| page | perf | a11y | LCP | CLS |
+|---|---|---|---|---|
+| home | 95 | 100 | 2.92s | 0.000 |
+| enterprise-ai | 93 | 100 | 3.27s | 0.000 |
+| pharma | 92 | 100 | 3.32s | 0.000 |
+| mennie | 92 | 100 | 3.04s | 0.000 |
+| photonics | 96 | 100 | 2.77s | 0.000 |
+| company | 95 | 100 | 3.01s | 0.000 |
+| contact | 96 | 100 | 2.78s | 0.000 |
+| careers | 96 | 100 | 2.83s | 0.000 |
+| sovereign-ai-data-centres | 96 | 100 | 2.82s | 0.000 |
+
+Accessibility 100 on every page in both themes, zero axe violations, no page
+scrolls sideways at 360 / 390 / 420 / 768.
+
+## Still open
+
+- **MENNIE patent number and jurisdiction** — see R5. The most consequential
+  open item on the site.
+- **Praverse mark on the hero core** — see Q2.
+- `nexgen-relationship`, `nexgen-logo`, `photonics-india-qualification`,
+  `infraeo-consent` — unchanged from the previous round.
+- **`whatsappNumber` still marked TEMPORARY**, though it matches the number
+  printed on both decks.
