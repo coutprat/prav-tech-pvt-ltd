@@ -2615,3 +2615,78 @@ body::before {
 .role-meta dd {
   font-size: 16px;
 }
+
+/* live particle overlay sitting exactly on the rendered sequence */
+.sequence-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   BUSINESS LINE CARD — tilt + coloured sheen
+   ========================================================================== */
+
+.line-card {
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg)) translateZ(0);
+  transition: box-shadow 0.35s ease, border-color 0.35s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.line-card:hover {
+  /* the lift now comes from the tilt, so don't fight it with translateY */
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg)) translateZ(6px);
+}
+.line-card-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    240px circle at var(--hx, 50%) var(--hy, 50%),
+    color-mix(in srgb, var(--acc, var(--teal)) 26%, transparent),
+    transparent 70%
+  );
+}
+.line-card:hover .line-card-sheen,
+.line-card:focus-visible .line-card-sheen {
+  opacity: 1;
+}
+.line-card .motif {
+  color: color-mix(in srgb, var(--acc, var(--teal)) 55%, var(--line-strong));
+}
+.line-card-cta {
+  color: var(--acc-ink, var(--teal-ink));
+}
+.line-card .line-card-tags span {
+  border-color: color-mix(in srgb, var(--acc, var(--teal)) 30%, var(--line));
+}
+/* the motif's lit elements take the card's accent */
+.line-card .m-check,
+.line-card .m-highlight,
+.line-card .m-thread,
+.line-card .m-pulse {
+  stroke: var(--acc, var(--teal));
+  fill: var(--acc, var(--teal));
+}
+.line-card .m-check {
+  fill: none;
+}
+.line-card .m-thread,
+.line-card .m-highlight {
+  fill: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-card {
+    transform: none !important;
+    transition: none;
+  }
+}

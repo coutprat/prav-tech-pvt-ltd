@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ScrollSequence } from "@/components/motion/ScrollSequence";
+import { PhotonicsHero } from "@/components/sections/PhotonicsHero";
 import { Headline } from "@/components/ui/Headline";
 import { ReachChart } from "@/components/sections/ReachChart";
 import { CapacityChart } from "@/components/sections/CapacityChart";
@@ -36,36 +36,7 @@ export default function PhotonicsPage() {
         fetchPriority="high"
       />
 
-      <ScrollSequence
-        desktop={photonicsFrames.desktop}
-        mobile={photonicsFrames.mobile}
-        desktopDark={photonicsFrames.desktopDark}
-        mobileDark={photonicsFrames.mobileDark}
-        poster={photonicsFrames.poster}
-        posterDark={photonicsFrames.posterDark}
-        alt="An empty data-hall floor. Rows of racks rise, amber copper links light inside each rack, teal optical fibres race across the rows to the spine switches, and the camera lifts to a top view of the hall."
-        scrollLength={420}
-        chapters={[
-          {
-            title: "Copper inside the rack.",
-            body: "Passive and active copper where the distance is short and the budget is power.",
-            from: 0,
-            to: 0.45
-          },
-          {
-            title: "Optics across the hall.",
-            body: "Fibre from the row to the spine, where copper runs out of reach.",
-            from: 0.45,
-            to: 0.74
-          },
-          {
-            title: "400G → 800G → 1.6T.",
-            body: "800G is mainstream for AI clusters today. 1.6T is ramping.",
-            from: 0.74,
-            to: 1.01
-          }
-        ]}
-      />
+      <PhotonicsHero frames={photonicsFrames} />
 
       <section className="section">
         <div className="wrap">

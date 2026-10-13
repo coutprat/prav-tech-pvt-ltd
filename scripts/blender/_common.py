@@ -391,3 +391,75 @@ def render_frames(scene, out_dir, contact=False, frames=120):
     scene.render.filepath = os.path.join(out_dir, "frame-")
     scene.render.image_settings.file_format = "PNG"
     bpy.ops.render.render(animation=True)
+
+
+# ------------------------------------------------------- screen-space export
+
+def world_to_screen(scene, cam, co):
+    """
+    Normalised screen position of a world-space point.
+
+    Returns (x, y) in 0..1 from the TOP-LEFT, which is what a canvas overlay
+    wants — Blender's own helper measures from the bottom. Points behind the
+    camera come back as (-9, -9) so the client can skip them cheaply.
+    """
+    from bpy_extras.object_utils import world_to_camera_view
+
+    v = world_to_camera_view(scene, cam, co)
+    # Behind the camera: push far off-screen so the client simply skips it.
+    if v.z <= 0:
+        return (-9.0, -9.0)
+    return (round(v.x, 4), round(1.0 - v.y, 4))
+
+
+def export_positions(scene, cam, out_dir, frames, trackers):
+    """
+    Write positions.json next to the frames.
+
+    `trackers` is {name: callable(frame) -> world-space Vector or list of them}.
+    Evaluated per frame so animated objects report where they actually are,
+    letting a canvas overlay sit exactly on top of the rendered sequence
+    instead of guessing.
+
+    This runs without rendering, so it is cheap: it only steps the frame and
+    reads the evaluated depsgraph.
+    """
+    import json
+    import os
+
+    data = {
+        "frames": frames,
+        "resolution": [scene.render.resolution_x, scene.render.resolution_y],
+        "tracks": {},
+    }
+
+    per_frame = {name: [] for name in trackers}
+
+    for f in range(1, frames + 1):
+        scene.frame_set(f)
+        bpy.context.view_layer.update()
+        for name, fn in trackers.items():
+            value = fn(f)
+            if isinstance(value, (list, tuple)) and value and hasattr(value[0], "x"):
+                per_frame[name].append(
+                    [world_to_screen(scene, cam, c) for c in value]
+                )
+            elif value is None:
+                per_frame[name].append(None)
+            else:
+                per_frame[name].append(world_to_screen(scene, cam, value))
+
+    data["tracks"] = per_frame
+
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, "positions.json")
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, separators=(",", ":"))
+    print(f"wrote {path}")
+    return path
+
+
+def evaluated_location(obj):
+    """World-space location of an object after modifiers/constraints."""
+    dg = bpy.context.evaluated_depsgraph_get()
+    return obj.evaluated_get(dg).matrix_world.translation.copy()

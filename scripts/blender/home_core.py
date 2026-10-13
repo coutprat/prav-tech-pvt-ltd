@@ -24,9 +24,11 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import bpy  # noqa: E402
+from mathutils import Vector  # noqa: E402
 from _common import (  # noqa: E402
-    CERAMIC, TEAL,
-    add_camera, build_studio, ease_all, emission_input, key, key_socket,
+    CERAMIC,
+    add_camera, build_studio, ease_all, emission_input, evaluated_location,
+    export_positions, key, key_socket,
     mat_aluminium, mat_ceramic, mat_glass, mat_seam,
     parse_args, render_frames, reset_scene, set_render, smooth,
 )
@@ -36,12 +38,14 @@ RING_TILT = math.radians(13)
 CORE_H = 0.95          # half-height of the core cube
 CORE_Z = 1.18          # core centre height above the plinth top
 
-# Where each module docks on the ring. Order is the order they dock in.
+# Where each module docks on the ring, in docking order, each carrying its
+# business line's accent so the hero and the page speak the same colour
+# language: violet -> emerald -> sky -> amber.
 MODULES = [
-    {"name": "EnterpriseAI", "angle": 48},
-    {"name": "PharmaAI", "angle": 138},
-    {"name": "Healthcare", "angle": 228},
-    {"name": "Photonics", "angle": 318},
+    {"name": "EnterpriseAI", "angle": 48, "colour": (0.486, 0.361, 1.000, 1.0)},   # #7C5CFF
+    {"name": "PharmaAI", "angle": 138, "colour": (0.063, 0.725, 0.506, 1.0)},      # #10B981
+    {"name": "Healthcare", "angle": 228, "colour": (0.220, 0.741, 0.973, 1.0)},    # #38BDF8
+    {"name": "Photonics", "angle": 318, "colour": (0.961, 0.620, 0.043, 1.0)},     # #F59E0B
 ]
 
 
@@ -173,10 +177,24 @@ def build_module(spec, index):
     seam.name = f"Seam_{spec['name']}"
     seam.scale = (0.555, 0.098, 0.225)
     seam.rotation_euler = body.rotation_euler
-    seam_mat = mat_seam(f"SeamMat_{index}", TEAL, strength=0.0)
+    seam_mat = mat_seam(f"SeamMat_{index}", spec["colour"], strength=0.0, tint=0.92)
     seam.data.materials.append(seam_mat)
 
-    return [body, collar, seam], seam_mat, pos, a
+    # Rim light on the core in the same colour, so the core picks up each
+    # line's accent as that module locks in rather than staying inert white.
+    rim_data = bpy.data.lights.new(f"Rim_{spec['name']}", type="AREA")
+    rim_data.shape = "RECTANGLE"
+    rim_data.size = 0.9
+    rim_data.size_y = 0.7
+    rim_data.color = spec["colour"][:3]
+    rim_data.energy = 0.0
+    rim = bpy.data.objects.new(f"RimLight_{spec['name']}", rim_data)
+    # between the module and the core, aimed inward
+    rim.location = (pos[0] * 0.70, pos[1] * 0.70, pos[2] + 0.18)
+    rim.rotation_euler = (math.radians(86), 0, a + math.pi / 2)
+    bpy.context.scene.collection.objects.link(rim)
+
+    return [body, collar, seam], seam_mat, pos, a, rim
 
 
 def animate(scene, ring, modules, core, cam, target, frames):
@@ -196,7 +214,7 @@ def animate(scene, ring, modules, core, cam, target, frames):
 
     # --- modules dock ------------------------------------------------------
     span = 0.70 / len(modules)
-    for i, (parts, seam_mat, pos, angle) in enumerate(modules):
+    for i, (parts, seam_mat, pos, angle, rim) in enumerate(modules):
         start = 0.20 + i * span
         land = start + span * 0.60
         lit = start + span * 0.82
@@ -216,8 +234,14 @@ def animate(scene, ring, modules, core, cam, target, frames):
         strength = emission_input(seam_mat)
         key_socket(strength, f_start, 0.0)
         key_socket(strength, f_land, 0.0)
-        key_socket(strength, f_lit, 4.0)
-        key_socket(strength, f_end, 3.2)
+        key_socket(strength, f_lit, 2.4)
+        key_socket(strength, f_end, 2.0)
+
+        # Rim light rises with the seam and stays on, so the core itself picks
+        # up each line's colour instead of staying inert white.
+        key(rim.data, "energy", f_land, 0.0)
+        key(rim.data, "energy", f_lit, 240.0)
+        key(rim.data, "energy", f_end, 190.0)
 
     # --- camera: slow push in, ending closer and a touch lower -------------
     key(cam, "location", 1, (7.6, -8.7, 6.1))
@@ -254,6 +278,49 @@ def main():
 
     animate(scene, ring, modules, core, cam, target, args.frames)
     ease_all()
+
+    if not args.contact:
+        # Screen-space tracks so the site can draw a live canvas overlay that
+        # sits exactly on the render: light particles travelling the ring
+        # between docked modules, in each line's colour.
+        seam_objs = [parts[2] for parts, _, _, _, _ in modules]
+        ring_samples = 72
+
+        def ring_points(_frame):
+            return [
+                Vector(ring_point((i / (ring_samples - 1)) * math.tau * 0.999))
+                for i in range(ring_samples)
+            ]
+
+        trackers = {"ring": ring_points}
+        for i, spec in enumerate(MODULES):
+            trackers[f"module{i}"] = (
+                lambda _f, o=seam_objs[i]: evaluated_location(o)
+            )
+
+        export_positions(scene, cam, args.out, args.frames, trackers)
+
+        # Which frame each module is docked and lit by, so the overlay knows
+        # when a segment of the ring becomes active. Mirrors animate().
+        import json as _json
+        import os as _os
+
+        span = 0.70 / len(MODULES)
+        meta = {
+            "ringDrawnBy": round(0.20, 4),
+            "modules": [
+                {
+                    "name": m["name"],
+                    "angle": m["angle"],
+                    "colour": "#%02X%02X%02X"
+                    % tuple(int(round(c * 255)) for c in m["colour"][:3]),
+                    "litAt": round(0.20 + i * span + span * 0.82, 4),
+                }
+                for i, m in enumerate(MODULES)
+            ],
+        }
+        with open(_os.path.join(args.out, "meta.json"), "w", encoding="utf-8") as fh:
+            _json.dump(meta, fh, indent=1)
 
     render_frames(scene, args.out, contact=args.contact, frames=args.frames)
 

@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ScrollSequence } from "@/components/motion/ScrollSequence";
+import { HomeHero } from "@/components/sections/HomeHero";
+import { Aurora, allLineBlobs } from "@/components/ui/Aurora";
+import { ScrollTint } from "@/components/ui/ScrollTint";
+import { Reveal } from "@/components/ui/Reveal";
 import { Headline } from "@/components/ui/Headline";
 import { ProofBar } from "@/components/ui/ProofBar";
 import { BusinessLineCard } from "@/components/ui/BusinessLineCard";
@@ -8,6 +12,17 @@ import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
 import { homeFrames } from "@/content/media";
 import { businessLines, company, howWeWork, people, pillars } from "@/content/company";
+
+/** Accent per line, in the same order as content/company.ts businessLines. */
+const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
+const LINE_GLOWS = ["#7C5CFF", "#10B981", "#38BDF8", "#F59E0B"];
+
+export const metadata: Metadata = {
+  title: "Praverse Tech — Intelligence, engineered for industry.",
+  description:
+    "Enterprise AI for healthcare, pharma and regulated industries, and the high-speed interconnect layer for India's sovereign AI data centres.",
+  alternates: { canonical: "/" }
+};
 
 export default function HomePage() {
   return (
@@ -22,51 +37,18 @@ export default function HomePage() {
       />
 
       {/* ---------------------------------------------------------- hero */}
-      <ScrollSequence
-        desktop={homeFrames.desktop}
-        mobile={homeFrames.mobile}
-        desktopDark={homeFrames.desktopDark}
-        mobileDark={homeFrames.mobileDark}
-        poster={homeFrames.poster}
-        posterDark={homeFrames.posterDark}
-        alt="A white ceramic core on a plinth. An orbital ring draws around it and four modules dock onto the ring in turn, each lighting its teal seams: Enterprise AI, Pharma AI, Healthcare AI, Photonics."
-        scrollLength={420}
-        chapters={[
-          {
-            title: "One core.",
-            body: "A single engineering practice underneath everything we ship.",
-            from: 0,
-            to: 0.2
-          },
-          {
-            title: "Enterprise AI & Agents",
-            body: "Agents and copilots inside the workflows your teams already run.",
-            from: 0.2,
-            to: 0.38
-          },
-          {
-            title: "Pharma & Regulatory AI",
-            body: "483 responses, CAPA and inspection readiness — expert-reviewed.",
-            from: 0.38,
-            to: 0.56
-          },
-          {
-            title: "Healthcare AI",
-            body: "MENNIE meets patients at the door and hands clinicians a structured picture.",
-            from: 0.56,
-            to: 0.74
-          },
-          {
-            title: "Photonics & AI Data Centres",
-            body: "The interconnect layer for India's sovereign AI data centres.",
-            from: 0.74,
-            to: 1.01
-          }
-        ]}
+      <HomeHero frames={homeFrames} />
+
+      <ScrollTint
+        sections={businessLines.map((l, i) => ({
+          id: `line-${l.id}`,
+          color: LINE_GLOWS[i]
+        }))}
       />
 
       {/* ------------------------------------------------------ statement */}
-      <section className="section">
+      <section className="section" style={{ position: "relative" }}>
+        <Aurora blobs={allLineBlobs} />
         <div className="wrap">
           <Headline as="h1" className="display">
             Intelligence, engineered for industry.
@@ -95,16 +77,20 @@ export default function HomePage() {
           <Headline onScroll>Where the work lands.</Headline>
 
           <div className="line-grid">
-            {businessLines.map((l) => (
-              <BusinessLineCard
-                key={l.id}
-                n={l.n}
-                href={l.href}
-                title={l.title}
-                blurb={l.blurb}
-                tags={l.tags}
-                motif={l.motif}
-              />
+            {businessLines.map((l, i) => (
+              <Reveal key={l.id} delay={i * 0.08}>
+                <div id={`line-${l.id}`}>
+                  <BusinessLineCard
+                    n={l.n}
+                    href={l.href}
+                    title={l.title}
+                    blurb={l.blurb}
+                    tags={l.tags}
+                    motif={l.motif}
+                    accent={LINE_ACCENTS[i]}
+                  />
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -144,8 +130,8 @@ export default function HomePage() {
           </div>
 
           <ul className="leader-strip">
-            {people.map((p) => (
-              <li key={p.slug}>
+            {people.map((p, i) => (
+              <Reveal key={p.slug} as="li" delay={i * 0.1}>
                 <Link href="/company">
                   <Image
                     src={`/team/${p.slug}-plate.webp`}
@@ -159,7 +145,7 @@ export default function HomePage() {
                   </p>
                   <p className="person-role">{p.role}</p>
                 </Link>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
@@ -173,11 +159,11 @@ export default function HomePage() {
 
           <ol className="steps">
             {howWeWork.map((s, i) => (
-              <li key={s.step}>
+              <Reveal key={s.step} as="li" delay={i * 0.07}>
                 <span className="steps-n num">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="h3">{s.step}</h3>
                 <p className="body-2">{s.body}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>

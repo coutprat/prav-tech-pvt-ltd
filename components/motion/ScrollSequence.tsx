@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useReducedMotion, useTheme } from "@/lib/useMediaQuery";
@@ -60,7 +60,9 @@ export function ScrollSequence({
   poster,
   posterDark,
   alt,
-  scrollLength = 400
+  scrollLength = 400,
+  frameRef,
+  overlay
 }: {
   desktop: FrameSet;
   mobile: FrameSet;
@@ -74,6 +76,10 @@ export function ScrollSequence({
   alt: string;
   /** Scroll distance of the pinned section, in % of viewport height. */
   scrollLength?: number;
+  /** Written on every scrub tick so an overlay can track the render. */
+  frameRef?: RefObject<number>;
+  /** Rendered inside the pinned stage, above the canvas. */
+  overlay?: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -234,6 +240,7 @@ export function ScrollSequence({
           },
           onUpdate: () => {
             current = Math.round(state.frame);
+            if (frameRef) frameRef.current = current;
             draw(current);
           }
         });
@@ -275,6 +282,8 @@ export function ScrollSequence({
           decoding="async"
           data-hidden={painted && !reduced}
         />
+
+        {overlay}
 
         {chapters.length > 0 && !reduced ? (
           <div className="chapters">

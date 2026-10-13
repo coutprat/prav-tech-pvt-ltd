@@ -24,7 +24,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import bpy  # noqa: E402
 from _common import (  # noqa: E402
-    AMBER, TEAL,
+    AMBER, TEAL, evaluated_location, export_positions,
     add_camera, build_studio, ease_all, emission_input, key, key_socket,
     mat_aluminium, mat_ceramic, mat_seam,
     parse_args, render_frames, reset_scene, set_render, smooth,
@@ -288,6 +288,57 @@ def main():
         cam, target, args.frames,
     )
     ease_all()
+
+    if not args.contact:
+        # Screen-space tracks for the live overlay: amber packets hop along
+        # copper inside each rack, teal packets run the fibres across the hall.
+        import json as _json
+        import os as _os
+
+        from mathutils import Vector as _V
+
+        copper_objs = []
+        port_objs = []
+        for row in range(ROWS):
+            for i in range(PER_ROW):
+                idx = f"{row}_{i}"
+                copper_objs.append(
+                    (bpy.data.objects[f"Copper_{idx}_0"],
+                     bpy.data.objects[f"Copper_{idx}_2"])
+                )
+                port_objs.append(bpy.data.objects[f"Port_{idx}"])
+
+        fib_samples = 20
+
+        def fibre_pts(row):
+            def fn(_f):
+                sp = bpy.data.objects[f"Fibre_{row}"].data.splines[0]
+                n = len(sp.points)
+                step = max(1, n // fib_samples)
+                return [_V(sp.points[j].co[:3]) for j in range(0, n, step)]
+            return fn
+
+        trackers = {}
+        for i, (a, b) in enumerate(copper_objs):
+            trackers[f"cu{i}a"] = lambda _f, o=a: evaluated_location(o)
+            trackers[f"cu{i}b"] = lambda _f, o=b: evaluated_location(o)
+        for i, o in enumerate(port_objs):
+            trackers[f"port{i}"] = lambda _f, oo=o: evaluated_location(oo)
+        for row in range(ROWS):
+            trackers[f"fibre{row}"] = fibre_pts(row)
+
+        export_positions(scene, cam, args.out, args.frames, trackers)
+
+        meta = {
+            "rows": ROWS,
+            "perRow": PER_ROW,
+            "copperLitFrom": 0.24,
+            "fibreDrawnFrom": 0.48,
+            "amber": "#F59E0B",
+            "teal": "#4BD6C4",
+        }
+        with open(_os.path.join(args.out, "meta.json"), "w", encoding="utf-8") as fh:
+            _json.dump(meta, fh, indent=1)
 
     render_frames(scene, args.out, contact=args.contact, frames=args.frames)
 

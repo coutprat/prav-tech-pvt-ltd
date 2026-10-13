@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
 
 export type Motif = "gate" | "thread" | "wave" | "pulse";
@@ -16,7 +19,8 @@ export function BusinessLineCard({
   title,
   blurb,
   tags,
-  motif
+  motif,
+  accent
 }: {
   n: string;
   href: string;
@@ -24,9 +28,46 @@ export function BusinessLineCard({
   blurb: string;
   tags: readonly string[];
   motif: Motif;
+  /** CSS custom property name for this line's accent, e.g. "--acc-ent". */
+  accent?: string;
 }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+
+  /**
+   * Pointer tilt with a coloured highlight that follows the cursor.
+   * Written straight to CSS variables rather than React state: this fires on
+   * every mousemove, and re-rendering for it would be wasteful.
+   */
+  function onMove(e: React.PointerEvent<HTMLAnchorElement>) {
+    if (e.pointerType !== "mouse") return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--hx", `${px * 100}%`);
+    el.style.setProperty("--hy", `${py * 100}%`);
+    el.style.setProperty("--tilt-x", `${(0.5 - py) * 5}deg`);
+    el.style.setProperty("--tilt-y", `${(px - 0.5) * 6}deg`);
+  }
+
+  function onLeave() {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--tilt-x", "0deg");
+    el.style.setProperty("--tilt-y", "0deg");
+  }
+
   return (
-    <Link className="line-card" href={href}>
+    <Link
+      className="line-card"
+      href={href}
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      style={accent ? ({ ["--acc" as string]: `var(${accent})` }) : undefined}
+    >
+      <span className="line-card-sheen" aria-hidden="true" />
       <p className="line-card-n">{n}</p>
       <h3>{title}</h3>
       <p>{blurb}</p>
