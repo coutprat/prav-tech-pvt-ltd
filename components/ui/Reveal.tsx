@@ -48,9 +48,16 @@ export function Reveal({
     { scope: ref, dependencies: [delay, y] }
   );
 
+  // React 19's ElementType cannot carry a ref generically; narrow it here.
+  const Comp = Tag as React.ComponentType<{
+    ref?: React.Ref<HTMLElement>;
+    className?: string;
+    children?: ReactNode;
+  }>;
+
   return (
-    <Tag ref={ref} className={className}>
+    <Comp ref={ref} className={className}>
       {children}
-    </Tag>
+    </Comp>
   );
 }

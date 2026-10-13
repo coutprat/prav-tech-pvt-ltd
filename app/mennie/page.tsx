@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { MennieHero } from "@/components/sections/MennieHero";
+import { MennieFilm } from "@/components/sections/MennieFilm";
+import { Aurora } from "@/components/ui/Aurora";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { Headline } from "@/components/ui/Headline";
 import {
@@ -19,12 +20,18 @@ export const metadata: Metadata = {
 
 export default function MenniePage() {
   return (
-    <>
-      <MennieHero />
+    <div data-acc="mennie">
+      <MennieFilm />
 
-      <section className="section">
+      <section className="section" style={{ position: "relative" }}>
+        <Aurora
+          blobs={[
+            { color: "var(--acc-men)", x: 16, y: 34, size: 520 },
+            { color: "var(--acc-ent)", x: 82, y: 64, size: 420 }
+          ]}
+        />
         <div className="wrap">
-          <SectionLabel accent="teal">Healthcare AI</SectionLabel>
+          <SectionLabel accent="line">Healthcare AI</SectionLabel>
           <Headline as="h1" className="display">
             She meets patients at the door.
           </Headline>
@@ -98,7 +105,7 @@ export default function MenniePage() {
       {/* ----------------------------------------------- how it's built */}
       <section className="section">
         <div className="wrap">
-          <SectionLabel accent="teal">How it is built</SectionLabel>
+          <SectionLabel accent="line">How it is built</SectionLabel>
           <Headline onScroll>Privacy by architecture.</Headline>
 
           <div className="grid-3">
@@ -153,6 +160,6 @@ export default function MenniePage() {
         title="Want MENNIE in your lobby?"
         body="Tell us the workflow. You get a written plan within two business days."
       />
-    </>
+    </div>
   );
 }

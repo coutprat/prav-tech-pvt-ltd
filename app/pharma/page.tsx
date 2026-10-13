@@ -23,12 +23,12 @@ export const metadata: Metadata = {
 
 export default function PharmaPage() {
   return (
-    <>
+    <div data-acc="pharma">
       <EvidenceThread />
 
       <section className="section">
         <div className="wrap">
-          <SectionLabel accent="teal">Pharma &amp; regulatory AI</SectionLabel>
+          <SectionLabel accent="line">Pharma &amp; regulatory AI</SectionLabel>
           <Headline as="h1" className="display">
             Every line traces back to evidence.
           </Headline>
@@ -133,6 +133,6 @@ export default function PharmaPage() {
         title="Inspection coming?"
         body="Send us the scope. You get a written plan within two business days."
       />
-    </>
+    </div>
   );
 }

@@ -65,9 +65,16 @@ export function Headline({
     { scope: ref, dependencies: [delay, onScroll] }
   );
 
+  // React 19's ElementType cannot carry a ref generically; narrow it here.
+  const Comp = Tag as React.ComponentType<{
+    ref?: React.Ref<HTMLElement>;
+    className?: string;
+    children?: ReactNode;
+  }>;
+
   return (
-    <Tag ref={ref} className={`headline ${className}`}>
+    <Comp ref={ref} className={`headline ${className}`}>
       {children}
-    </Tag>
+    </Comp>
   );
 }

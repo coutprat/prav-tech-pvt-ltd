@@ -14,7 +14,8 @@ export function SectionLabel({
   id
 }: {
   children: ReactNode;
-  accent?: "teal" | "amber";
+  /** "line" follows the page's --acc, set by data-acc on an ancestor. */
+  accent?: "teal" | "amber" | "line";
   id?: string;
 }) {
   return (

@@ -16,7 +16,25 @@ const config = [
     ]
   },
   ...nextVitals,
-  ...nextTypescript
+  ...nextTypescript,
+  {
+    /**
+     * React Three Fiber is imperative by design: the whole point of useFrame
+     * is to mutate three.js objects (camera position, material uniforms,
+     * buffer attributes) every frame, outside React's render. The React
+     * Compiler lint rules correctly forbid that pattern in ordinary
+     * components and are wrong about it here, so they are scoped off for the
+     * 3D layer only. Everything else in the codebase still obeys them.
+     */
+    files: ["components/three/**/*.tsx"],
+    rules: {
+      "react-hooks/refs": "off",
+      "react-hooks/immutability": "off",
+      "react-hooks/purity": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/static-components": "off"
+    }
+  }
 ];
 
 export default config;

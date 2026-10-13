@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { PhotonicsHero } from "@/components/sections/PhotonicsHero";
+import { ModuleSection } from "@/components/sections/ModuleSection";
+import { ReachRace } from "@/components/sections/ReachRace";
+import { CapacityHubs } from "@/components/sections/CapacityHubs";
+import { Aurora } from "@/components/ui/Aurora";
 import { Headline } from "@/components/ui/Headline";
-import { ReachChart } from "@/components/sections/ReachChart";
 import { CapacityChart } from "@/components/sections/CapacityChart";
 import {
   SectionLabel,
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function PhotonicsPage() {
   return (
-    <>
+    <div data-acc="photonics">
       {/* The hero's first frame is the LCP element — preload it so it is not
           queued behind the JS bundles. */}
       <link
@@ -38,9 +41,15 @@ export default function PhotonicsPage() {
 
       <PhotonicsHero frames={photonicsFrames} />
 
-      <section className="section">
+      <section className="section" style={{ position: "relative" }}>
+        <Aurora
+          blobs={[
+            { color: "var(--acc-pho)", x: 18, y: 32, size: 520 },
+            { color: "var(--acc-pho-2)", x: 80, y: 62, size: 480 }
+          ]}
+        />
         <div className="wrap">
-          <SectionLabel accent="amber">Photonics &amp; AI data centres</SectionLabel>
+          <SectionLabel accent="line">Photonics &amp; AI data centres</SectionLabel>
           <Headline as="h1" className="display">
             The layer every AI cluster runs on.
           </Headline>
@@ -55,20 +64,22 @@ export default function PhotonicsPage() {
       {/* ------------------------------------------------------ reach chart */}
       <section className="section section-alt">
         <div className="wrap">
-          <SectionLabel accent="amber">Reach</SectionLabel>
+          <SectionLabel accent="line">Reach</SectionLabel>
           <Headline onScroll>Copper is cheaper. Optics goes further.</Headline>
           <p className="body-2" style={{ marginTop: 20 }}>
             Typical maximum reach by media type. Indicative figures — actual reach
             depends on speed, cable construction and the link budget you design to.
           </p>
-          <ReachChart />
+          <ReachRace />
         </div>
       </section>
+
+      <ModuleSection />
 
       {/* -------------------------------------------------------- portfolio */}
       <section className="section">
         <div className="wrap">
-          <SectionLabel accent="amber">Portfolio</SectionLabel>
+          <SectionLabel accent="line">Portfolio</SectionLabel>
           <Headline onScroll>Six families, one supply chain.</Headline>
           <p className="body-2" style={{ marginTop: 20 }}>
             Supplied through <Verify id="infraeo-consent">our US technology partner</Verify>.
@@ -76,7 +87,7 @@ export default function PhotonicsPage() {
 
           <div className="grid-3">
             {portfolio.map((p) => (
-              <article className="card" key={p.title}>
+              <article className="card port-card" key={p.title}>
                 <p className="line-card-n">{p.sub}</p>
                 <h3 className="h3" style={{ marginTop: 12 }}>
                   {p.title}
@@ -84,13 +95,14 @@ export default function PhotonicsPage() {
                 <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
                   {p.body}
                 </p>
-                <p className="mono" style={{ marginTop: 18, color: "var(--amber-ink)" }}>
-                  {p.title === "AEC" ? (
-                    <Verify id="aec-reach" />
-                  ) : (
-                    p.speeds
-                  )}
+                <p className="mono" style={{ marginTop: 18, color: "var(--acc-pho-ink)" }}>
+                  {p.title === "AEC" ? <Verify id="aec-reach" /> : p.speeds}
                 </p>
+                <div className="port" aria-hidden="true">
+                  <span className="port-cable" />
+                  <span className="port-body" />
+                  <span className="port-led" />
+                </div>
               </article>
             ))}
           </div>
@@ -132,16 +144,17 @@ export default function PhotonicsPage() {
       {/* ---------------------------------------------------- india market */}
       <section className="section section-alt">
         <div className="wrap">
-          <SectionLabel accent="amber">India</SectionLabel>
+          <SectionLabel accent="line">India</SectionLabel>
           <Headline onScroll>The capacity is being built now.</Headline>
           <CapacityChart />
+          <CapacityHubs />
         </div>
       </section>
 
       {/* ------------------------------------------------------- our model */}
       <section className="section">
         <div className="wrap">
-          <SectionLabel accent="amber">Our model</SectionLabel>
+          <SectionLabel accent="line">Our model</SectionLabel>
           <Headline onScroll>What we actually do.</Headline>
 
           <div className="grid-2" style={{ alignItems: "start" }}>
@@ -174,7 +187,7 @@ export default function PhotonicsPage() {
       {/* ------------------------------------------------------ milestones */}
       <section className="section section-alt">
         <div className="wrap">
-          <SectionLabel accent="amber">Roadmap</SectionLabel>
+          <SectionLabel accent="line">Roadmap</SectionLabel>
           <Headline onScroll>Where this goes.</Headline>
           <div style={{ marginTop: 48 }}>
             <MilestoneTracker items={photonicsMilestones} />
@@ -186,6 +199,6 @@ export default function PhotonicsPage() {
         title="Designing a cluster?"
         body="Send us the topology and the distances. You get a written plan within two business days."
       />
-    </>
+    </div>
   );
 }

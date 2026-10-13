@@ -2690,3 +2690,613 @@ body::before {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   PHOTONICS — 800G module (3D)
+   ========================================================================== */
+
+.mod-section {
+  background: #0b0e18;
+  color: #ecebe7;
+  overflow: hidden;
+}
+.mod-stage {
+  position: relative;
+  height: 100svh;
+}
+.mod-canvas,
+.mod-poster {
+  position: absolute;
+  inset: 0;
+}
+.mod-poster {
+  background: radial-gradient(
+      60% 60% at 55% 45%,
+      rgba(75, 214, 196, 0.16),
+      transparent 70%
+    ),
+    #0b0e18;
+}
+.mod-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-bottom: 44px;
+  padding-top: 64px;
+  z-index: 2;
+  pointer-events: none;
+  /* scrim so a label that drifts over the copy still leaves it readable */
+  background: linear-gradient(transparent, rgba(11, 14, 24, 0.82) 42%);
+}
+.mod-copy .h2,
+.mod-copy .body-2 {
+  color: #ecebe7;
+  max-width: 32ch;
+}
+.mod-copy .body-2 {
+  color: #a6acbc;
+}
+.mod-copy .section-label {
+  color: var(--acc-pho);
+}
+.mod-copy .section-label::before {
+  background: var(--acc-pho);
+}
+.mod-caption {
+  margin-top: 20px;
+  color: #a6acbc;
+  opacity: 0.8;
+}
+.mod-label {
+  width: 168px;
+  background: rgba(11, 14, 24, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 2px solid var(--acc-pho);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #ecebe7;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.mod-label b {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.mod-label span {
+  color: #a6acbc;
+}
+
+/* ==========================================================================
+   PHOTONICS — copper vs optics race
+   ========================================================================== */
+
+.race {
+  margin-top: 48px;
+}
+.race-lanes {
+  list-style: none;
+  display: grid;
+  gap: 18px;
+}
+.race-lanes li {
+  display: grid;
+  gap: 6px;
+  align-items: center;
+}
+@media (min-width: 760px) {
+  .race-lanes li {
+    grid-template-columns: 170px 1fr 86px;
+    gap: 20px;
+  }
+}
+.race-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+.race-label small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 400;
+  margin-top: 3px;
+}
+.race-track {
+  position: relative;
+  height: 20px;
+  border-radius: 100px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.race-reach {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 100px;
+  opacity: 0.22;
+}
+[data-kind="copper"] .race-reach {
+  background: var(--acc-pho);
+}
+[data-kind="optical"] .race-reach {
+  background: var(--acc-pho-2);
+}
+.race-pulse {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  transition: opacity 0.45s ease;
+}
+[data-kind="copper"] .race-pulse {
+  background: var(--acc-pho);
+  box-shadow: 0 0 10px 3px color-mix(in srgb, var(--acc-pho) 60%, transparent);
+}
+[data-kind="optical"] .race-pulse {
+  background: var(--acc-pho-2);
+  box-shadow: 0 0 12px 4px color-mix(in srgb, var(--acc-pho-2) 60%, transparent);
+}
+.race-stop {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--line-strong);
+  opacity: 0.8;
+}
+.race-value {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+@media (min-width: 760px) {
+  .race-value {
+    text-align: right;
+  }
+}
+.race-note {
+  color: var(--ink-2);
+  margin-top: 16px;
+}
+
+/* ==========================================================================
+   PHOTONICS — capacity hubs
+   ========================================================================== */
+
+.hubs {
+  margin-top: 48px;
+  display: grid;
+  gap: 32px;
+}
+@media (min-width: 900px) {
+  .hubs {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+}
+.hubs-svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-height: 460px;
+}
+.hub-core {
+  fill: var(--acc-pho-2);
+  opacity: 0.9;
+}
+.hub-halo {
+  fill: var(--acc-pho-2);
+  opacity: 0.14;
+  animation: hub-pulse 3.4s ease-in-out infinite;
+}
+.hub:nth-child(3) .hub-halo {
+  animation-delay: -0.7s;
+}
+.hub:nth-child(4) .hub-halo {
+  animation-delay: -1.4s;
+}
+.hub:nth-child(5) .hub-halo {
+  animation-delay: -2.1s;
+}
+@keyframes hub-pulse {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 0.22;
+    transform: scale(1.06);
+  }
+}
+.hub-halo {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.hub-hq {
+  fill: var(--acc-pho);
+}
+.hub-hq-ring {
+  fill: none;
+  stroke: var(--acc-pho);
+  stroke-width: 0.35;
+  opacity: 0.7;
+}
+.hubs-legend {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.hubs-legend li {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+.hubs-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--acc-pho-2);
+  align-self: center;
+}
+.hubs-legend li[data-hq="true"] .hubs-dot {
+  background: var(--acc-pho);
+}
+.hubs-legend b {
+  font-weight: 500;
+}
+.hubs-legend .num,
+.hubs-legend li span:last-child {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.hubs-source {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 80ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-halo {
+    animation: none;
+  }
+}
+
+/* product family card: cable slides into a port */
+.port-card .port {
+  position: relative;
+  height: 44px;
+  margin-top: 18px;
+  overflow: hidden;
+}
+.port-body {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  width: 54px;
+  height: 24px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: var(--paper);
+}
+.port-led {
+  position: absolute;
+  right: 8px;
+  top: 18px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  transition: background-color 0.35s ease, box-shadow 0.35s ease;
+}
+.port-cable {
+  position: absolute;
+  left: 0;
+  top: 17px;
+  height: 9px;
+  width: 50%;
+  border-radius: 100px;
+  background: var(--acc, var(--teal));
+  opacity: 0.55;
+  transform: translateX(-30%);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+.card:hover .port-cable,
+.card:focus-within .port-cable,
+.port-card[data-inview="true"] .port-cable {
+  transform: translateX(14%);
+  opacity: 0.9;
+}
+.card:hover .port-led,
+.card:focus-within .port-led,
+.port-card[data-inview="true"] .port-led {
+  background: var(--acc-pho-2);
+  box-shadow: 0 0 10px 3px color-mix(in srgb, var(--acc-pho-2) 65%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .port-cable,
+  .port-led {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   MENNIE FILM
+   ========================================================================== */
+
+.film {
+  background: #070a12;
+  overflow: hidden;
+}
+.film-stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+.film-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* 2.39:1 letterbox */
+.film-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14svh;
+  background: #05070d;
+  z-index: 4;
+  transform-origin: top;
+}
+.film-bar-top {
+  top: 0;
+}
+.film-bar-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+}
+
+/* cool highlights, warm shadows, grain, vignette */
+.film-grade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 20%, rgba(56, 189, 248, 0.1), transparent 60%),
+    radial-gradient(90% 80% at 50% 110%, rgba(255, 176, 102, 0.12), transparent 65%);
+  mix-blend-mode: screen;
+}
+
+.film-title,
+.film-caption {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 0 var(--gutter);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.film-title[data-on="true"],
+.film-caption[data-on="true"] {
+  opacity: 1;
+}
+.film-title {
+  background: #05070d;
+}
+.film-title h2 {
+  font-size: clamp(48px, 9vw, 130px);
+  letter-spacing: -0.04em;
+  color: #eaf6ff;
+  text-shadow: 0 0 40px rgba(56, 189, 248, 0.55), 0 0 100px rgba(56, 189, 248, 0.3);
+}
+.film-title p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fc4e8;
+  margin-top: 18px;
+}
+.film-caption p {
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.6vw, 15px);
+  letter-spacing: 0.06em;
+  color: #c9d4e4;
+  max-width: 46ch;
+  line-height: 1.7;
+  background: rgba(5, 7, 13, 0.6);
+  padding: 22px 26px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
+/* glass HUD panels at different depths */
+.film-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+.film-hud[data-on="true"] {
+  opacity: 1;
+}
+.film-panel {
+  position: absolute;
+  width: min(330px, 62vw);
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.film-panel[data-on="true"] {
+  opacity: 1;
+  transform: none;
+}
+/* each sits at a different point in the atrium */
+.film-panel:nth-child(1) {
+  left: 8%;
+  top: 26%;
+}
+.film-panel:nth-child(2) {
+  right: 9%;
+  top: 34%;
+}
+.film-panel:nth-child(3) {
+  left: 12%;
+  bottom: 28%;
+}
+.film-panel:nth-child(4) {
+  right: 11%;
+  bottom: 24%;
+}
+.film-panel-line {
+  position: absolute;
+  left: -34px;
+  top: 50%;
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--acc-men));
+}
+.film-panel:nth-child(even) .film-panel-line {
+  left: auto;
+  right: -34px;
+  background: linear-gradient(270deg, transparent, var(--acc-men));
+}
+.film-panel-text {
+  font-size: clamp(15px, 1.7vw, 19px);
+  line-height: 1.4;
+  color: #eaf6ff;
+  background: rgba(10, 18, 32, 0.52);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  border-left: 2px solid var(--acc-men);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+.film-panel-meaning {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acc-men);
+  margin-top: 10px;
+  padding-left: 4px;
+}
+
+/* three surfaces */
+.film-surfaces {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  padding: 0 var(--gutter);
+  max-width: 1100px;
+  margin-inline: auto;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+@media (min-width: 820px) {
+  .film-surfaces {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+.film-surfaces[data-on="true"] {
+  opacity: 1;
+}
+.film-surfaces article {
+  background: rgba(10, 18, 32, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 14px;
+  padding: 20px;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 0.12s);
+}
+.film-surfaces[data-on="true"] article {
+  opacity: 1;
+  transform: none;
+}
+.film-surfaces h3 {
+  font-size: 19px;
+  color: #eaf6ff;
+  margin-top: 14px;
+}
+.film-surfaces p {
+  font-size: 14px;
+  color: #9fb3c9;
+  margin-top: 8px;
+}
+/* simple procedural marks for the three surfaces */
+.surface-art {
+  display: block;
+  height: 46px;
+  border-radius: 6px;
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.surface-0 {
+  width: 32px;
+  height: 46px;
+  border-radius: 4px 4px 2px 2px;
+}
+.surface-1 {
+  width: 26px;
+  height: 46px;
+  border-radius: 6px;
+}
+.surface-2 {
+  width: 56px;
+  height: 40px;
+  border-radius: 4px;
+}
+.surface-art::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(56, 189, 248, 0.5),
+    rgba(56, 189, 248, 0.08)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-panel,
+  .film-surfaces article,
+  .film-title,
+  .film-caption,
+  .film-hud {
+    transition: none;
+  }
+}

@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 
 export default function EnterpriseAIPage() {
   return (
-    <>
+    <div data-acc="enterprise">
       <Checkpoint />
 
       <section className="section">
         <div className="wrap">
-          <SectionLabel accent="teal">Enterprise AI &amp; agents</SectionLabel>
+          <SectionLabel accent="line">Enterprise AI &amp; agents</SectionLabel>
           <Headline as="h1" className="display">
             The gate is the architecture.
           </Headline>
@@ -85,6 +85,6 @@ export default function EnterpriseAIPage() {
         title="Have a workflow in mind?"
         body="Describe it in plain language. You get a written plan within two business days."
       />
-    </>
+    </div>
   );
 }
