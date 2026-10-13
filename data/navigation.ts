@@ -18,6 +18,7 @@ export const footerNav = {
   company: [
     { label: "Company", href: "/company" },
     { label: "Research", href: "/research" },
+    { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
     { label: "Start a project", href: "/start-a-project" }
   ],

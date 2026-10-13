@@ -27,6 +27,26 @@
   --amber: #e8a23a; /* Photonics only */
   --amber-ink: #8a5a00; /* 5.1:1 on paper — Photonics links */
 
+  /* --- business-line accents ----------------------------------------
+     Two values per line. `-glow` is light: gradients, seams, rim light,
+     chart marks. `-ink` is the only one allowed to carry text, and every
+     one is >= 5.0:1 on --paper, --paper-2 and --paper-3.
+     Body copy stays --ink regardless. */
+  --acc-ent: #7c5cff; /* violet */
+  --acc-ent-ink: #5b3fd6; /* 5.74:1 on paper */
+  --acc-pha: #10b981; /* emerald */
+  --acc-pha-ink: #066b49; /* 5.59:1 */
+  --acc-men: #38bdf8; /* sky */
+  --acc-men-ink: #035f92; /* 5.87:1 */
+  --acc-pho: #f59e0b; /* amber */
+  --acc-pho-ink: #8a5005; /* 5.55:1 */
+  --acc-pho-2: #4bd6c4; /* teal, the optical half of Photonics */
+  --acc-pho-2-ink: #0a6a60; /* 5.53:1 */
+
+  /* The accent the current page is "in". Pages override it on <main>. */
+  --acc: var(--teal);
+  --acc-ink: var(--teal-ink);
+
   /* --- on dark surfaces ---------------------------------------------- */
   --on-navy: #eeedea;
   --on-navy-2: #a6acbc;
@@ -78,6 +98,19 @@
   --teal-ink: #6fe3d3; /* 12:1 on dark paper */
   --amber: #e8a23a;
   --amber-ink: #f0b458; /* 10:1 on dark paper */
+
+  /* Dark keeps the same hues; the ink values lighten, because the light-mode
+     inks sit at ~2.8:1 on dark paper. All >= 5.4:1 on every dark surface. */
+  --acc-ent: #9b85ff;
+  --acc-ent-ink: #9b85ff; /* 6.39:1 */
+  --acc-pha: #34d399;
+  --acc-pha-ink: #34d399; /* 9.70:1 */
+  --acc-men: #7dd3fc;
+  --acc-men-ink: #7dd3fc; /* 11.19:1 */
+  --acc-pho: #fbbf24;
+  --acc-pho-ink: #fbbf24; /* 11.17:1 */
+  --acc-pho-2: #4bd6c4;
+  --acc-pho-2-ink: #6fe3d3; /* 12.08:1 */
 
   --on-navy: #ecebe7;
   --on-navy-2: #a6acbc;
@@ -2358,4 +2391,227 @@ textarea {
 .sequence-canvas {
   position: relative;
   z-index: 1;
+}
+
+/* ==========================================================================
+   WHATSAPP FLOATING BUTTON
+   A plain link — no third-party widget, so no extra JS and no cookies.
+   ========================================================================== */
+
+.wa-fab {
+  position: fixed;
+  right: 20px;
+  /* clear the iOS home indicator, and sit above form buttons/footer links */
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(14, 18, 32, 0.22), 0 1px 3px rgba(14, 18, 32, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+.wa-fab:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.4), 0 2px 6px rgba(14, 18, 32, 0.2);
+}
+.wa-fab:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.wa-fab[data-hidden="true"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+@media (min-width: 900px) {
+  .wa-fab {
+    right: 28px;
+    bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Keep the last interactive row in a form or the footer clear of the button. */
+@media (max-width: 899px) {
+  .form-actions {
+    padding-bottom: 72px;
+  }
+  .footer-legal {
+    padding-bottom: 72px;
+  }
+}
+
+/* footer contact pair */
+.footer-contact {
+  margin-top: 18px;
+  display: grid;
+  gap: 14px;
+}
+.footer-contact dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-navy);
+  opacity: 0.65;
+  margin-bottom: 3px;
+}
+.footer-contact dd {
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   PER-PAGE ACCENT
+   A page sets --acc / --acc-ink once; labels, seams, charts and glows all
+   read from it, so a line's colour never has to be repeated in markup.
+   ========================================================================== */
+
+[data-acc="enterprise"] {
+  --acc: var(--acc-ent);
+  --acc-ink: var(--acc-ent-ink);
+}
+[data-acc="pharma"] {
+  --acc: var(--acc-pha);
+  --acc-ink: var(--acc-pha-ink);
+}
+[data-acc="mennie"] {
+  --acc: var(--acc-men);
+  --acc-ink: var(--acc-men-ink);
+}
+[data-acc="photonics"] {
+  --acc: var(--acc-pho);
+  --acc-ink: var(--acc-pho-ink);
+}
+
+.section-label[data-accent="line"] {
+  color: var(--acc-ink);
+}
+.section-label[data-accent="line"]::before {
+  background: var(--acc-ink);
+}
+
+/* ==========================================================================
+   AURORA — coloured light, not coloured paint
+   Blurred radial washes in the line colours drifting behind heroes. Body text
+   never sits on top of saturated colour; these stay at 10-15% and are the
+   bottom layer.
+   ========================================================================== */
+
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.13;
+  will-change: transform;
+  /* cursor reactivity: --mx/--my are set on the parent by Aurora.tsx */
+  transform: translate3d(
+    calc(var(--mx, 0) * var(--px, 0px)),
+    calc(var(--my, 0) * var(--py, 0px)),
+    0
+  );
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme="dark"] .aurora span {
+  opacity: 0.2;
+  filter: blur(84px);
+}
+
+.aurora-drift span {
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+.aurora-drift span:nth-child(2) {
+  animation-duration: 34s;
+  animation-delay: -8s;
+}
+.aurora-drift span:nth-child(3) {
+  animation-duration: 42s;
+  animation-delay: -16s;
+}
+@keyframes aurora-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 4% -3%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-drift span {
+    animation: none;
+  }
+  .aurora span {
+    transition: none;
+  }
+}
+
+/* content above the wash */
+.section > .wrap,
+.page-head > .wrap,
+.page-head > .wrap-narrow {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   SCROLL TINT
+   The page ground takes a faint cast of whichever line is in view.
+   ========================================================================== */
+
+body {
+  --tint: transparent;
+  --tint-strength: 0;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--tint);
+  opacity: var(--tint-strength);
+  transition: background-color 0.8s ease, opacity 0.8s ease;
+}
+
+/* careers role block */
+.role {
+  display: grid;
+  gap: 32px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 900px) {
+  .role {
+    grid-template-columns: 300px 1fr;
+    gap: 56px;
+  }
+}
+.role-meta {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+.role-meta dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 5px;
+}
+.role-meta dd {
+  font-size: 16px;
 }

@@ -18,8 +18,11 @@ export function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    // The WhatsApp button watches this so it cannot sit on top of the menu.
+    document.documentElement.setAttribute("data-nav-open", String(open));
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.removeAttribute("data-nav-open");
     };
   }, [open]);
 

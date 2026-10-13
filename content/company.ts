@@ -12,9 +12,8 @@ export const company = {
   founded: 2023,
   hq: "Vadodara, Gujarat, India",
   markets: "India, US, Europe",
+  /** Founder's address. Enquiry + careers routing lives in content/site.ts. */
   email: "pratham@praversetech.com",
-  phone: "+91 93132 47264",
-  tel: "+919313247264",
   linkedIn: "https://www.linkedin.com/company/praverse-tech",
   tagline: "Engineering human-centred intelligence.",
   oneLiner:

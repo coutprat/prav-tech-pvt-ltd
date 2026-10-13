@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { company } from "@/content/company";
+import { site } from "@/content/site";
 
 export type Field = {
   name: string;
@@ -47,7 +47,7 @@ export function MailForm({
       .filter(Boolean)
       .join("\n\n");
 
-    const url = `mailto:${company.email}?subject=${encodeURIComponent(
+    const url = `mailto:${site.enquiryEmail}?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
 
@@ -106,7 +106,7 @@ export function MailForm({
         </button>
         <p className="form-note" role="status">
           {sent
-            ? `If your mail client did not open, write to ${company.email} directly.`
+            ? `If your mail client did not open, write to ${site.enquiryEmail} directly.`
             : note ?? `This opens your email client. Nothing is sent until you send it.`}
         </p>
       </div>

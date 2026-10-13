@@ -3,6 +3,7 @@ import { MailForm } from "@/components/sections/MailForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { company } from "@/content/company";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -25,16 +26,16 @@ export default function ContactPage() {
               <div>
                 <dt>Email</dt>
                 <dd>
-                  <a className="link" href={`mailto:${company.email}`}>
-                    {company.email}
+                  <a className="link" href={`mailto:${site.enquiryEmail}`}>
+                    {site.enquiryEmail}
                   </a>
                 </dd>
               </div>
               <div>
-                <dt>Phone</dt>
+                <dt>Careers</dt>
                 <dd>
-                  <a className="link" href={`tel:${company.tel}`}>
-                    {company.phone}
+                  <a className="link" href={`mailto:${site.careersEmail}`}>
+                    {site.careersEmail}
                   </a>
                 </dd>
               </div>

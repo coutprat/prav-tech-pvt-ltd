@@ -123,6 +123,15 @@ export const verifyItems = [
     confirmed: false
   },
   {
+    id: "careers-compensation",
+    where: "Careers — open role",
+    claim: "Compensation range for the Full Stack Engineer role",
+    fallback: "Discussed at offer stage",
+    needs:
+      "Salary band, and whether the intern track is paid. Nothing about pay, stack, benefits or other roles was supplied, so none is stated.",
+    confirmed: false
+  },
+  {
     id: "linkedin-company",
     where: "Footer",
     claim: "Company LinkedIn page",

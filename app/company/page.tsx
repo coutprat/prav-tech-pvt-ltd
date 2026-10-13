@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, founderStory, partners, people } from "@/content/company";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Company",
@@ -87,13 +89,24 @@ export default function CompanyPage() {
             clock as the teams we build for.
           </p>
           <p className="body-2" style={{ marginTop: 24 }}>
-            <a className="link" href={`mailto:${company.email}`}>
-              {company.email}
+            <a className="link" href={`mailto:${site.enquiryEmail}`}>
+              {site.enquiryEmail}
             </a>
-            {" · "}
-            <a className="link" href={`tel:${company.tel}`}>
-              {company.phone}
-            </a>
+          </p>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel>Careers</SectionLabel>
+          <Headline onScroll>We are hiring one engineer.</Headline>
+          <p className="lede" style={{ marginTop: 24 }}>
+            A Full Stack Engineer in {company.hq}. Skilled interns welcome.
+          </p>
+          <p style={{ marginTop: 28 }}>
+            <Link className="btn btn-ghost" href="/careers">
+              See the role
+            </Link>
           </p>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { company } from "@/content/company";
+import { site } from "@/content/site";
 import { footerNav } from "@/data/navigation";
 import { Verify, isWithheld } from "@/components/ui/Verify";
 
@@ -21,11 +22,20 @@ export function Footer() {
               <br />
               <Verify id="cin" />
             </p>
-            <p style={{ marginTop: 18 }}>
-              <a href={`mailto:${company.email}`}>{company.email}</a>
-              <br />
-              <a href={`tel:${company.tel}`}>{company.phone}</a>
-            </p>
+            <dl className="footer-contact">
+              <div>
+                <dt>Enquiries</dt>
+                <dd>
+                  <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>Careers</dt>
+                <dd>
+                  <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>
+                </dd>
+              </div>
+            </dl>
           </div>
 
           <nav aria-label="Work">
