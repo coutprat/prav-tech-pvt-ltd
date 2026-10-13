@@ -107,7 +107,26 @@ Research → Company → Contact, plus redirects.
 labels. Labels here are already horizontal mono (`.kicker`, `.eyebrow`). If they appear
 on the live deployment, that build is not this one — flagging for confirmation.
 
-## 5. Open decisions
+## 5. Decisions — RESOLVED
+
+All four were put to the user at the end of Phase 0 and answered. Recorded
+here as the rationale; outcomes are in `REDESIGN_OVERVIEW.md`.
+
+- **D1 — `/orbit`: leave out, commit to its own branch.** Done — branch
+  `orbit-flight-deck` in `D:
+ew praverse\prav-tech-pvt-ltd`. `/orbit`
+  redirects to `/` as a 307 so it can come back.
+- **D2 — dark theme: keep the toggle, author a dark palette.** Done — dark is
+  the same ceramic studio with the lights down, not a second brand. All pairs
+  verified to AA.
+- **D3 — thin routes: 301 all three.** Done — `/foundry` → `/company`,
+  `/innovate` and `/insights` → `/research`. This deviates from the brief,
+  which asked to keep them as footer links.
+- **D4 — media tooling: install both.** Done — Blender 5.2.2 LTS and ffmpeg
+  9.0.2 installed via winget; both hero sequences are real renders, not
+  placeholders.
+
+### Original framing of the decisions
 
 - **D1 — `/orbit`.** Brief §5 lists it as "keep, footer-only link, decide in PLAN.md".
   It is ~2,000 lines of uncommitted 3D work (shader planets, autopilot, HUD, WebAudio,
