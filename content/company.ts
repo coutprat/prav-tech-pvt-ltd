@@ -497,6 +497,30 @@ export const ecosystem = [
   }
 ] as const;
 
+/**
+ * Operational data-centre capacity in India's main markets, in megawatts.
+ *
+ * This is the reason the photonics line exists and the reason the team sits
+ * where it does: four of the five largest capacity markets are cities where
+ * Praverse has people. It is third-party market data about India, not a claim
+ * about Praverse, and the sources are printed under the chart.
+ *
+ * Deliberately *not* drawn on a map. An India outline on a commercial site has
+ * to use the official Survey of India boundary, and we do not have it.
+ */
+export const dataCentreCapacity = {
+  unit: "MW",
+  cities: [
+    { city: "Mumbai & Navi Mumbai", mw: 790, team: true },
+    { city: "Chennai", mw: 305, team: true },
+    { city: "Bengaluru", mw: 182, team: true },
+    { city: "Hyderabad", mw: 152, team: false },
+    { city: "Delhi NCR", mw: 76, team: true }
+  ],
+  source:
+    "MeitY (actuals, March 2026); Savills India (July 2025); Colliers (May 2025); Wood Mackenzie via IANS (July 2026). Forecasts vary widely."
+} as const;
+
 /** The three-phase interconnect roadmap. Nothing here claims a plant exists. */
 export const photonicsPhases = [
   {

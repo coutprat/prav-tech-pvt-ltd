@@ -130,6 +130,15 @@ export const verifyItems = [
     confirmed: false
   },
   {
+    id: "founded-vs-incorporated",
+    where: "Company — intro; Home — leadership; footer",
+    claim: "Founded in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
+    fallback: "2023",
+    needs:
+      "Both company decks say founded 2023, and the CIN now in the footer encodes 2026 as the year of incorporation (U62020GJ*2026*PTC175386). Both can be true - the work started in 2023 and the private limited company was registered in 2026 - but the page currently says only \"Founded in 2023\" next to a 2026 CIN, which is the kind of gap a US or EU buyer's diligence will pick up. Confirm the wording: \"founded 2023, incorporated 2026\" is the honest version if that is the history.",
+    confirmed: false
+  },
+  {
     id: "nexgen-relationship",
     where: "Pharma AI — why us; Company — the group",
     claim: "Nexgen Pharma Solutions is a sister/group company of Praverse Tech",

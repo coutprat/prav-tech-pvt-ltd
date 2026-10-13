@@ -13,6 +13,7 @@ import {
   CTASection
 } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
+import { Footprint } from "@/components/sections/Footprint";
 import { locations } from "@/content/site";
 import { photonicsFrames } from "@/content/media";
 import {
@@ -190,6 +191,23 @@ export default function PhotonicsPage() {
               ))}
             </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- footprint */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel accent="line">The market</SectionLabel>
+          <Headline onScroll>
+            We sit where the capacity is being built.
+          </Headline>
+          <p className="body-2" style={{ marginTop: 18, maxWidth: "62ch" }}>
+            Interconnect is a local business: someone has to be on site when a
+            cluster is qualified, and on the phone in the same time zone when it
+            is not behaving. Four of India&rsquo;s five largest data-centre
+            markets are cities where we have people.
+          </p>
+          <Footprint />
         </div>
       </section>
 

@@ -608,8 +608,29 @@ textarea {
 .spec-table .yes {
   color: var(--teal-ink);
 }
+/*
+ * Two separate reasons the whole page used to scroll sideways on a phone here:
+ *
+ *  - without min-width:0 the container refuses to shrink below the table's
+ *    intrinsic width, so it was 649px wide inside a 360px viewport;
+ *  - the table's .sr-only spans are position:absolute, and with the container
+ *    static their containing block was an ancestor *outside* it, so they sat
+ *    at their static x deep inside the table and were never clipped by the
+ *    overflow. position:relative makes the container their containing block.
+ */
 .spec-wrap {
+  position: relative;
   overflow-x: auto;
+  min-width: 0;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+.spec-wrap:focus-visible {
+  outline: 2px solid var(--teal-ink);
+  outline-offset: 3px;
+}
+.spec-table {
+  min-width: 34rem;
 }
 
 /* ==========================================================================
@@ -3731,4 +3752,108 @@ body::before {
   text-transform: uppercase;
   color: var(--ink-2);
   margin-top: 10px;
+}
+
+/* ------------------------------------------------------------- Footprint */
+/*
+ * Where India's AI capacity is, and where our people are. Third-party market
+ * data, so the sources sit under it.
+ */
+.fp {
+  margin-top: 44px;
+}
+.fp-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.fp-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  align-items: center;
+}
+.fp-city {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.fp-row[data-team="true"] .fp-city {
+  color: var(--ink);
+  font-weight: 500;
+}
+.fp-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: var(--acc-pho-ink);
+  background: color-mix(in srgb, var(--acc-pho) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--acc-pho) 32%, transparent);
+  white-space: nowrap;
+}
+.fp-bar {
+  display: block;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.fp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--acc-pho) 55%, var(--paper-3)),
+    var(--acc-pho)
+  );
+}
+.fp-row[data-team="false"] .fp-fill {
+  background: var(--line);
+}
+.fp-mw {
+  font-size: 15px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mw small {
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.fp-hq {
+  margin-top: 30px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+.fp-hq b {
+  color: var(--ink);
+}
+.fp-source {
+  margin-top: 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 76ch;
+}
+
+@media (min-width: 720px) {
+  .fp-row {
+    grid-template-columns: 286px 1fr 86px;
+    gap: 20px;
+  }
+  .fp-mw {
+    text-align: right;
+  }
 }

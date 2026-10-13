@@ -6,6 +6,7 @@ import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, ecosystem, founderStory, partners, people } from "@/content/company";
 import { locations, site } from "@/content/site";
+import { Footprint } from "@/components/sections/Footprint";
 
 export const metadata: Metadata = pageMeta({
   title: "Company",
@@ -51,6 +52,21 @@ export default function CompanyPage() {
               <p key={p.slice(0, 40)}>{p}</p>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* --------------------------------------------------------- footprint */}
+      <section className="section section-alt">
+        <div className="wrap">
+          <SectionLabel>Where we work</SectionLabel>
+          <Headline onScroll>People, not pins on a map.</Headline>
+          <p className="body-2" style={{ marginTop: 18, maxWidth: "62ch" }}>
+            We have one registered office, in Vadodara. Everywhere else on this
+            list is a person, not a branch — which is the honest version, and
+            also the useful one, because those people are in the cities where
+            India&rsquo;s AI infrastructure is actually being built.
+          </p>
+          <Footprint />
         </div>
       </section>
 

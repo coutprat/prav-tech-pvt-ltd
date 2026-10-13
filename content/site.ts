@@ -35,7 +35,12 @@ export const locations = {
   line: "Headquartered in Vadodara, Gujarat, with team members in Mumbai, Chennai, Bengaluru and Delhi NCR.",
   /** Vadodara to Mumbai, from the company profile deck. */
   hqToMumbaiKm: 400,
-  markets: "We work with organisations in India, the US, Europe, Australia and Asia."
+  /**
+   * India, the US and the EU - exactly what both company decks claim under
+   * "Markets served". An earlier draft of this file also listed Australia and
+   * Asia, which nothing supports.
+   */
+  markets: "We work with organisations in India, the United States and Europe."
 } as const;
 
 /**

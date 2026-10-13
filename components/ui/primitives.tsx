@@ -59,8 +59,15 @@ export function SpecTable({
   columns: SpecColumn[];
   rows: SpecRow[];
 }) {
+  // A horizontally scrollable region has to be reachable by keyboard, so it
+  // takes a tab stop and an accessible name (WCAG 2.2 AA).
   return (
-    <div className="spec-wrap">
+    <div
+      className="spec-wrap"
+      tabIndex={0}
+      role="region"
+      aria-label={caption ?? "Comparison table"}
+    >
       <table className="spec-table">
         {caption ? <caption>{caption}</caption> : null}
         <thead>
