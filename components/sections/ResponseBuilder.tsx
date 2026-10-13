@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
+import { ScrubVideo } from "@/components/motion/ScrubVideo";
+import { signatureVideo } from "@/content/media";
 import { FileText, Table, Warning, SealCheck, Quotes } from "@phosphor-icons/react";
 
 /**
@@ -56,6 +58,9 @@ const RESPONSE = [
 
 export function ResponseBuilder() {
   const root = useRef<HTMLDivElement>(null);
+  /** 0..1 through the optional background clip; written on the ticker. */
+  const clipRef = useRef(0);
+  const film = signatureVideo.pharma;
 
   useGSAP(
     () => {
@@ -82,7 +87,12 @@ export function ResponseBuilder() {
             pin: true,
             scrub: true,
             anticipatePin: 1,
-            invalidateOnRefresh: true
+            invalidateOnRefresh: true,
+            // The optional background clip is scrubbed by this same scroll, so
+            // the footage and the interface can never drift apart.
+            onUpdate: (self) => {
+              clipRef.current = self.progress;
+            }
           }
         });
 
@@ -120,6 +130,20 @@ export function ResponseBuilder() {
       ref={root}
       aria-label="An inspection observation becoming a response, with every paragraph linked to the record it rests on"
     >
+      {film ? (
+        <div className="rb-film" aria-hidden="true">
+          <ScrubVideo
+            className="rb-film-video"
+            src={film.src}
+            srcMobile={film.srcMobile}
+            poster={film.poster}
+            progressRef={clipRef}
+            alt={film.alt}
+          />
+          <span className="rb-film-scrim" />
+        </div>
+      ) : null}
+
       <div className="rb-stage">
         <div className="rb-grid">
           {/* ------------------------------------------- the observation */}

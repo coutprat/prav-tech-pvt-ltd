@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
+import { ScrubVideo } from "@/components/motion/ScrubVideo";
+import { signatureVideo } from "@/content/media";
 import {
   FilePdf,
   Database,
@@ -79,6 +81,9 @@ const LEDGER = [
 
 export function AgentConsole() {
   const root = useRef<HTMLDivElement>(null);
+  /** 0..1 through the optional background clip; written on the ticker. */
+  const clipRef = useRef(0);
+  const film = signatureVideo.enterpriseAi;
 
   useGSAP(
     () => {
@@ -111,7 +116,12 @@ export function AgentConsole() {
             pin: true,
             scrub: true,
             anticipatePin: 1,
-            invalidateOnRefresh: true
+            invalidateOnRefresh: true,
+            // The optional background clip is scrubbed by this same scroll, so
+            // the footage and the interface can never drift apart.
+            onUpdate: (self) => {
+              clipRef.current = self.progress;
+            }
           }
         });
 
@@ -155,6 +165,20 @@ export function AgentConsole() {
       ref={root}
       aria-label="An agent run: four tool calls, a human approval gate, and the audit entry"
     >
+      {film ? (
+        <div className="ac-film" aria-hidden="true">
+          <ScrubVideo
+            className="ac-film-video"
+            src={film.src}
+            srcMobile={film.srcMobile}
+            poster={film.poster}
+            progressRef={clipRef}
+            alt={film.alt}
+          />
+          <span className="ac-film-scrim" />
+        </div>
+      ) : null}
+
       <div className="ac-stage">
         <div className="ac-shell">
           {/* ------------------------------------------------- title bar */}

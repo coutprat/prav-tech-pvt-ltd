@@ -4569,3 +4569,53 @@ body::before {
   color: #7b87a3;
   border-bottom: 1px solid #1a2338;
 }
+
+/*
+ * Optional footage behind a signature section (content/media.ts).
+ *
+ * Absent by default — both sections are complete without it. When present it
+ * sits behind the UI with a scrim, because the panels carry the meaning and
+ * the footage is atmosphere.
+ */
+.ac-film,
+.rb-film {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ac-film-video,
+.rb-film-video {
+  width: 100%;
+  height: 100%;
+}
+.ac-film-video video,
+.rb-film-video video,
+.ac-film-video img,
+.rb-film-video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ac-film-scrim,
+.rb-film-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--paper) 78%, transparent),
+    color-mix(in srgb, var(--paper) 62%, transparent)
+  );
+}
+.ac {
+  position: relative;
+}
+.rb {
+  position: relative;
+}
+.ac-stage,
+.rb-stage {
+  position: relative;
+  z-index: 1;
+}
