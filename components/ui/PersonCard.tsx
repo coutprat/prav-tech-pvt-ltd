@@ -20,8 +20,8 @@ export type Person = {
  * plate by scripts/media/portraits.py. Side by side they then read as one
  * set rather than three unrelated photos.
  *
- * Ashwani's source photo is low resolution. A reshoot can drop in over the
- * same filenames with no code change.
+ * The name is an h2: these cards sit directly under the page h1, so an h3
+ * would skip a level and fail WCAG 2.2 AA heading order.
  */
 export function PersonCard({ person, priority }: { person: Person; priority?: boolean }) {
   const { slug, name, role, proof, linkedIn } = person;
@@ -39,7 +39,7 @@ export function PersonCard({ person, priority }: { person: Person; priority?: bo
         />
       </div>
 
-      <h3 className="person-name">{name}</h3>
+      <h2 className="person-name">{name}</h2>
       <p className="person-role">{role}</p>
 
       <ul className="person-proof">

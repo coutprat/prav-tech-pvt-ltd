@@ -1,27 +1,27 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
-import { PARTS } from "@/components/three/ModuleExploded";
+import { PARTS } from "@/components/three/module-parts";
 
 /**
- * three.js and the postprocessing stack are the heaviest code on the site, so
- * they are never in the first-paint bundle: this imports them only on this
- * page, only after the gate says the device can run them, with ssr:false.
+ * three.js is loaded with a runtime import(), deliberately not next/dynamic.
+ *
+ * next/dynamic still adds the chunk to the page's preload list, so the 267 KB
+ * bundle was downloading before the hero poster and giving the LCP element
+ * 1134ms of load delay that the Home page (which has no 3D) did not have.
+ * A bare import() inside an event handler is invisible to that machinery, so
+ * nothing is fetched until the visitor actually scrolls toward this section.
  */
-const ModuleExploded = dynamic(
-  () => import("@/components/three/ModuleExploded"),
-  { ssr: false }
-);
+type ModuleProps = { explode: number };
 
 export function ModuleSection() {
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
   const [explode, setExplode] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const [Scene, setScene] = useState<ComponentType<ModuleProps> | null>(null);
 
   /**
    * Arm the observer only after load, and only once the visitor has scrolled.
@@ -43,10 +43,13 @@ export function ModuleSection() {
       if (io) return;
       io = new IntersectionObserver(
         (entries) => {
-          if (entries.some((e) => e.isIntersecting)) {
-            setMounted(true);
-            io?.disconnect();
-          }
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io?.disconnect();
+          void import("@/components/three/ModuleExploded")
+            .then((m) => setScene(() => m.default))
+            .catch(() => {
+              /* the labelled list below is a complete fallback */
+            });
         },
         { rootMargin: "600px 0px" }
       );
@@ -128,8 +131,8 @@ export function ModuleSection() {
     <section className="mod-section" ref={root}>
       <div className="mod-stage">
         <div className="mod-canvas">
-          {mounted ? (
-            <ModuleExploded explode={explode} />
+          {Scene ? (
+            <Scene explode={explode} />
           ) : (
             <div className="mod-poster" aria-hidden="true" />
           )}

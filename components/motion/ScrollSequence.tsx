@@ -195,7 +195,14 @@ export function ScrollSequence({
 
         if (typeof createImageBitmap === "function") {
           try {
-            const res = await fetch(url);
+            // Low priority deliberately. Switching to fetch() for off-thread
+            // decode also moved these out of the browser's image-priority
+            // lane, so 120 frame requests started competing with the hero
+            // poster that is the LCP element. The sequence can wait; the
+            // first screen cannot.
+            const res = await fetch(url, {
+              priority: i === 0 ? "high" : "low"
+            } as RequestInit);
             if (!res.ok) return;
             const bitmap = await createImageBitmap(await res.blob());
             store(i, bitmap);

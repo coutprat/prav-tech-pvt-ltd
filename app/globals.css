@@ -35,6 +35,9 @@
      chart marks. `-ink` is the only one allowed to carry text, and every
      one is >= 5.0:1 on --paper, --paper-2 and --paper-3.
      Body copy stays --ink regardless. */
+  /* On permanently dark panels (.cta, .footer, .cp-ledger) the light-mode
+     glow is only 4.09:1. This stays bright in both themes: 6.09:1 on navy. */
+  --acc-ent-bright: #9b85ff;
   --acc-ent: #7c5cff; /* violet */
   --acc-ent-ink: #5b3fd6; /* 5.74:1 on paper */
   --acc-pha: #10b981; /* emerald */
@@ -2388,8 +2391,10 @@ textarea {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--acc-ent) 18%, transparent);
-  color: var(--acc-ent-ink);
+  /* Mixed with --paper rather than transparent, so the contrast does not
+     depend on whatever happens to be behind it. */
+  background: color-mix(in srgb, var(--acc-ent) 20%, var(--paper));
+  color: var(--ink);
   font-family: var(--font-mono);
   font-size: 12px;
 }
@@ -2447,7 +2452,7 @@ textarea {
   overflow-x: auto;
 }
 .cp-ledger-head {
-  color: var(--acc-ent);
+  color: var(--acc-ent-bright);
   margin-bottom: 12px;
 }
 .cp-ledger {
@@ -2469,7 +2474,7 @@ textarea {
   border-bottom: 0;
 }
 .cp-ledger td:first-child {
-  color: var(--acc-ent);
+  color: var(--acc-ent-bright);
 }
 .cp-ledger td:last-child {
   color: var(--on-navy);

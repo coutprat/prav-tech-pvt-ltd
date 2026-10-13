@@ -1,7 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
@@ -9,10 +8,15 @@ import { MennieHero } from "@/components/sections/MennieHero";
 import { ScrubVideo } from "@/components/motion/ScrubVideo";
 import { mennie } from "@/content/company";
 
-/** three.js only loads here, only on this page, only when it can be used. */
-const MennieScene = dynamic(() => import("@/components/three/MennieScene"), {
-  ssr: false
-});
+/**
+ * three.js only loads here, only on this page, only when it can be used.
+ *
+ * Loaded with a bare runtime import() rather than next/dynamic, because
+ * next/dynamic emits a modulepreload for the chunk: the 267 KB bundle was
+ * downloading and compiling during first paint, which made the careful idle
+ * gate below a no-op and cost ~1.1s of LCP.
+ */
+type SceneProps = { progress: number };
 
 /**
  * MENNIE as a short scroll-driven film.
@@ -43,6 +47,7 @@ export function MennieFilm() {
   const [progress, setProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
+  const [Scene, setScene] = useState<ComponentType<SceneProps> | null>(null);
   /** 0..1 within the cinematic, written on the ticker; never re-renders. */
   const cineRef = useRef(0);
 
@@ -66,9 +71,11 @@ export function MennieFilm() {
     };
 
     const prefetch = () => {
-      void import("@/components/three/MennieScene").catch(() => {
-        /* the poster stands on its own */
-      });
+      void import("@/components/three/MennieScene")
+        .then((m) => setScene(() => m.default))
+        .catch(() => {
+          /* the poster stands on its own */
+        });
     };
     const schedule = () => {
       idle = w.requestIdleCallback
@@ -182,10 +189,8 @@ export function MennieFilm() {
 
         {/* 2 — the depth plate, indoors, where the HUD panels sit */}
         <div className="film-canvas" data-on={progress >= CINE_TO}>
-          {mounted ? (
-            <MennieScene
-              progress={Math.max(0, (progress - CINE_TO) / (1 - CINE_TO))}
-            />
+          {mounted && Scene ? (
+            <Scene progress={Math.max(0, (progress - CINE_TO) / (1 - CINE_TO))} />
           ) : null}
         </div>
 

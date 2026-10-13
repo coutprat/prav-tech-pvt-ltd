@@ -1,12 +1,12 @@
 {
   "page": "photonics",
   "cpuThrottle": 4,
-  "frames": 251,
+  "frames": 243,
   "medianMs": 16.7,
   "p95Ms": 16.8,
-  "worstMs": 150,
-  "over20ms": 5,
-  "over34ms": 2,
-  "droppedPct": 2,
+  "worstMs": 16.8,
+  "over20ms": 0,
+  "over34ms": 0,
+  "droppedPct": 0,
   "estFps": 59.9
 }

@@ -14,11 +14,11 @@ const BASE = process.env.BASE ?? "http://localhost:3000";
 
 /** [route, selector, substring that must appear in the rendered text] */
 const CHECKS = [
-  ["/careers", "p.lede", "India building enterprise AI"],
+  ["/careers", "p.lede", "interconnect layer underneath India"],
   ["/privacy", "p.lede", "Pvt Ltd (“Praverse”"],
   ["/start-a-project", "p.lede", "business days. No pitch deck"],
   ["/", "footer p", "Pvt Ltd · Registered in India"],
-  ["/company", "p.lede", "headquartered in Vadodara"],
+  ["/company", "p.lede", "Headquartered in Vadodara, Gujarat, with team members"],
   ["/mennie", "p.lede", "meets patients at the door"]
 ];
 

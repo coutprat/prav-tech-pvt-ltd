@@ -1,6 +1,6 @@
 # Lighthouse
 
-Generated: 2026-10-13T17:18:05.383Z
+Generated: 2026-10-13T18:48:12.268Z
 
 Budgets (mobile, 4G): **LCP < 2.5 s · CLS < 0.1**.
 
@@ -10,15 +10,15 @@ visible, not as a pass/fail.
 
 | Page | Form factor | Perf | A11y | BP | SEO | LCP | CLS | TBT | JS |
 |---|---|---|---|---|---|---|---|---|---|
-| home | desktop | 100 | 100 | 100 | 100 | 0.60 s ✅ | 0.000 ✅ | 0 ms | 569 KB |
-| mennie | desktop | 100 | 100 | 100 | 100 | 0.65 s ✅ | 0.000 ✅ | 0 ms | 839 KB |
-| photonics | desktop | 100 | 100 | 100 | 100 | 0.62 s ✅ | 0.000 ✅ | 0 ms | 569 KB |
-| company | mobile | 95 | 98 | 100 | 100 | 2.92 s ❌ | 0.000 ✅ | 9 ms | 225 KB |
-| enterprise-ai | mobile | 96 | 100 | 100 | 100 | 2.67 s ❌ | 0.000 ✅ | 80 ms | 221 KB |
-| home | mobile | 96 | 100 | 100 | 100 | 2.78 s ❌ | 0.000 ✅ | 21 ms | 215 KB |
-| mennie | mobile | 92 | 100 | 100 | 100 | 3.01 s ❌ | 0.000 ✅ | 185 ms | 499 KB |
-| pharma | mobile | 97 | 100 | 100 | 100 | 2.61 s ❌ | 0.000 ✅ | 3 ms | 223 KB |
-| photonics | mobile | 94 | 100 | 100 | 100 | 3.06 s ❌ | 0.000 ✅ | 55 ms | 523 KB |
+| home | desktop | 100 | 100 | 100 | 100 | 0.60 s ✅ | 0.000 ✅ | 0 ms | 577 KB |
+| mennie | desktop | 100 | 100 | 100 | 100 | 0.65 s ✅ | 0.000 ✅ | 0 ms | 847 KB |
+| photonics | desktop | 100 | 100 | 100 | 100 | 0.80 s ✅ | 0.000 ✅ | 0 ms | 577 KB |
+| company | mobile | 95 | 98 | 100 | 100 | 3.00 s ❌ | 0.000 ✅ | 10 ms | 226 KB |
+| enterprise-ai | mobile | 95 | 100 | 100 | 100 | 2.94 s ❌ | 0.000 ✅ | 13 ms | 228 KB |
+| home | mobile | 95 | 100 | 100 | 100 | 2.92 s ❌ | 0.000 ✅ | 14 ms | 217 KB |
+| mennie | mobile | 92 | 100 | 100 | 100 | 3.02 s ❌ | 0.000 ✅ | 158 ms | 501 KB |
+| pharma | mobile | 95 | 100 | 100 | 100 | 2.94 s ❌ | 0.000 ✅ | 5 ms | 224 KB |
+| photonics | mobile | 84 | 100 | 100 | 100 | 4.40 s ❌ | 0.000 ✅ | 104 ms | 526 KB |
 
 JS is the transferred (compressed) size of all JavaScript requests on the
 page. The 3D pages carry three.js (~267 KB), which is loaded on scroll
