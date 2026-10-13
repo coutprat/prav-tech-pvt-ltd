@@ -21,6 +21,8 @@ export type VerifyItem = {
   /** What exactly needs checking. */
   needs: string;
   confirmed: boolean;
+  /** Where a confirmed value came from. Required whenever confirmed is true. */
+  source?: string;
 };
 
 export const verifyItems = [
@@ -29,16 +31,21 @@ export const verifyItems = [
     where: "Footer — company identity",
     claim: "CIN U62020GJ2026PTC175386",
     fallback: "CIN available on request",
-    needs: "Confirm the CIN and that it is correct to publish.",
-    confirmed: false
+    needs:
+      "Read off the owner's own signage artwork. Worth one check against the MCA register before launch, since a wrong CIN is a wrong legal identifier. The code decomposes consistently: U62020 (computer programming and consultancy), GJ (Gujarat), 2026 (incorporation year, matching company.founded), PTC (private limited).",
+    confirmed: true,
+    source: "Owner-supplied company signage artwork (PRAVERSE BOARD.png), October 2026"
   },
   {
     id: "registered-address",
     where: "Footer — company identity",
-    claim: "Registered address, Vadodara, Gujarat",
+    claim:
+      "Office No. 413, Tower 2, PL No. 71, Prince Cube, Nr. Gangotri Exotica, T B Sanatorium, Vadodara 390021, Gujarat, India",
     fallback: "Vadodara, Gujarat, India",
-    needs: "Full registered address as filed.",
-    confirmed: false
+    needs:
+      "Read off the owner's own signage artwork. Check it matches the address as filed before launch.",
+    confirmed: true,
+    source: "Owner-supplied company signage artwork (PRAVERSE BOARD.png), October 2026"
   },
   {
     id: "publications-count",

@@ -1,19 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 943 867" role="img" aria-label="Praverse">
   <defs>
-    <linearGradient id="g" x1="10%" y1="10%" x2="90%" y2="95%">
-      <stop offset="0%" stop-color="#22d3ee"/>
-      <stop offset="55%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
+    <linearGradient id="pv-p" gradientUnits="userSpaceOnUse" x1="672" y1="286" x2="342" y2="742">
+      <stop offset="0" stop-color="#4ACBB4"/>
+      <stop offset=".52" stop-color="#43AABC"/>
+      <stop offset="1" stop-color="#3B7FC2"/>
     </linearGradient>
-    <radialGradient id="bg" cx="35%" cy="28%" r="85%">
-      <stop offset="0%" stop-color="#16224a"/>
-      <stop offset="100%" stop-color="#070b1a"/>
-    </radialGradient>
+    <linearGradient id="pv-l" gradientUnits="userSpaceOnUse" x1="44" y1="512" x2="408" y2="85">
+      <stop offset="0" stop-color="#3F7FC0"/>
+      <stop offset="1" stop-color="#3FA8A8"/>
+    </linearGradient>
+    <linearGradient id="pv-r" gradientUnits="userSpaceOnUse" x1="546" y1="88" x2="895" y2="505">
+      <stop offset="0" stop-color="#B6BCC6"/>
+      <stop offset="1" stop-color="#8E96A4"/>
+    </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
-  <ellipse cx="32" cy="32" rx="25" ry="13.5" fill="none" stroke="rgba(148,197,255,.35)" stroke-width="1.4" transform="rotate(-22 32 32)"/>
-  <circle cx="32" cy="32" r="15" fill="url(#g)"/>
-  <path d="M27 24.2h7.3c4.1 0 6.7 2.4 6.7 6 0 3.7-2.7 6.1-6.9 6.1H30.5V42H27V24.2zm3.5 3v6.1h3.4c2.3 0 3.7-1.2 3.7-3.1 0-1.9-1.4-3-3.7-3h-3.4z" fill="#0b1226"/>
-  <circle cx="9" cy="21" r="2.3" fill="#67e8f9"/>
-  <circle cx="55.5" cy="43" r="2" fill="#a5b4fc"/>
+
+  <!-- outer orbit, broken where the nodes sit -->
+  <g fill="none" stroke-linecap="round">
+    <path stroke="url(#pv-l)" stroke-width="8" d="M43,492.7 A428,428 0 0 1 433.7,66.4"/>
+    <path stroke="url(#pv-r)" stroke-width="8" d="M508.3,66.4 A428,428 0 0 1 898.7,477.8"/>
+  </g>
+
+  <!-- inner orbit -->
+  <ellipse cx="465" cy="515" rx="354" ry="205" fill="none"
+           stroke="#3F8FA6" stroke-width="7" opacity=".85"/>
+
+  <!-- the P -->
+  <path fill="url(#pv-p)" fill-rule="evenodd" d="M236,254 L500,254
+ C544,256 578,262 612,282 C648,303 670,342 681,382
+ C690,416 690,446 681,480 C670,520 646,552 612,573
+ C590,587 566,595 540,596 L408,596 L408,781 L324,781
+ L320,370 Z M408,312 L498,314
+ C536,320 566,336 584,362 C598,382 603,404 603,430
+ C603,462 594,492 574,516 C552,542 520,560 480,566
+ L408,574 Z"/>
+
+  <!-- orbiting nodes, positions and colours read from the source -->
+  <g>
+    <circle cx="478.5" cy="83.8" r="33.5" fill="#50c8bc"/>
+    <circle cx="43" cy="493.8" r="29.1" fill="#4d98b6"/>
+    <circle cx="898.9" cy="492.7" r="27.9" fill="#5ac5bc"/>
+    <circle cx="882.7" cy="575" r="12.2" fill="#a6adb6"/>
+    <circle cx="871.3" cy="621.4" r="10.5" fill="#479696"/>
+    <circle cx="723.4" cy="796.8" r="9.8" fill="#4a808d"/>
+    <circle cx="473.2" cy="828.9" r="9.8" fill="#a5a8b3"/>
+    <circle cx="795.6" cy="737.8" r="9.3" fill="#438e8d"/>
+    <circle cx="652.3" cy="839.7" r="8.6" fill="#47848d"/>
+    <circle cx="182.9" cy="574.6" r="8.5" fill="#9e9fab"/>
+    <circle cx="234.2" cy="819.7" r="8.5" fill="#3d6b81"/>
+    <circle cx="210.8" cy="801.1" r="8.3" fill="#3c6578"/>
+    <circle cx="273.1" cy="492" r="8" fill="#b0b3bb"/>
+    <circle cx="477" cy="27.5" r="7.5" fill="#5e9b9d"/>
+    <circle cx="726.4" cy="490" r="7.5" fill="#5ea1a0"/>
+    <circle cx="477.1" cy="192.8" r="7.4" fill="#5c9a9b"/>
+    <circle cx="463.4" cy="458.9" r="6.5" fill="#699aa1"/>
+    <circle cx="837" cy="683.7" r="6.1" fill="#55717e"/>
+    <circle cx="856.3" cy="655.1" r="5.5" fill="#5b7581"/>
+    <circle cx="684.7" cy="825.4" r="5.5" fill="#4f6271"/>
+    <circle cx="47.1" cy="549.5" r="5.2" fill="#4c6675"/>
+    <circle cx="818.5" cy="712.4" r="4.8" fill="#516173"/>
+    <circle cx="61.2" cy="599.4" r="4.5" fill="#4b556a"/>
+    <circle cx="53.3" cy="577.6" r="4.4" fill="#48566a"/>
+    <circle cx="124.5" cy="721.9" r="4.4" fill="#4b5367"/>
+    <circle cx="152.1" cy="749.1" r="4.3" fill="#455167"/>
+    <circle cx="756.2" cy="769.2" r="4.3" fill="#4c5b6c"/>
+    <circle cx="67.1" cy="626.7" r="4.3" fill="#3f4d60"/>
+    <circle cx="82.1" cy="656.2" r="4.3" fill="#414d60"/>
+    <circle cx="99.2" cy="691.1" r="4.2" fill="#505b71"/>
+    <circle cx="181" cy="775.8" r="4.2" fill="#3e5163"/>
+    <circle cx="184.6" cy="384" r="2.8" fill="#41495c"/>
+  </g>
 </svg>

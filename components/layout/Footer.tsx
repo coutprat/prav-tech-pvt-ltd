@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mark } from "@/components/ui/Mark";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
 import { footerNav } from "@/data/navigation";
@@ -13,7 +14,10 @@ export function Footer() {
         <div className="footer-grid">
           <div className="footer-identity">
             <h2>
-              Praverse<span style={{ color: "var(--teal)" }}>.</span>
+              <Mark size={30} />
+              <span>
+                Praverse<span style={{ color: "var(--teal)" }}>.</span>
+              </span>
             </h2>
             <p>
               {company.legalName} · Registered in India

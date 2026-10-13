@@ -883,6 +883,22 @@ textarea {
   font-weight: 500;
   letter-spacing: -0.03em;
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/*
+ * The mark's orbit rings take currentColor so they sit back against whatever
+ * surface they are on, while the P keeps the brand gradient on both themes.
+ */
+.mark {
+  color: var(--ink-2);
+  flex: none;
+  overflow: visible;
+}
+.footer .mark {
+  color: var(--on-navy-2);
 }
 .nav-logo .dot {
   color: var(--teal-ink);
@@ -1029,6 +1045,11 @@ textarea {
 .footer ul {
   list-style: none;
   display: grid;
+  gap: 11px;
+}
+.footer-identity h2 {
+  display: flex;
+  align-items: center;
   gap: 11px;
 }
 .footer-identity p {

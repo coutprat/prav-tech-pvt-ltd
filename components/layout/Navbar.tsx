@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Mark } from "@/components/ui/Mark";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/layout/theme";
@@ -42,7 +43,10 @@ export function Navbar() {
     <header className="nav" data-scrolled={scrolled}>
       <nav className="wrap nav-inner" aria-label="Main">
         <Link className="nav-logo" href="/">
-          Praverse<span className="dot">.</span>
+          <Mark size={26} />
+          <span>
+            Praverse<span className="dot">.</span>
+          </span>
         </Link>
 
         <ul className="nav-links">
