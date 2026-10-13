@@ -4598,15 +4598,33 @@ body::before {
   height: 100%;
   object-fit: cover;
 }
+/*
+ * Two layers, not one flat wash.
+ *
+ * A single 78% scrim made the footage almost invisible, which is the worst of
+ * both: you pay 2 MB for a video and see a grey rectangle. This holds the
+ * middle back just enough for the panel to sit on, and fades hard to the page
+ * colour at the edges so the clip reads as a room the console is standing in
+ * rather than a video pasted into a box.
+ */
 .ac-film-scrim,
 .rb-film-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--paper) 78%, transparent),
-    color-mix(in srgb, var(--paper) 62%, transparent)
-  );
+  background:
+    radial-gradient(
+      120% 78% at 50% 50%,
+      color-mix(in srgb, var(--paper) 44%, transparent) 0%,
+      color-mix(in srgb, var(--paper) 72%, transparent) 55%,
+      var(--paper) 100%
+    ),
+    linear-gradient(
+      180deg,
+      var(--paper) 0%,
+      transparent 14%,
+      transparent 86%,
+      var(--paper) 100%
+    );
 }
 .ac {
   position: relative;

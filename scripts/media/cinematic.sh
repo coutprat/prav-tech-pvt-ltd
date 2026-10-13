@@ -6,10 +6,16 @@
 # Defaults to assets-incoming/mennie-cinematic.mp4 -> public/media/mennie/
 #
 # What it does:
-#   1. Removes the generator's watermark with delogo. The mark sits over a
-#      soft-focus background, so the interpolation is invisible — verified by
-#      eye at 3x zoom before this was chosen over cropping, which would have
-#      cost the foreground balustrade.
+#   1. Removes the generator's watermark, either way:
+#
+#        MODE=delogo (default) interpolates the box away. Invisible when the
+#        mark sits over soft-focus background — verified by eye at 3x zoom.
+#
+#        MODE=crop re-frames so the corner holding the mark falls outside the
+#        frame, then scales back up. Costs a little framing and a little
+#        sharpness, but leaves no smear. Use it when the mark sits over
+#        anything with hard edges: delogo cannot reconstruct an edge, and the
+#        patch reads as a blurred rectangle at 1:1.
 #   2. Strips audio. The hero is muted autoplay/scrubbed, so shipping an audio
 #      track is pure weight.
 #   3. Encodes with a very short GOP. Scroll-scrubbing seeks constantly, and
@@ -34,6 +40,7 @@ LOGO_H="${LOGO_H:-68}"
 
 GOP="${GOP:-6}"
 CRF="${CRF:-21}"
+MODE="${MODE:-delogo}"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "error: ffmpeg not found on PATH" >&2
@@ -45,7 +52,20 @@ if [ ! -f "$SRC" ]; then
 fi
 
 mkdir -p "$OUT"
-DELOGO="delogo=x=${LOGO_X}:y=${LOGO_Y}:w=${LOGO_W}:h=${LOGO_H}"
+
+if [ "$MODE" = "crop" ]; then
+  # Crop anchored top-left so the bottom-right mark falls outside, keeping
+  # 16:9, then scale back to the source width.
+  CW=$(( LOGO_X - 1 ))
+  CH=$(( CW * 9 / 16 ))
+  CH=$(( CH - CH % 2 ))
+  CW=$(( CW - CW % 2 ))
+  DELOGO="crop=${CW}:${CH}:0:0,scale=1280:720:flags=lanczos"
+  echo "mode: crop to ${CW}x${CH} then rescale"
+else
+  DELOGO="delogo=x=${LOGO_X}:y=${LOGO_Y}:w=${LOGO_W}:h=${LOGO_H}"
+  echo "mode: delogo"
+fi
 
 echo "removing watermark and encoding for scrubbing ..."
 

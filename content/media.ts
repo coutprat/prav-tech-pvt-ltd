@@ -93,6 +93,16 @@ export type SignatureVideo = {
 } | null;
 
 export const signatureVideo: Record<"enterpriseAi" | "pharma", SignatureVideo> = {
-  enterpriseAi: null,
-  pharma: null
+  enterpriseAi: {
+    src: "/media/enterprise-ai/cine-1280.mp4",
+    srcMobile: "/media/enterprise-ai/cine-854.mp4",
+    poster: "/media/enterprise-ai/cine-poster.webp",
+    alt: "An empty boardroom at night, city lights beyond the windows, the camera drifting slowly across it."
+  },
+  pharma: {
+    src: "/media/pharma/cine-1280.mp4",
+    srcMobile: "/media/pharma/cine-854.mp4",
+    poster: "/media/pharma/cine-poster.webp",
+    alt: "Stacks of printed records on a dark desk, archive boxes behind them, the camera pushing slowly past."
+  }
 };
