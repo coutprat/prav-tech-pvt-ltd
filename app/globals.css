@@ -703,18 +703,35 @@ textarea {
   background: var(--paper-2);
   border: 1px solid var(--line);
 }
+/*
+ * In colour, at rest.
+ *
+ * These were desaturated until hover. It is a common editorial move and it was
+ * the wrong one here: these are three real people, two of them advisors lending
+ * their names to a young company, and greying their faces out until someone
+ * mouses over them reads as decoration applied to a person. It also means a
+ * phone — where there is no hover — never shows them properly at all.
+ */
 .person-portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* one image, desaturated by filter — a second colour copy at opacity 0
-     doubled this page's image bytes for a hover most visitors never trigger */
-  filter: grayscale(1);
-  transition: filter 0.45s ease;
+  transform: scale(1.001);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .person:hover .person-portrait img,
 .person:focus-within .person-portrait img {
-  filter: grayscale(0);
+  transform: scale(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .person-portrait img {
+    transition: none;
+  }
+  .person:hover .person-portrait img,
+  .person:focus-within .person-portrait img {
+    transform: none;
+  }
 }
 .person-name {
   font-size: 21px;
@@ -4971,15 +4988,19 @@ body::before {
   display: grid;
   place-items: center;
 }
+/*
+ * ScrubVideo puts its className on the <video> element itself, not on a
+ * wrapper — so the size has to go here. Setting it on a descendant selector
+ * matched nothing and the video rendered at its intrinsic 1280x720 inside a
+ * full-bleed section, which is why it stopped short of the right edge.
+ */
 .fs-video {
   position: absolute;
   inset: 0;
-}
-.fs-video video,
-.fs-video img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 /*
  * Weighted to the left, not flat.
@@ -5227,4 +5248,222 @@ body::before {
 .origin-body {
   position: relative;
   z-index: 1;
+}
+
+/* ==========================================================================
+   FOOTER WORDMARK
+   ========================================================================== */
+/*
+ * The footer sits on a dark plate in both themes, so the wordmark's own
+ * tokens are fixed rather than swapped — but they are tokens, so the whole
+ * thing re-skins from one place if the footer ever goes light.
+ */
+.wm-wrap {
+  margin-top: 48px;
+  overflow: hidden;
+}
+.wm {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: default;
+  user-select: none;
+  font-family: var(--font-sans);
+  --wm-sweep-a: #3ca2fa;
+  --wm-sweep-b: #e0f2ff;
+}
+.wm-rest {
+  stroke: rgba(238, 241, 247, 0.17);
+}
+.wm-draw {
+  stroke: rgba(109, 196, 255, 0.5);
+}
+
+/*
+ * The footer is dark in both themes today. If that ever changes, these two
+ * lines are the whole adaptation.
+ */
+:root[data-theme="light"] .wm {
+  --wm-sweep-a: #3ca2fa;
+  --wm-sweep-b: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm animateTransform {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   POLISH PASS
+   --------------------------------------------------------------------------
+   Interaction detail. None of this changes layout or content; it is the
+   difference between a site that is correct and one that feels considered.
+   Everything here respects prefers-reduced-motion and keeps its contrast.
+   ========================================================================== */
+
+/* -------------------------------------------------------------- easing */
+:root {
+  /* One curve for everything that moves on interaction, so the whole
+     interface decelerates the same way. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-3: 0 2px 4px rgba(14, 18, 32, 0.05), 0 14px 40px rgba(14, 18, 32, 0.1);
+}
+[data-theme="dark"] {
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* -------------------------------------------------------------- buttons */
+/*
+ * A button should feel like it comes toward you and then takes the press.
+ * The lift is 1px: enough to register, small enough that a row of buttons
+ * does not look like it is bouncing.
+ */
+.btn {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.3s var(--ease-out),
+    transform 0.18s var(--ease-out);
+}
+.btn-primary:hover,
+.btn-on-dark:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-3);
+}
+.btn-primary:active,
+.btn-on-dark:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+}
+.btn-ghost:hover {
+  transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------------- cards */
+.card {
+  transition:
+    box-shadow 0.35s var(--ease-out),
+    transform 0.35s var(--ease-out),
+    border-color 0.35s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3);
+}
+
+/* ---------------------------------------------------------------- links */
+/*
+ * The underline grows from the left rather than the whole link fading to 70%
+ * opacity, which read as the link being disabled rather than hovered.
+ */
+.link {
+  position: relative;
+  border-bottom: 0;
+  padding-bottom: 2px;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 0.3s var(--ease-out), opacity 0.2s ease;
+}
+.link:hover {
+  opacity: 1;
+  background-size: 100% 2px;
+}
+
+/* ------------------------------------------------------------------ nav */
+/*
+ * The current page gets a mark, not just a weight change. A weight change
+ * alone is easy to miss and shifts the layout of the row as you navigate.
+ */
+.nav-links a {
+  position: relative;
+  transition: color 0.22s ease;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--teal-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.32s var(--ease-out);
+}
+.nav-links a:hover::after {
+  transform: scaleX(1);
+}
+.nav-links a[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: var(--ink);
+}
+
+/* ---------------------------------------------------------------- focus */
+/*
+ * One focus ring for the whole site. A visible, generous ring is a premium
+ * detail, not an accessibility tax — it is the only affordance a keyboard
+ * user has.
+ */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--teal-ink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ----------------------------------------------------------- selection */
+::selection {
+  background: color-mix(in srgb, var(--teal-ink) 26%, transparent);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------ form feel */
+.field input,
+.field select,
+.field textarea {
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.28s var(--ease-out),
+    background-color 0.22s ease;
+}
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--line-strong);
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--teal-ink);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal-ink) 12%, transparent);
+}
+
+/* --------------------------------------------------------- scrollbar */
+/*
+ * Only on the scroll containers we own. The page scrollbar is left to the
+ * operating system, which the reader has already configured to their taste.
+ */
+.spec-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .card,
+  .link,
+  .nav-links a::after,
+  .field input,
+  .field select,
+  .field textarea {
+    transition: none;
+  }
+  .btn:hover,
+  .card:hover {
+    transform: none;
+  }
 }

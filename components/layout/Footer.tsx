@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mark } from "@/components/ui/Mark";
+import { FooterWordmark } from "@/components/ui/FooterWordmark";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
 import { footerNav } from "@/data/navigation";
@@ -81,6 +82,10 @@ export function Footer() {
               )}
             </ul>
           </nav>
+        </div>
+
+        <div className="wm-wrap">
+          <FooterWordmark />
         </div>
 
         <div className="footer-legal">

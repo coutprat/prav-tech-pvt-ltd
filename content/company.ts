@@ -461,7 +461,7 @@ export const people = [
     name: "Pratham Shrivastav",
     role: "Founder & CEO, Praverse Tech Pvt Ltd",
     proof: [
-      "Founded Praverse in 2023 to take healthcare AI from research to product.",
+      "Started the work in 2023, to take healthcare AI from research to something patients actually reach.",
       "Peer-reviewed work in imaging, edge AI and simulation.",
       "Leads pharma AI, MENNIE and photonics."
     ]
