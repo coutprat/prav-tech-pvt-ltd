@@ -4,36 +4,41 @@ import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import {
   SequenceOverlay,
-  glowDot,
-  alongPath,
-  type Point,
+  strokeSegment,
   type Resolver
 } from "@/components/motion/SequenceOverlay";
 
-const AMBER = "#F59E0B";
-const TEAL = "#4BD6C4";
+const TEAL = "75, 214, 196";
 
+/** How many fibre runs carry a pulse. */
 const ROWS = 4;
-const PER_ROW = 7;
-const RACKS = ROWS * PER_ROW;
 const FIBRE_POINTS = 24;
 
-const COPPER_LIT_FROM = 0.24;
-const FIBRE_FROM = 0.48;
+/** The optical layer comes up after the hall is established. */
+const FIBRE_FROM = 0.42;
+
+/** Lit length of each run, as a fraction of the whole path. */
+const PULSE = 0.17;
 
 /**
- * Light packets over the Photonics hero.
+ * Light moving down the fibre, over the Photonics hero.
  *
- * Amber makes short hops inside each rack — that is what copper is for. Teal
- * runs the long fibre paths across the hall to the spine. The two distances
- * are the page's argument, drawn rather than said.
+ * Rewritten. The first version drew about a hundred independent particles —
+ * two per rack on copper, two per fibre run, one per port, all breathing on
+ * their own cycles. It was fast (no dropped frames at 4x CPU throttle), and it
+ * still looked like a mess: a hundred unrelated dots twitching over a rendered
+ * hall reads as noise, not as signal, and the faster you scroll the more it
+ * looks like static.
  *
- * Packet speed follows scroll velocity, so the hall surges as you move and
- * settles when you stop.
+ * The problem was never the frame budget, it was the picture. So this draws
+ * what is actually happening instead: a pulse of light travelling down each
+ * fibre run — a lit *length* of the path, bright at the head and fading behind
+ * it, which is what a signal in a fibre looks like. Four pulses instead of a
+ * hundred dots, and the page says the same thing more clearly.
  *
- * Performance: ~100 particles a frame, so nothing here allocates. Buffers are
- * made once, glows are pre-rendered sprites blitted with drawImage, and the
- * whole thing runs on gsap.ticker alongside the frame canvas.
+ * The copper hops and the port blinks are gone entirely. They were the bulk of
+ * the particle count and the least legible part of it; the rendered frames
+ * already show the racks and their ports lit.
  */
 export function PhotonicsPacketOverlay({
   frameRef,
@@ -48,12 +53,7 @@ export function PhotonicsPacketOverlay({
   const velocity = useRef(0);
 
   /** Scratch reused across frames; created on first draw, not during render. */
-  const buffersRef = useRef<{
-    fibre: Float32Array;
-    a: Point;
-    b: Point;
-    p: Point;
-  } | null>(null);
+  const buffersRef = useRef<{ fibre: Float32Array } | null>(null);
 
   useEffect(() => {
     if (!active || !wideEnough) return;
@@ -78,74 +78,51 @@ export function PhotonicsPacketOverlay({
       size: { w: number; h: number }
     ) => {
       const buffers = (buffersRef.current ??= {
-        fibre: new Float32Array(FIBRE_POINTS * 2),
-        a: [0, 0],
-        b: [0, 0],
-        p: [0, 0]
+        fibre: new Float32Array(FIBRE_POINTS * 2)
       });
 
-      const u = size.w / 620;
       const progress = (frameRef.current ?? 0) / Math.max(1, frameCount - 1);
-      const surge = 1 + velocity.current * 0.05;
+      if (progress < FIBRE_FROM) return;
 
-      // --- copper: short hops inside each rack --------------------------
-      if (progress >= COPPER_LIT_FROM) {
-        const strength = Math.min(1, (progress - COPPER_LIT_FROM) / 0.12);
-        for (let i = 0; i < RACKS; i++) {
-          const a = resolve.point(`cu${i}a`, buffers.a);
-          if (!a) continue;
-          const ax = a[0];
-          const ay = a[1];
-          const b = resolve.point(`cu${i}b`, buffers.b);
-          if (!b) continue;
-          for (let k = 0; k < 2; k++) {
-            const phase = (t * 0.55 * surge + i * 0.137 + k * 0.5) % 1;
-            const x = ax + (b[0] - ax) * phase;
-            const y = ay + (b[1] - ay) * phase;
-            glowDot(ctx, x, y, 1.4 * u, AMBER, 0.7 * strength * Math.sin(phase * Math.PI));
-          }
-        }
-      }
+      const u = size.w / 620;
+      const strength = Math.min(1, (progress - FIBRE_FROM) / 0.18);
+      // Scroll speeds the pulses up, but far more gently than before: at pace
+      // the old particles blurred into static.
+      const surge = 1 + velocity.current * 0.018;
 
-      // --- fibre: long runs across the hall to the spine -----------------
-      if (progress >= FIBRE_FROM) {
-        const strength = Math.min(1, (progress - FIBRE_FROM) / 0.16);
-        for (let row = 0; row < ROWS; row++) {
-          const n = resolve.path(`fibre${row}`, buffers.fibre);
-          if (n < 4) continue;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
-          ctx.globalAlpha = 1;
-          ctx.beginPath();
-          ctx.moveTo(buffers.fibre[0], buffers.fibre[1]);
-          for (let i = 1; i < n; i++) {
-            ctx.lineTo(buffers.fibre[i * 2], buffers.fibre[i * 2 + 1]);
-          }
-          ctx.strokeStyle = `rgba(75,214,196,${0.1 * strength})`;
-          ctx.lineWidth = Math.max(1, u * 0.9);
-          ctx.stroke();
+      for (let row = 0; row < ROWS; row++) {
+        const n = resolve.path(`fibre${row}`, buffers.fibre);
+        if (n < 4) continue;
 
-          for (let k = 0; k < 2; k++) {
-            // Slower in cycles per second than copper, but covering far more
-            // distance — the reach difference, shown.
-            const phase = (t * 0.22 * surge + row * 0.2 + k * 0.5) % 1;
-            const fade = 0.4 + 0.6 * Math.sin(phase * Math.PI);
-            alongPath(buffers.fibre, n, phase, buffers.p);
-            glowDot(ctx, buffers.p[0], buffers.p[1], 2.1 * u, TEAL, 0.95 * strength * fade);
-            alongPath(buffers.fibre, n, phase - 0.03, buffers.p);
-            glowDot(ctx, buffers.p[0], buffers.p[1], 1.3 * u, TEAL, 0.35 * strength * fade);
-          }
-        }
-      }
+        // the run itself, barely there
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = `rgba(${TEAL},${0.1 * strength})`;
+        ctx.lineWidth = Math.max(1, u * 0.8);
+        strokeSegment(ctx, buffers.fibre, n, 0, 1);
 
-      // --- ports light as the optical layer comes up ---------------------
-      if (progress >= FIBRE_FROM) {
-        const strength = Math.min(1, (progress - FIBRE_FROM) / 0.2);
-        for (let i = 0; i < RACKS; i++) {
-          const p = resolve.point(`port${i}`, buffers.p);
-          if (!p) continue;
-          const breathe = 0.5 + 0.5 * Math.sin(t * 1.4 + i * 0.4);
-          glowDot(ctx, p[0], p[1], 1.1 * u, TEAL, 0.4 * strength * breathe);
-        }
+        // the pulse: a lit length, brightest at its head
+        const head = (t * 0.17 * surge + row * 0.26) % 1.3 - 0.15;
+
+        // tail — long, dim
+        ctx.strokeStyle = `rgba(${TEAL},${0.2 * strength})`;
+        ctx.lineWidth = Math.max(1.5, u * 1.5);
+        strokeSegment(ctx, buffers.fibre, n, head - PULSE, head);
+
+        // body
+        ctx.strokeStyle = `rgba(${TEAL},${0.45 * strength})`;
+        ctx.lineWidth = Math.max(2, u * 2.1);
+        strokeSegment(ctx, buffers.fibre, n, head - PULSE * 0.45, head);
+
+        // head — short, bright, with the glow doing the work
+        ctx.shadowColor = `rgba(${TEAL},${0.9 * strength})`;
+        ctx.shadowBlur = 14 * u;
+        ctx.strokeStyle = `rgba(220, 255, 250,${0.9 * strength})`;
+        ctx.lineWidth = Math.max(2, u * 2.3);
+        strokeSegment(ctx, buffers.fibre, n, head - PULSE * 0.12, head);
+        ctx.shadowBlur = 0;
       }
     },
     [frameRef, frameCount]

@@ -8,6 +8,7 @@ import { company, ecosystem, founderStory, people } from "@/content/company";
 import { locations, site } from "@/content/site";
 import { Footprint } from "@/components/sections/Footprint";
 import { TeamGrid } from "@/components/sections/TeamGrid";
+import { OriginFilm } from "@/components/sections/OriginFilm";
 
 export const metadata: Metadata = pageMeta({
   title: "Company",
@@ -44,8 +45,9 @@ export default function CompanyPage() {
       </section>
 
       {/* ---------------------------------------------------- founder story */}
-      <section className="section section-alt">
-        <div className="wrap-narrow" style={{ paddingInline: 0 }}>
+      <section className="section section-alt origin" style={{ position: "relative" }}>
+        <OriginFilm />
+        <div className="wrap-narrow origin-body" style={{ paddingInline: 0 }}>
           <SectionLabel>Origin</SectionLabel>
           <Headline onScroll>Why this company exists.</Headline>
           <div className="prose">

@@ -8,6 +8,46 @@ import { Verify } from "@/components/ui/Verify";
 import { Footprint } from "@/components/sections/Footprint";
 import { stories, sovereignTests } from "@/content/sovereign";
 import { photonicsPhases } from "@/content/company";
+import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
+import { signatureVideo } from "@/content/media";
+
+/**
+ * The hall, and the argument over it.
+ *
+ * The footage is generated and shows no real facility — Praverse does not
+ * operate a data centre, and the caption says so rather than letting a
+ * handsome shot imply otherwise.
+ */
+const SOV_CHAPTERS: Chapter[] = [
+  {
+    kind: "statement",
+    at: [0, 0.2],
+    text: "A hall like this is mostly cable.",
+    sub: "The GPUs get the budget and the headlines. What decides whether they reach their benchmark is the metre of copper or glass between them."
+  },
+  {
+    kind: "beats",
+    at: [0.2, 0.52],
+    beats: [
+      { label: "At 400G and above", text: "the margin between a link that works and one that retrains under load is small" },
+      { label: "And it is set by", text: "insertion loss, the reach of the optics actually fitted, the temperature at the top of the rack at 3am" },
+      { label: "None of which", text: "appears in the bill of materials" }
+    ]
+  },
+  {
+    kind: "statement",
+    at: [0.52, 0.76],
+    text: "Sovereign is a supply chain, not a sticker.",
+    sub: "If every spare optic is a six-week import and every fault needs an engineer in another time zone, the operator is holding risk that was supposed to be designed out."
+  },
+  {
+    kind: "statement",
+    at: [0.76, 1.01],
+    text: "We do the India side.",
+    sub: "Architecture, design-in, integration, qualification and support — on local time, close to the clusters being built."
+  }
+];
+
 
 export const metadata: Metadata = pageMeta({
   title: "Sovereign AI data centres",
@@ -42,6 +82,15 @@ export default function SovereignPage() {
           </p>
         </div>
       </section>
+
+      <FilmSection
+        id="sov-film"
+        video={signatureVideo.sovereign}
+        chapters={SOV_CHAPTERS}
+        accent="var(--acc-pho)"
+        label="Why the interconnect decides whether a sovereign AI cluster holds"
+        caption="Illustrative visualisation. Not a Praverse facility — we supply and design in the interconnect, we do not operate data centres."
+      />
 
       {/* --------------------------------------------------- what it requires */}
       <section className="section-tight">

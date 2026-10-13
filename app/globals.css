@@ -4950,3 +4950,281 @@ body::before {
   line-height: 1.6;
   color: var(--ink-2);
 }
+
+/* ==========================================================================
+   FILM SECTION — a page's signature told as footage, not as a mockup
+   ========================================================================== */
+/*
+ * Dark on both themes. The footage is dark, the type sits on it, and a light
+ * treatment would mean washing the picture out until there is no point having
+ * shot it. Every colour below is checked against the footage-plus-scrim, not
+ * against the page tokens.
+ */
+.fs {
+  position: relative;
+  background: #060a14;
+}
+.fs-stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.fs-video {
+  position: absolute;
+  inset: 0;
+}
+.fs-video video,
+.fs-video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/*
+ * Weighted to the left, not flat.
+ *
+ * The type is left-aligned, and the footage is not uniformly dark - the pharma
+ * clip has a bright paper stack that drifts through frame. A flat scrim either
+ * fails contrast when a bright patch passes under the words, or is set dark
+ * enough that the picture is wasted. Darkening the side the words are on fixes
+ * both, and reads as a title treatment rather than a wash.
+ */
+.fs-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 9, 18, 0.88) 0%,
+      rgba(5, 9, 18, 0.8) 34%,
+      rgba(5, 9, 18, 0.46) 62%,
+      rgba(5, 9, 18, 0.34) 100%
+    ),
+    linear-gradient(180deg, rgba(5, 9, 18, 0.45), transparent 24%, transparent 76%, rgba(5, 9, 18, 0.55));
+}
+
+/* ------------------------------------------------------------- chapters */
+.fs-chapter {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  padding: 0 var(--gutter);
+  max-width: 1180px;
+  margin-inline: auto;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.fs-chapter[data-on="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.fs-statement {
+  margin: 0;
+  max-width: 17ch;
+  font-size: clamp(34px, 6.2vw, 76px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  color: #f4f7fd;
+  text-wrap: balance;
+}
+.fs-sub {
+  margin: 20px 0 0;
+  max-width: 46ch;
+  font-size: clamp(15px, 1.7vw, 19px);
+  line-height: 1.6;
+  color: #b4c0d6;
+}
+
+/* ---------------------------------------------------------------- beats */
+.fs-beats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+  max-width: 60ch;
+}
+.fs-beats li {
+  display: grid;
+  gap: 7px;
+  padding-left: 20px;
+  border-left: 2px solid rgba(180, 192, 214, 0.22);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s ease;
+}
+.fs-beats li[data-on="true"] {
+  opacity: 1;
+  transform: none;
+  border-left-color: var(--fs-accent);
+}
+.fs-beat-label {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fs-accent);
+}
+.fs-beat-text {
+  font-size: clamp(19px, 2.6vw, 30px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: #f4f7fd;
+}
+
+/* --------------------------------------------------------- marked quote */
+.fs-marked-label {
+  margin: 0 0 18px;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8d9ab3;
+}
+.fs-marked {
+  margin: 0;
+  max-width: 24ch;
+  font-size: clamp(24px, 3.9vw, 46px);
+  line-height: 1.26;
+  letter-spacing: -0.025em;
+  color: #f4f7fd;
+}
+/*
+ * A pen stroke under the phrase, not a highlighter block behind it.
+ *
+ * A 42% accent block over dark footage comes out near-full-saturation, and the
+ * white type sitting on it measured about 1.9:1 - unreadable, and the one place
+ * on the page where the words matter most. An underline that wipes in keeps the
+ * ink on the scrim where it is legible, and reads more like someone marking up
+ * a document anyway.
+ */
+.fs-mark {
+  color: inherit;
+  /* <mark> ships a yellow background-color by default; overriding only
+     background-image leaves the highlighter underneath the pen stroke. */
+  background-color: transparent;
+  background-image: linear-gradient(var(--fs-accent), var(--fs-accent));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 0% 0.14em;
+  padding-bottom: 0.06em;
+  transition: background-size 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fs-mark[data-on="true"] {
+  background-size: 100% 0.14em;
+}
+
+.fs-caption {
+  margin: 0;
+  padding: 16px var(--gutter) 22px;
+  max-width: 1180px;
+  margin-inline: auto;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #76829b;
+}
+
+/* ---------------------------------------- the no-motion / low-power form */
+.fs-static {
+  padding: 84px 0 0;
+}
+.film-stack {
+  display: grid;
+  gap: 44px;
+  max-width: 62ch;
+}
+.film-stack-lead {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.26;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  color: #f4f7fd;
+}
+.film-stack-sub {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #b4c0d6;
+}
+.film-stack-label {
+  margin: 0 0 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8d9ab3;
+}
+.film-stack-beats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+.film-stack-beats li {
+  display: grid;
+  gap: 6px;
+  font-size: 18px;
+  line-height: 1.4;
+  color: #f4f7fd;
+}
+.film-stack-beats .mono {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8d9ab3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-chapter,
+  .fs-beats li,
+  .fs-mark {
+    transition: none;
+  }
+}
+
+/*
+ * The desk footage behind the origin story.
+ *
+ * Atmosphere only: this section is prose that has to be read, so the scrim is
+ * set heavy enough that body copy keeps its contrast over the brightest frame
+ * of the clip rather than only over the average one.
+ */
+.origin {
+  overflow: hidden;
+}
+.origin-film {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.origin-film-video,
+.origin-film-video video,
+.origin-film-video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.origin-film-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--paper-2) 0%,
+    color-mix(in srgb, var(--paper-2) 90%, transparent) 22%,
+    color-mix(in srgb, var(--paper-2) 86%, transparent) 78%,
+    var(--paper-2) 100%
+  );
+}
+.origin-body {
+  position: relative;
+  z-index: 1;
+}

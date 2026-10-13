@@ -133,6 +133,51 @@ export function alongPath(path: Float32Array, count: number, t: number, out: Poi
   return out;
 }
 
+/**
+ * Strokes the part of a polyline between two arc-length fractions.
+ *
+ * This is what a pulse of light down a fibre actually looks like — a lit
+ * length of the run, not a bead sliding along it. Drawing it as one stroked
+ * sub-path rather than as a string of particles also means one path per fibre
+ * instead of dozens of sprites, which is both calmer to look at and cheaper.
+ *
+ * `from` may be negative and `to` may exceed 1; the range is clamped, so a
+ * pulse can run on and off the end of the path without special-casing.
+ */
+export function strokeSegment(
+  ctx: CanvasRenderingContext2D,
+  path: Float32Array,
+  count: number,
+  from: number,
+  to: number
+): void {
+  if (count < 2) return;
+  const a = from < 0 ? 0 : from > 1 ? 1 : from;
+  const b = to < 0 ? 0 : to > 1 ? 1 : to;
+  if (b - a < 1e-4) return;
+
+  const segs = count - 1;
+  const sa = a * segs;
+  const sb = b * segs;
+  const i0 = sa | 0;
+  const i1 = sb | 0;
+
+  ctx.beginPath();
+  // first partial segment
+  let x = path[i0 * 2] + (path[(i0 + 1) * 2] - path[i0 * 2]) * (sa - i0);
+  let y = path[i0 * 2 + 1] + (path[(i0 + 1) * 2 + 1] - path[i0 * 2 + 1]) * (sa - i0);
+  ctx.moveTo(x, y);
+  for (let i = i0 + 1; i <= Math.min(i1, segs - 1); i++) {
+    ctx.lineTo(path[i * 2], path[i * 2 + 1]);
+  }
+  // last partial segment
+  const j = Math.min(i1, segs - 1);
+  x = path[j * 2] + (path[(j + 1) * 2] - path[j * 2]) * (sb - j);
+  y = path[j * 2 + 1] + (path[(j + 1) * 2 + 1] - path[j * 2 + 1]) * (sb - j);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+}
+
 export type Resolver = {
   /** Resolved screen position of a single-point track, or null if off-screen. */
   point: (key: string, out: Point) => Point | null;

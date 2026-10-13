@@ -1,6 +1,55 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import { AgentConsole } from "@/components/sections/AgentConsole";
+import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
+import { signatureVideo } from "@/content/media";
+
+/**
+ * The signature, as film rather than as a console mockup.
+ *
+ * Every beat the old interface showed is still here: what the agent read, that
+ * it stops, who approves, that it is logged. It is told in type over the room
+ * the work happens in instead of in a table, because at this stage of a sale a
+ * reader will feel a room and will not study a screenshot.
+ */
+const EA_CHAPTERS: Chapter[] = [
+  {
+    kind: "statement",
+    at: [0, 0.17],
+    text: "A question lands in someone’s queue.",
+    sub: "“Is sampling witnessed for Q3 batches?” — the kind of question that costs an afternoon and gets asked again next quarter."
+  },
+  {
+    kind: "beats",
+    at: [0.17, 0.47],
+    beats: [
+      { label: "Reads", text: "214 pages of the SOP, and finds the three sections that matter" },
+      { label: "Checks", text: "1,204 batch records against them, and flags four" },
+      { label: "Drafts", text: "a reply, with every claim carrying the source it came from" }
+    ]
+  },
+  {
+    kind: "statement",
+    at: [0.47, 0.68],
+    text: "Then it stops.",
+    sub: "Nothing is sent, filed or actioned until a named reviewer approves it. That is the architecture, not a setting you can switch off."
+  },
+  {
+    kind: "beats",
+    at: [0.68, 0.88],
+    beats: [
+      { label: "Recorded", text: "who asked" },
+      { label: "Recorded", text: "what the system surfaced" },
+      { label: "Recorded", text: "who decided, and when" }
+    ]
+  },
+  {
+    kind: "statement",
+    at: [0.88, 1.01],
+    text: "The system drafts. Your team decides.",
+    sub: "Two years later, somebody will ask how that decision was made. The answer is already written down."
+  }
+];
+
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
@@ -15,7 +64,14 @@ export const metadata: Metadata = pageMeta({
 export default function EnterpriseAIPage() {
   return (
     <div data-acc="enterprise">
-      <AgentConsole />
+      <FilmSection
+        id="ea-film"
+        video={signatureVideo.enterpriseAi}
+        chapters={EA_CHAPTERS}
+        accent="var(--acc-ent-bright)"
+        label="An agent run: what it reads, that it stops at a human reviewer, and what is recorded"
+        caption="Illustrative run. Documents, counts and timings are generic examples."
+      />
 
       <section className="section">
         <div className="wrap">

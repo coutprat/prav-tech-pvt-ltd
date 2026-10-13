@@ -92,7 +92,10 @@ export type SignatureVideo = {
   alt: string;
 } | null;
 
-export const signatureVideo: Record<"enterpriseAi" | "pharma", SignatureVideo> = {
+export const signatureVideo: Record<
+  "enterpriseAi" | "pharma" | "sovereign" | "company",
+  SignatureVideo
+> = {
   enterpriseAi: {
     src: "/media/enterprise-ai/cine-1280.mp4",
     srcMobile: "/media/enterprise-ai/cine-854.mp4",
@@ -104,5 +107,17 @@ export const signatureVideo: Record<"enterpriseAi" | "pharma", SignatureVideo> =
     srcMobile: "/media/pharma/cine-854.mp4",
     poster: "/media/pharma/cine-poster.webp",
     alt: "Stacks of printed records on a dark desk, archive boxes behind them, the camera pushing slowly past."
+  },
+  sovereign: {
+    src: "/media/sovereign/cine-1280.mp4",
+    srcMobile: "/media/sovereign/cine-854.mp4",
+    poster: "/media/sovereign/cine-poster.webp",
+    alt: "A cold aisle between two rows of dark server racks, status lights receding into the distance."
+  },
+  company: {
+    src: "/media/company/cine-1280.mp4",
+    srcMobile: "/media/company/cine-854.mp4",
+    poster: "/media/company/cine-poster.webp",
+    alt: "A notebook of handwritten diagrams on a dark desk under a single lamp, the camera moving slowly across it."
   }
 };

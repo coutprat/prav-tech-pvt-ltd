@@ -1,6 +1,57 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import { ResponseBuilder } from "@/components/sections/ResponseBuilder";
+import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
+import { signatureVideo } from "@/content/media";
+
+/**
+ * The signature, as film rather than as a document-workspace mockup.
+ *
+ * The observation text is invented and deliberately generic: it is not from
+ * any real 483, and it names no real company, site or product.
+ */
+const PH_CHAPTERS: Chapter[] = [
+  {
+    kind: "statement",
+    at: [0, 0.16],
+    text: "An inspector writes one paragraph.",
+    sub: "Answering it will take your quality team three weeks, and the answer has to survive being read back to you."
+  },
+  {
+    kind: "marked",
+    at: [0.16, 0.44],
+    label: "Observation — illustrative",
+    parts: [
+      { text: "Written procedures for sampling are not " },
+      { text: "consistently followed", mark: true },
+      { text: ", and the records do not show the step was " },
+      { text: "witnessed", mark: true },
+      { text: " by a second analyst." }
+    ],
+    note: "Fictional text. Not from any real inspection, company or product."
+  },
+  {
+    kind: "beats",
+    at: [0.44, 0.76],
+    beats: [
+      { label: "Root cause · BR-2291", text: "The step was performed but not witnessed — the batch record has no field for it" },
+      { label: "Correction · SOP-QC-014", text: "Analysts re-trained, the four Q3 batches re-reviewed" },
+      { label: "Preventive · DEV-0471", text: "A witness signature field added, and tracked in the deviation log" }
+    ]
+  },
+  {
+    kind: "statement",
+    at: [0.76, 0.9],
+    text: "Every paragraph carries the record it rests on.",
+    sub: "Not a model's recollection of a document. The document."
+  },
+  {
+    kind: "statement",
+    at: [0.9, 1.01],
+    text: "Nothing is filed until QA signs.",
+    sub: "In a GMP environment a wrong answer is worse than no answer, so the system drafts and a qualified person decides."
+  }
+];
+
 import { Verify } from "@/components/ui/Verify";
 import { Headline } from "@/components/ui/Headline";
 import {
@@ -27,7 +78,14 @@ export const metadata: Metadata = pageMeta({
 export default function PharmaPage() {
   return (
     <div data-acc="pharma">
-      <ResponseBuilder />
+      <FilmSection
+        id="ph-film"
+        video={signatureVideo.pharma}
+        chapters={PH_CHAPTERS}
+        accent="var(--acc-pha)"
+        label="An inspection observation becoming a response, with every paragraph linked to the record it rests on"
+        caption="Illustrative. The observation is fictional and names no real inspection, company or product."
+      />
 
       <section className="section">
         <div className="wrap">
