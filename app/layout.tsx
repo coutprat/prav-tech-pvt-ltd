@@ -1,77 +1,63 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Sora } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
-import { ThreeGlobalBridge } from "@/components/three/ThreeGlobalBridge";
-import { WebGLBackground } from "@/components/three/WebGLBackground";
-import SatelliteGuard from "@/components/ui/SatelliteGuard";
-import SpotlightCards from "@/components/ui/SpotlightCards";
-import ThemeTransitionOverlay from "@/components/ui/ThemeTransitionOverlay";
-import { site } from "@/data/site";
+import { Footer } from "@/components/layout/Footer";
+import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { themeScript } from "@/components/layout/theme";
+import { company } from "@/content/company";
 
-const sora = Sora({
+const geistSans = Geist({
   subsets: ["latin"],
-  variable: "--font-d",
+  variable: "--font-geist-sans",
   display: "swap"
 });
 
-const inter = Inter({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-b",
-  display: "swap"
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-m",
+  variable: "--font-geist-mono",
   display: "swap"
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(company.url),
   title: {
-    default: "Praverse Tech — Enterprise AI/ML Systems for Real-World Industries",
-    template: "%s"
+    default: "Praverse Tech — Intelligence, engineered for industry.",
+    template: "%s · Praverse Tech"
   },
-  description: site.description,
-  icons: {
-    icon: "/favicon.svg"
-  },
+  description: company.oneLiner,
+  icons: { icon: "/favicon.svg" },
   openGraph: {
     type: "website",
-    url: site.url,
-    siteName: site.name,
-    title: "Praverse Tech — Enterprise AI/ML Systems for Real-World Industries",
-    description: site.description,
-    images: ["/favicon.svg"]
+    url: company.url,
+    siteName: company.name,
+    title: "Praverse Tech — Intelligence, engineered for industry.",
+    description: company.oneLiner
   },
   twitter: {
     card: "summary",
-    title: "Praverse Tech — Enterprise AI/ML Systems for Real-World Industries",
-    description: site.description,
-    images: ["/favicon.svg"]
+    title: "Praverse Tech — Intelligence, engineered for industry.",
+    description: company.oneLiner
   }
 };
 
 export default function RootLayout({
   children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${inter.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        {/* Sets the theme before first paint so dark loads don't flash light. */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
         <Navbar />
-        <ThreeGlobalBridge />
-        <WebGLBackground />
-        <SatelliteGuard />
-        <SpotlightCards />
-        <ThemeTransitionOverlay />
-        {children}
+        <main id="main">{children}</main>
         <Footer />
-        <SmoothScrollProvider />
+        <SmoothScroll />
       </body>
     </html>
   );
