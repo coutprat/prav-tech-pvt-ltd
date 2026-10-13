@@ -4,22 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/layout/theme";
+import { useScrolled } from "@/lib/useMediaQuery";
 import { navigation } from "@/data/navigation";
 
 export function Navbar() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const scrolled = useScrolled(8);
+  // The drawer remembers which route it was opened on, so a navigation closes
+  // it by derivation rather than by an effect that fires after paint.
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const open = openedAt === pathname;
+  const setOpen = (next: boolean) => setOpenedAt(next ? pathname : null);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close the drawer on navigation, and lock the page behind it while open.
-  useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -30,7 +26,7 @@ export function Navbar() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") setOpenedAt(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -67,7 +63,7 @@ export function Navbar() {
           <button
             type="button"
             className="icon-btn menu-btn"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-controls="nav-drawer"
             aria-label={open ? "Close menu" : "Open menu"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 const KEY = "praverse-theme";
 
@@ -10,18 +10,32 @@ const KEY = "praverse-theme";
  */
 export const themeScript = `(function(){try{var s=localStorage.getItem("${KEY}");var d=s?s==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.setAttribute("data-theme","dark");}catch(e){}})();`;
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  const [ready, setReady] = useState(false);
+/**
+ * The theme lives on <html data-theme>, set before paint by themeScript.
+ * That makes it external state, so it is read with useSyncExternalStore
+ * rather than mirrored into React state inside an effect.
+ *
+ * The server snapshot is `false`, so the button renders its light-mode label
+ * during SSR and React re-renders with the real value on hydration.
+ */
+function subscribe(onChange: () => void) {
+  const obs = new MutationObserver(onChange);
+  obs.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"]
+  });
+  return () => obs.disconnect();
+}
 
-  useEffect(() => {
-    setDark(document.documentElement.getAttribute("data-theme") === "dark");
-    setReady(true);
-  }, []);
+export function ThemeToggle() {
+  const dark = useSyncExternalStore(
+    subscribe,
+    () => document.documentElement.getAttribute("data-theme") === "dark",
+    () => false
+  );
 
   function toggle() {
     const next = !dark;
-    setDark(next);
     const root = document.documentElement;
     if (next) root.setAttribute("data-theme", "dark");
     else root.removeAttribute("data-theme");
@@ -37,7 +51,7 @@ export function ThemeToggle() {
       type="button"
       className="icon-btn"
       onClick={toggle}
-      aria-pressed={ready ? dark : undefined}
+      aria-pressed={dark}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
       title={dark ? "Light theme" : "Dark theme"}
     >

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { prefersReducedMotion } from "@/lib/gsap";
+import { useEffect, useRef } from "react";
+import { useReducedMotion } from "@/lib/useMediaQuery";
 
 export type VideoSource = { webm?: string; mp4: string };
 
@@ -25,13 +25,11 @@ export function LoopVideo({
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [reduced, setReduced] = useState<boolean | null>(null);
-
-  useEffect(() => setReduced(prefersReducedMotion()), []);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced !== false) return;
+    if (!el || reduced) return;
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -44,8 +42,8 @@ export function LoopVideo({
     return () => io.disconnect();
   }, [reduced]);
 
-  // Before we know, and when reduced motion is on, show the still.
-  if (reduced !== false) {
+  // Reduced motion: the still only — no video is fetched at all.
+  if (reduced) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img className={className} src={poster} alt={alt} />;
   }
@@ -55,12 +53,14 @@ export function LoopVideo({
     ? [{ src: mobile, media: "(max-width: 899px)" }, { src: desktop }]
     : [{ src: desktop }];
 
-  const sources = sets.flatMap(({ src, media }) =>
-    [
-      src.webm ? { url: src.webm, type: "video/webm", media } : null,
-      { url: src.mp4, type: "video/mp4", media }
-    ].filter((s): s is { url: string; type: string; media?: string } => s !== null)
-  );
+  type Source = { url: string; type: string; media?: string };
+
+  const sources = sets.flatMap(({ src, media }) => {
+    const out: Source[] = [];
+    if (src.webm) out.push({ url: src.webm, type: "video/webm", media });
+    out.push({ url: src.mp4, type: "video/mp4", media });
+    return out;
+  });
 
   return (
     <video

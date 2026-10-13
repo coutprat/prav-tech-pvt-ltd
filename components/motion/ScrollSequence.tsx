@@ -2,15 +2,29 @@
 
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
+/**
+ * Must stay plain data: this crosses the server → client boundary, and a
+ * function here cannot be serialised.
+ */
 export type FrameSet = {
-  /** Returns the URL for frame `i` (1-based). */
-  src: (i: number) => string;
+  /** Folder holding the frames, e.g. "/media/home/desktop". */
+  dir: string;
   count: number;
   width: number;
   height: number;
+  /** Filename shape: `${prefix}${i padded to pad}.${ext}`. */
+  prefix?: string;
+  ext?: string;
+  pad?: number;
 };
+
+/** URL for frame `i` (1-based). */
+function frameUrl(set: FrameSet, i: number) {
+  const { dir, prefix = "frame-", ext = "webp", pad = 4 } = set;
+  return `${dir}/${prefix}${String(i).padStart(pad, "0")}.${ext}`;
+}
 
 export type Chapter = {
   title: string;
@@ -131,7 +145,7 @@ export function ScrollSequence({
             resolve();
           };
           img.onerror = () => resolve();
-          img.src = set.src(i + 1);
+          img.src = frameUrl(set, i + 1);
         });
 
       const loadAll = async () => {
