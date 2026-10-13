@@ -62,7 +62,7 @@ export default function HomePage() {
 
       <ProofBar
         items={[
-          `Founded ${company.founded}`,
+          `Idea ${company.ideaFrom} · incorporated ${company.founded}`,
           "Vadodara, India",
           <Verify key="pubs" id="publications-count" />,
           <Verify key="patent" id="mennie-patent" />,

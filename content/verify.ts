@@ -57,11 +57,13 @@ export const verifyItems = [
   },
   {
     id: "mennie-patent",
-    where: "Home ProofBar · MENNIE",
-    claim: "MENNIE patent-pending",
-    fallback: "MENNIE patent-pending",
-    needs: "Patent application number and filing jurisdiction.",
-    confirmed: false
+    where: "Home proof bar · MENNIE",
+    claim: "MENNIE patented",
+    fallback: "MENNIE patented",
+    needs:
+      "The owner states MENNIE is patented, not patent-pending, and the site now says so. What is still missing is the patent number and jurisdiction. Publish them: \"patented\" with no number is the one claim on this site a competitor or a buyer's counsel is most likely to go and check, and in several jurisdictions marking something as patented when it is not is an offence in its own right. Once the number is here it becomes a strength rather than an exposure.",
+    confirmed: true,
+    source: "Owner, October 2026 — number and jurisdiction still to be supplied"
   },
   {
     id: "infraeo-consent",
@@ -132,11 +134,12 @@ export const verifyItems = [
   {
     id: "founded-vs-incorporated",
     where: "Company — intro; Home — leadership; footer",
-    claim: "Founded in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
-    fallback: "2023",
+    claim: "The idea began in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
+    fallback: "The idea began in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
     needs:
-      "Both company decks say founded 2023, and the CIN now in the footer encodes 2026 as the year of incorporation (U62020GJ*2026*PTC175386). Both can be true - the work started in 2023 and the private limited company was registered in 2026 - but the page currently says only \"Founded in 2023\" next to a 2026 CIN, which is the kind of gap a US or EU buyer's diligence will pick up. Confirm the wording: \"founded 2023, incorporated 2026\" is the honest version if that is the history.",
-    confirmed: false
+      "Resolved by the owner: the work began in 2023 as research, and the private limited company was incorporated in 2026, which is what the CIN encodes. The site now says both rather than only the first, which is what a US or EU buyer's diligence would otherwise have caught.",
+    confirmed: true,
+    source: "Owner, October 2026"
   },
   {
     id: "nexgen-relationship",

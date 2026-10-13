@@ -3,7 +3,7 @@ export const navigation = [
   { label: "Pharma AI", href: "/pharma" },
   { label: "MENNIE", href: "/mennie" },
   { label: "Photonics", href: "/photonics" },
-  { label: "Research", href: "/research" },
+  { label: "Sovereign AI", href: "/sovereign-ai-data-centres" },
   { label: "Company", href: "/company" }
 ] as const;
 
@@ -13,11 +13,11 @@ export const footerNav = {
     { label: "Enterprise AI", href: "/enterprise-ai" },
     { label: "Pharma AI", href: "/pharma" },
     { label: "MENNIE", href: "/mennie" },
-    { label: "Photonics", href: "/photonics" }
+    { label: "Photonics", href: "/photonics" },
+    { label: "Sovereign AI data centres", href: "/sovereign-ai-data-centres" }
   ],
   company: [
     { label: "Company", href: "/company" },
-    { label: "Research", href: "/research" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
     { label: "Start a project", href: "/start-a-project" }

@@ -22,8 +22,12 @@ const nextConfig = {
 
       // thin pages folded into the pages that carry the same material
       { source: "/domains", destination: "/enterprise-ai", statusCode: 301 },
-      { source: "/innovate", destination: "/research", statusCode: 301 },
-      { source: "/insights", destination: "/research", statusCode: 301 },
+
+      // The research page is gone. The work behind it is not: it is now the
+      // origin story on /company, told without naming individual projects.
+      { source: "/research", destination: "/company", statusCode: 301 },
+      { source: "/innovate", destination: "/company", statusCode: 301 },
+      { source: "/insights", destination: "/company", statusCode: 301 },
 
       // the Orbit experience is not part of this redesign
       { source: "/orbit", destination: "/", statusCode: 307 }

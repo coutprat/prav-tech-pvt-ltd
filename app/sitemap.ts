@@ -8,7 +8,7 @@ const ROUTES: { path: string; priority: number; freq: MetadataRoute.Sitemap[numb
   { path: "/pharma", priority: 0.9, freq: "monthly" },
   { path: "/mennie", priority: 0.9, freq: "monthly" },
   { path: "/photonics", priority: 0.9, freq: "monthly" },
-  { path: "/research", priority: 0.7, freq: "monthly" },
+  { path: "/sovereign-ai-data-centres", priority: 0.8, freq: "monthly" },
   { path: "/company", priority: 0.7, freq: "monthly" },
   { path: "/careers", priority: 0.6, freq: "weekly" },
   { path: "/contact", priority: 0.6, freq: "yearly" },

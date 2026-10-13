@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
-import { company, ecosystem, founderStory, partners, people } from "@/content/company";
+import { company, ecosystem, founderStory, people } from "@/content/company";
 import { locations, site } from "@/content/site";
 import { Footprint } from "@/components/sections/Footprint";
 import { TeamGrid } from "@/components/sections/TeamGrid";
 
 export const metadata: Metadata = pageMeta({
   title: "Company",
-  description: "Praverse Tech Pvt Ltd — founded 2023, headquartered in Vadodara, Gujarat. Leadership, advisors and partners.",
+  description: "Praverse Tech Pvt Ltd — the idea began in 2023, incorporated 2026, headquartered in Vadodara, Gujarat. Leadership and advisors.",
   path: '/company',
   og: 'company'
 });
@@ -26,7 +26,7 @@ export default function CompanyPage() {
             Built by people who have done the work.
           </Headline>
           <p className="lede" style={{ marginTop: 32 }}>
-            Founded in {company.founded}. {locations.line} {locations.markets}
+            {company.originLine} {locations.line} {locations.markets}
           </p>
         </div>
       </section>
@@ -101,32 +101,6 @@ export default function CompanyPage() {
             Named in text only. We do not display a partner&rsquo;s logo without
             written permission.
           </p>
-        </div>
-      </section>
-
-      {/* ----------------------------------------------------------- partners */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Partners</SectionLabel>
-          <Headline onScroll>Who we work with.</Headline>
-          <p className="body-2" style={{ marginTop: 18 }}>
-            Named in text only. We do not display partner logos without written
-            permission to do so.
-          </p>
-
-          <div className="grid-2">
-            {partners.map((p) => (
-              <article className="card" key={p.name}>
-                <p className="line-card-n">{p.role}</p>
-                <h3 className="h3" style={{ fontSize: 22, marginTop: 12 }}>
-                  {p.name}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {p.body}
-                </p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 

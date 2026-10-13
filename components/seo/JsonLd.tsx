@@ -23,6 +23,8 @@ export function OrganizationJsonLd() {
     url: company.url,
     logo: `${company.url}/logo.svg`,
     description: company.oneLiner,
+    // The legal entity's date, which is what schema.org means by this. The
+    // 2023 start of the work is a story, not an incorporation.
     foundingDate: String(company.founded),
     email: site.enquiryEmail,
     contactPoint: [

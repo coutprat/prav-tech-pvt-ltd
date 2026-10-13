@@ -9,7 +9,15 @@ export const company = {
   name: "Praverse Tech",
   legalName: "Praverse Tech Pvt Ltd",
   url: "https://praversetech.com",
-  founded: 2023,
+  /**
+   * Two dates, and they are not the same thing. The work began in 2023; the
+   * private limited company was registered in 2026, which is what the CIN in
+   * the footer encodes. Saying only one of them invites the obvious question.
+   */
+  ideaFrom: 2023,
+  founded: 2026,
+  originLine:
+    "The idea began in 2023. Praverse Tech Pvt Ltd was incorporated in 2026.",
   hq: "Vadodara, Gujarat, India",
   markets: "India, US, Europe",
   /** Founder's address. Enquiry + careers routing lives in content/site.ts. */
@@ -566,8 +574,16 @@ export const partners = [
   }
 ] as const;
 
+/**
+ * The origin, told as a story rather than a project list.
+ *
+ * Deliberately names no individual piece of research. The point is not which
+ * papers exist; it is what several years of working on medical imaging, edge
+ * inference and simulation taught the founder about why that work so rarely
+ * reaches a patient — and that the answer was never a better model.
+ */
 export const founderStory = [
-  "Praverse started in 2023 with a narrow question: why does so much healthcare AI stop at the paper?",
-  "The research was real — screening models that worked on real fundus images, in clinics without reliable power or bandwidth. What was missing was the unglamorous half: the workflow it had to live inside, the reviewer who had to sign it off, the audit trail somebody would ask for two years later.",
-  "So the company was built around that half. Everything we ship assumes a qualified person is going to read it, disagree with some of it, and need to show their working. That holds whether the output is a 483 response, a patient summary, or a link budget for a data-centre row."
+  "Praverse began in 2023, not as a company but as a question our founder kept running into across several years of research in medical imaging, edge inference and simulation: why does so much of this work stop at the paper?",
+  "The models were not the problem. They worked, on real images, in real clinics — including clinics without reliable power or bandwidth. What was missing every time was the unglamorous half: the workflow the model had to live inside, the qualified person who had to sign it off, the audit trail somebody would ask for two years later. Research is rewarded for the first half. Patients only benefit from the second.",
+  "By 2026 that had become specific enough to build a company around, and Praverse Tech Pvt Ltd was incorporated. Everything we ship assumes a qualified person is going to read it, disagree with some of it, and need to show their working — whether the output is a 483 response, a patient summary, or a link budget for a data-centre row."
 ] as const;
