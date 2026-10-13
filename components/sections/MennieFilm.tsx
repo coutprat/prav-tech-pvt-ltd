@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
 import { MennieHero } from "@/components/sections/MennieHero";
+import { ScrubVideo } from "@/components/motion/ScrubVideo";
 import { mennie } from "@/content/company";
 
 /** three.js only loads here, only on this page, only when it can be used. */
@@ -18,15 +19,23 @@ const MennieScene = dynamic(() => import("@/components/three/MennieScene"), {
  *
  * Chapters, in order:
  *   0  black, the title blooms in
- *   1  the 2.5D plate; the dolly pushes in over her shoulder
- *   2  "her view" — glass HUD panels at different depths, one per step
+ *   1  the cinematic, scrubbed by scroll — rooftop, city, golden hour
+ *   2  "her view" — the 2.5D plate indoors, glass HUD panels at depth
  *   3  the panels resolve into the three surfaces
  *   4  the concept caption
+ *
+ * Two different moments, not the same one twice: the cinematic is the wide
+ * exterior opening (real footage, real hair movement), and the depth plate is
+ * the close interior where the HUD belongs.
  *
  * Low-power devices and reduced motion never reach any of this: they get the
  * existing image hero, which carries every line of the same content.
  */
 const SURFACES = mennie.surfaces;
+
+/** Scroll window the cinematic occupies, as a fraction of the pinned scroll. */
+const CINE_FROM = 0.06;
+const CINE_TO = 0.38;
 
 export function MennieFilm() {
   const root = useRef<HTMLDivElement>(null);
@@ -34,6 +43,8 @@ export function MennieFilm() {
   const [progress, setProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
+  /** 0..1 within the cinematic, written on the ticker; never re-renders. */
+  const cineRef = useRef(0);
 
   /**
    * Prefetch the three.js chunk when the browser is idle, but do not mount it
@@ -101,7 +112,14 @@ export function MennieFilm() {
               scrub: 0.7,
               anticipatePin: 1,
               invalidateOnRefresh: true,
-              onUpdate: (self) => setProgress(self.progress)
+              onUpdate: (self) => {
+                setProgress(self.progress);
+                // The cinematic owns the opening; map its window onto 0..1.
+                cineRef.current = Math.max(
+                  0,
+                  Math.min(1, (self.progress - CINE_FROM) / (CINE_TO - CINE_FROM))
+                );
+              }
             }
           }
         );
@@ -122,7 +140,7 @@ export function MennieFilm() {
 
   // chapter windows
   const title = progress < 0.1;
-  const hudFrom = 0.32;
+  const hudFrom = 0.4;
   const hudTo = 0.72;
   const surfacesFrom = 0.74;
   const captionFrom = 0.93;
@@ -150,8 +168,25 @@ export function MennieFilm() {
           aria-hidden="true"
         />
 
-        <div className="film-canvas">
-          {mounted ? <MennieScene progress={progress} /> : null}
+        {/* 1 — the cinematic, scrubbed */}
+        <div className="film-canvas" data-on={progress < CINE_TO}>
+          <ScrubVideo
+            className="film-video"
+            src="/media/mennie/cine-1280.mp4"
+            srcMobile="/media/mennie/cine-854.mp4"
+            poster="/media/mennie/cine-poster.webp"
+            progressRef={cineRef}
+            alt="Concept visualisation: the MENNIE assistive robot stands at a rooftop balustrade above an Indian city at sunrise, seen from behind."
+          />
+        </div>
+
+        {/* 2 — the depth plate, indoors, where the HUD panels sit */}
+        <div className="film-canvas" data-on={progress >= CINE_TO}>
+          {mounted ? (
+            <MennieScene
+              progress={Math.max(0, (progress - CINE_TO) / (1 - CINE_TO))}
+            />
+          ) : null}
         </div>
 
         {/* grade + grain over everything */}

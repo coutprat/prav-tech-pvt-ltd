@@ -18,3 +18,8 @@ qa/*.report.json
 
 # Tooling worktrees
 .claude/
+
+# Large incoming source media; the processed outputs are committed
+assets-incoming/*.mp4
+assets-incoming/*.jpg
+assets-incoming/*.mov
