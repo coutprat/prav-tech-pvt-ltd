@@ -23,3 +23,9 @@ qa/*.report.json
 assets-incoming/*.mp4
 assets-incoming/*.jpg
 assets-incoming/*.mov
+
+# Raw Lighthouse / trace JSON. The numbers that matter are written up in
+# qa/LIGHTHOUSE.md and REDESIGN_OVERVIEW.md; the dumps are 8MB of noise.
+qa/lh-*.json
+qa/t-*.json
+qa/perf/*.json
