@@ -7,6 +7,7 @@ import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, ecosystem, founderStory, partners, people } from "@/content/company";
 import { locations, site } from "@/content/site";
 import { Footprint } from "@/components/sections/Footprint";
+import { TeamGrid } from "@/components/sections/TeamGrid";
 
 export const metadata: Metadata = pageMeta({
   title: "Company",
@@ -54,6 +55,8 @@ export default function CompanyPage() {
           </div>
         </div>
       </section>
+
+      <TeamGrid />
 
       {/* --------------------------------------------------------- footprint */}
       <section className="section section-alt">
