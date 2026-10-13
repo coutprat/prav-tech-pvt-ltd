@@ -1,6 +1,6 @@
 # Lighthouse
 
-Generated: 2026-10-13T17:14:42.111Z
+Generated: 2026-10-13T17:18:05.383Z
 
 Budgets (mobile, 4G): **LCP < 2.5 s · CLS < 0.1**.
 

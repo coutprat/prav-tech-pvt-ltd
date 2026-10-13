@@ -5,6 +5,8 @@ const config = [
   {
     ignores: [
       ".next/**",
+      // Tooling worktrees; not part of this project
+      ".claude/**",
       "node_modules/**",
       "legacy-static-site/**",
       "assets/**",

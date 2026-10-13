@@ -29,7 +29,8 @@ export default function PrivacyPage() {
 
         <div className="prose">
           <p className="lede">
-            {company.legalName} (&ldquo;Praverse&rdquo;, &ldquo;we&rdquo;) respects your
+            {company.legalName}{" "}
+            (&ldquo;Praverse&rdquo;, &ldquo;we&rdquo;) respects your
             privacy. This page explains what we collect through this website, why,
             and what you can ask us to do about it.
           </p>

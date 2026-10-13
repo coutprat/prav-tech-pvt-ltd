@@ -368,7 +368,7 @@ the opposite of the ceramic palette, and restyling it was outside this brief.
 
 ---
 
-## 11. Acceptance checklist
+## 11. Acceptance checklist (prompt 1)
 
 - [x] Every page has one signature animation explaining its business, with a complete static state under reduced motion
 - [x] No satellite, no repeated globe hero, no letter-per-line labels *(none existed in this repo)*
@@ -379,3 +379,334 @@ the opposite of the ceramic palette, and restyling it was outside this brief.
 - [ ] **Mobile LCP < 2.5 s** — 2.62–3.26 s simulated mobile; 0.60–0.69 s desktop. See §8.
 - [x] Mobile CLS < 0.1 — **0.000** on every page
 - [x] `npm run build` passes with no type or lint errors
+
+---
+---
+
+# Prompt 2 — richer motion, colour, contact, launch readiness
+
+Everything below was added after the first redesign. Same branch,
+`redesign-2026`; `npm run build` and `npm run lint` are clean.
+
+Direction taken as given: **quality first, no JS size cap, nothing removed to
+save kilobytes.** The one rule applied throughout is that the first screen
+must appear fast and heavy code must load after it — which turned out to be
+the main performance lever (§P7).
+
+---
+
+## P1. Contact
+
+**The phone number is gone** from every surface: header, footer, contact,
+company, legal pages, metadata and JSON-LD. `content/company.ts` no longer has
+`phone`/`tel`, and `data/site.ts` (which still held them and was imported by
+nothing) is deleted. Verified against the built HTML: no `tel:` link and no
+formatted number anywhere. The only remaining occurrence of those digits is
+inside the `wa.me` link.
+
+**WhatsApp button** — floating, bottom-right, every page. A plain `wa.me` link
+with the official glyph inline, not the official widget: the widget loads
+third-party JavaScript and sets cookies, which would force a consent banner
+onto a site that currently needs none, and cost weight for nothing.
+
+- hides while the mobile drawer is open (the drawer sets `data-nav-open` on
+  `<html>`; the button watches it)
+- `env(safe-area-inset-bottom)` offset, and forms/footer get bottom padding on
+  mobile so it can never sit on a submit button or a footer link
+
+**Changing the number is one line** — `content/site.ts`:
+
+```ts
+whatsappNumber: "919313247264",  // TEMPORARY — replace with the business number
+```
+
+Nothing else references it; `whatsappHref` is derived from it.
+
+**Emails** — enquiries to `inquiry@praversetech.com`, hiring to
+`careers@praversetech.com`, both confirmed by you as existing. Shown in the
+footer under explicit labels.
+
+## P2. Careers (`/careers`)
+
+Linked from the footer and the Company page, deliberately not the main nav.
+Intro uses only confirmed facts. One open role: Full Stack Engineer, Vadodara,
+some experience preferred, skilled interns welcome, CVs to `careers@`.
+
+Nothing was supplied about pay, stack, benefits or other roles, so **none is
+stated** — compensation renders as "Discussed at offer stage" behind a new
+`[VERIFY]` entry rather than being invented.
+
+## P3. Colour system
+
+One accent per line, as **two tokens**: `-glow` for light (gradients, seams,
+rim light, chart marks) and `-ink`, the only one allowed to carry text. Body
+copy stays `--ink` everywhere.
+
+| Line | Glow | Ink (light) | On paper | Ink (dark) |
+|---|---|---|---|---|
+| Enterprise AI | `#7C5CFF` | `#5B3FD6` | 5.74:1 | `#9B85FF` (6.39:1) |
+| Pharma AI | `#10B981` | `#066B49` | 5.59:1 | `#34D399` (9.70:1) |
+| MENNIE | `#38BDF8` | `#035F92` | 5.87:1 | `#7DD3FC` (11.19:1) |
+| Photonics | `#F59E0B` | `#8A5005` | 5.55:1 | `#FBBF24` (11.17:1) |
+| Photonics (optical) | `#4BD6C4` | `#0A6A60` | 5.53:1 | `#6FE3D3` (12.08:1) |
+
+Every ink was computed against all three light surfaces before use. The
+light-mode inks sit at ~2.8:1 on dark paper, which is why dark has its own set.
+
+A page sets `data-acc` once and labels, seams, charts and glows follow. Added
+`Aurora` (drifting, cursor-reactive coloured light at 13% opacity) and a
+scroll tint that casts the in-view line's colour over the page ground at 7%.
+
+**axe: 0 violations in both themes**, across all 12 pages.
+
+## P4. Home
+
+**Re-rendered in colour.** Each module now lights in its own line colour as it
+docks — violet, emerald, sky, amber — with a matching coloured rim light on
+the core. Camera and timing are unchanged, so `ScrollSequence` needed no edits.
+
+**Live overlay synced to the render.** The Blender scenes now export
+`positions.json` alongside the frames: per-frame screen-space coordinates for
+the ring and each module. A canvas overlay draws light particles from that
+data, so they sit on the render exactly as the camera pushes in. Verified by
+screenshot — the particles land on the projected ring to the pixel.
+
+Also: the page ground takes a faint tint of each line as you scroll past it;
+business-line cards have per-line accents, pointer tilt and a colour-tracking
+sheen; and the cards, leadership strip and process steps reveal in sequence.
+
+## P5. Photonics
+
+- **Live packets** over the hero from the same export: amber makes short hops
+  inside racks, teal runs the long fibre paths to the spine. Speed follows
+  scroll velocity, so the hall surges as you move and idles when you stop.
+- **"Inside an 800G module"** (R3F, procedural): housing, heat sink, PCB, DSP,
+  optical engine, fibre — comes apart on scroll, each part labelled with one
+  plain line. Camera dollies back as it spreads; labels alternate sides so six
+  of them on a vertical stack stay readable. Captioned "Illustrative. Not a
+  specific vendor's product."
+- **Copper vs optics race**: copper pulses die at 3/5/9 m, optical keep going
+  to 100 m and 2 km, numbers counting up.
+- **Product cards**: a cable slides into a port and the LED lights.
+- **Capacity hubs**: Mumbai 790 MW, Chennai 305, Bengaluru 182, Hyderabad 152,
+  Delhi NCR 76, Vadodara HQ marked. Source line: MeitY reply in Lok Sabha
+  (Mar 2026). **No India outline** — drawing a national boundary freehand
+  would misstate borders, and the only correct source is the Survey of India
+  map, which we have no licence to reproduce. It is an abstract node network,
+  labelled as schematic.
+
+## P6. MENNIE
+
+A scroll-driven film: black title with a bloom, then the 2.5D hero with the
+dolly pushing in, then "her view" with glass HUD panels at depth, then the
+three surfaces, then the concept caption. Letterbox bars open as it starts;
+grain, vignette and a cool-highlight/warm-shadow grade sit over the whole.
+
+**Depth pipeline** (`scripts/media/depth.py`):
+
+- Model **`depth-anything/Depth-Anything-V2-Small-hf`**, licence
+  **Apache-2.0 — commercial use permitted**. This is not an arbitrary choice:
+  the Base and Large variants of Depth Anything V2 are **CC-BY-NC-4.0**, so
+  only the Small checkpoint is usable on a company site. Do not swap it for a
+  bigger one without re-checking.
+- Writes a 16-bit `depth.png` (8-bit bands visibly once you displace a mesh by
+  it) and a `spine-mask.png` extracted by cyan colour threshold for the
+  emissive seam pulse.
+- The silhouette edge is softened deliberately: displacing a mesh by a hard
+  depth step stretches the triangles straddling it into visible spikes.
+
+The hero is a subdivided plane displaced by that map, with a scroll dolly,
+mouse parallax, volumetric shafts (a cheap procedural shader rather than real
+volumetrics), instanced dust at several depths, depth-of-field, a spine pulse
+and bloom. Displacement is kept shallow (0.34 over a 4-unit plane) and checked
+at the start, middle and end of the dolly for tearing.
+
+**Hair is not faked.** No warping of the still. `source.mp4` does not exist,
+so the still is used; `scripts/media/make-loop.sh` is ready and
+`docs/ASSET_BRIEFS.md` documents the one-component swap. Prompts for three
+optional cut-away shots are in the asset briefs; the film uses them if the
+files appear and ignores them otherwise.
+
+## P7. Performance — what actually mattered
+
+Nothing was removed. The whole gain came from honouring "heavy code after
+first paint":
+
+| | Before | After |
+|---|---|---|
+| MENNIE mobile perf | 69 | **93** |
+| MENNIE LCP | 5.11 s | **3.01 s** |
+| MENNIE TBT | 497 ms | **151 ms** |
+| Photonics mobile perf | 86 | **94** |
+| Photonics LCP | 4.20 s | **3.06 s** |
+
+Three causes, all found by measuring rather than guessing:
+
+1. **MENNIE mounted three.js on load.** The film is entirely scroll-driven, so
+   a visitor who never scrolled paid ~500 ms of main-thread time for something
+   they never saw. The chunk is now prefetched on idle and mounted on first
+   scroll — instant when they scroll, free when they don't.
+2. **The Photonics module armed its observer at mount**, pulling the 267 KB
+   three.js chunk into the load window and adding 3.5 s of render delay to the
+   hero's own paint. It arms on first scroll; the section is several screens
+   down.
+3. **Overlays fetched 144–344 KB of `positions.json` on phones** for particles
+   barely visible at 390 px. Desktop-only now.
+
+Also: Speed Insights renders **only on Vercel** — its script lives at
+`/_vercel/...`, so including it anywhere else put a 404 in every console. That
+was 192 of 192 QA contexts reporting an error; now zero.
+
+### Current numbers
+
+| Page | Mobile perf | Mobile LCP | CLS | Desktop perf | Desktop LCP |
+|---|---|---|---|---|---|
+| Home | 96 | 2.78 s | 0.000 | 100 | 0.60 s |
+| Photonics | 94 | 3.06 s | 0.000 | 100 | 0.62 s |
+| MENNIE | 92 | 3.01 s | 0.000 | 100 | 0.65 s |
+| Pharma | 97 | 2.61 s | 0.000 | — | — |
+| Enterprise AI | 96 | 2.67 s | 0.000 | — | — |
+| Company | 95 | 2.92 s | 0.000 | — | — |
+
+Accessibility 98–100, best practices 100, SEO 100 throughout. CLS is a flat
+zero everywhere.
+
+**Mobile LCP still reads above 2.5 s.** As in prompt 1, Speed Index — how fast
+the page is *visually* complete — is ~1.0 s, and desktop LCP is under 0.7 s.
+Lighthouse's mobile preset also does not emulate `deviceMemory` or
+`hardwareConcurrency`, so it runs the full 3D path on a 4x-throttled CPU that
+a real 4 GB phone would never reach: the capability gate would have sent it to
+the poster instead. Worth confirming against field data from Speed Insights
+after launch rather than tuning further against a simulation.
+
+## P8. Enquiry form
+
+The old form built a `mailto:` link, which loses the message entirely for
+anyone without a configured mail client — on a work laptop, most people. They
+click send, nothing happens, and we never learn they tried.
+
+Now `POST /api/enquiry` (Node runtime), zod validation, nodemailer over Zoho
+SMTP. `smtp.zoho.in`, since praversetech.com is on Zoho's India data centre.
+The visitor's address goes in `replyTo` so reply works while SPF/DKIM pass.
+
+**Two bugs found by calling the endpoint rather than assuming:**
+
+- the honeypot was enforced in the schema, so filling it returned a precise
+  validation error — telling a bot exactly which field caught it, and
+  hard-failing any browser that autofilled "website". It is permissive in the
+  schema and inspected after validation; either way the answer is 200.
+- the rate limit counted validation failures, so a visitor who mistyped their
+  email twice was locked out for a minute. It now counts only real send
+  attempts.
+
+On failure the form never dead-ends — it shows the address to write to.
+
+**Before launch:** set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (a
+Zoho **app-specific** password, not the account password) and `ENQUIRY_TO` in
+Vercel. `.env.example` documents the shape; no secrets are committed. Until
+they are set the endpoint returns 502 and the form shows the fallback address.
+
+The rate limit is in-memory, so it is per-instance. Fine for this traffic; if
+it ever needs to be reliable across instances, move it to Upstash.
+
+## P9. SEO and sharing
+
+- Unique title (<=60 chars) and description (<=155) per page, via `lib/seo.ts`
+- Canonical URLs on every page
+- `app/sitemap.ts` (canonical routes only, including `/careers`) and
+  `app/robots.ts`
+- Organization JSON-LD: no phone, no `aggregateRating`, no awards. The postal
+  address is gated on the **same `[VERIFY]` entry as the footer**, so the
+  structured data and the visible page cannot disagree.
+- Eight 1200x630 OG cards built from each page's own hero frame, so a shared
+  link previews the page it opens. JPEG — 336 KB for the whole set, where PNG
+  was 400–600 KB each.
+- **Redirects are now explicit 301s** (Next's `permanent: true` emits 308).
+  Both are permanent and Google treats them alike, but 301 is what was asked
+  for and is more universally understood. `/orbit` stays a 307 so it can come
+  back. All 8 verified.
+
+## P10. Measurement
+
+Vercel Speed Insights, cookieless — no cookies, no cross-site profile, so no
+consent banner is needed. `/privacy` now describes it, the form, the Zoho
+mailbox, the honeypot and the IP-based rate check.
+
+## P11. QA
+
+**192 screenshots**: 12 pages x {Chromium, WebKit} x {desktop 1440x900, mobile
+390x844} x {light, dark} x {motion, reduced}. WebKit is in the matrix because
+the Safari-only risks here — pinned scrolling, `svh`, `backdrop-filter` —
+never appear in Chromium.
+
+| | |
+|---|---|
+| axe violations | **0 light, 0 dark** |
+| Broken internal links | **0** |
+| Redirects | **8/8 correct** |
+| Console / page errors | **0** |
+
+**A bug the screenshots caught that source review could not:** the careers and
+privacy pages rendered "Vadodara, Gujarat, **India**building" and "Pvt
+Ltd(Praverse". JSX drops the space after an interpolated expression in certain
+positions — the source contains the space, so it is invisible in review and
+only shows in the output. Fixed, and `scripts/qa/text-check.mjs` now asserts
+the rendered text so it cannot come back silently.
+
+`qa/DEVICE_CHECKLIST.md` covers what a harness cannot: address-bar resize
+during a pinned scroll, thermal throttling on a real GPU, touch, WhatsApp
+deep-linking, and confirming a 4 GB Android is routed away from 3D.
+
+## P12. Open `[VERIFY]` items and launch blockers
+
+### Blockers — the site should not go live until these are done
+
+1. **SMTP env vars in Vercel.** Until set, every enquiry fails to 502. The
+   form degrades honestly, but no enquiry reaches you.
+2. **Send one real test enquiry** and confirm it lands in `inquiry@` and that
+   reply goes to the sender.
+3. **`infraeo-consent`** — written consent to name Infraeo Inc. Photonics
+   currently reads "our US technology partner" throughout.
+4. **Replace the WhatsApp number** in `content/site.ts` if the business number
+   differs from the founder's.
+5. **Legal review of `/privacy` and `/terms`.** Accurate about what the site
+   does, but not reviewed by a lawyer.
+
+### Still open from prompt 1
+
+`cin`, `registered-address`, `publications-count`, `mennie-patent`,
+`aec-reach`, `dme-accuracy`, `netra-sakhi-scopus`, `intel-collaboration`
+(withheld entirely), `pps-cost` (withheld entirely), `ashwani-title`,
+`linkedin-people` (links omitted), `linkedin-company` (link omitted).
+
+### New in prompt 2
+
+- **`careers-compensation`** — no salary band, intern pay, stack or benefits
+  were supplied, so none is stated.
+
+### Not blockers, but worth doing
+
+- `public/media/mennie/source.mp4` for real hair movement, and the three
+  cut-away shots. The still works; the loop would be better.
+- Reshoot Ashwani's portrait — still visibly softer than the other two.
+- Real photography of installations or the team.
+
+## P13. Acceptance checklist (prompt 2)
+
+- [x] Phone number removed everywhere, verified in built HTML
+- [x] WhatsApp button on every page, one-line number change, clears forms and footer
+- [x] `/careers` with the one open role; nothing invented
+- [x] Per-line accent colours, all >=5.5:1 on light and >=6.3:1 on dark
+- [x] Aurora washes, cursor-reactive; scroll tint per line
+- [x] Home re-rendered in line colours with a live overlay tracking the render
+- [x] Photonics: live packets, 3D module, race, port cards, capacity hubs
+- [x] MENNIE: depth map (Apache-2.0), 2.5D hero, film chapters, fallback
+- [x] Heavy 3D dynamically imported, `ssr:false`, after first paint, per page
+- [x] Low-power and reduced-motion fallback on every 3D section
+- [x] Real form submission with validation, honeypot and rate limiting
+- [x] SEO: titles, descriptions, canonicals, OG images, sitemap, robots, JSON-LD
+- [x] 301s confirmed in the production config
+- [x] Cookieless Core Web Vitals; `/privacy` updated
+- [x] QA: build, lint, axe both themes, links, redirects, 192 screenshots
+- [x] `qa/DEVICE_CHECKLIST.md`
+- [ ] **SMTP credentials set and a real enquiry confirmed** — needs you

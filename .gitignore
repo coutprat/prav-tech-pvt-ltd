@@ -15,3 +15,6 @@ qa/*.report.json
 .env
 .env.local
 .env*.local
+
+# Tooling worktrees
+.claude/

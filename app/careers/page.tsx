@@ -30,7 +30,8 @@ export default function CareersPage() {
             Build things that get used.
           </Headline>
           <p className="lede" style={{ marginTop: 32 }}>
-            We are a small team in {company.hq} building enterprise AI for
+            We are a small team in {company.hq}{" "}
+            building enterprise AI for
             healthcare, pharma and regulated industries — and the interconnect
             layer underneath India&rsquo;s sovereign AI data centres.
           </p>
