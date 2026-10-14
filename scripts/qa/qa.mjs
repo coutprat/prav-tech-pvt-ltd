@@ -175,7 +175,22 @@ async function main() {
 
   const unique = [...new Set(report.links)];
   const linkResults = [];
+  // A download is not a page. Navigating to one either starts a download or
+  // hands the tab to a plugin viewer, and the PDF decks did the latter and
+  // threw. Check those with a request instead, which is what we actually want
+  // to know: does the file exist and is it served as the right type.
+  const isFile = (href) => /\.(pdf|pptx|docx|xlsx|zip|csv)$/i.test(href);
   for (const href of unique) {
+    if (isFile(href)) {
+      const res = await page.request.head(BASE + href);
+      linkResults.push({
+        href,
+        status: res.status(),
+        type: res.headers()["content-type"] ?? "",
+        ok: res.status() < 400
+      });
+      continue;
+    }
     const res = await page.goto(BASE + href, { waitUntil: "domcontentloaded" });
     linkResults.push({ href, status: res?.status() ?? 0, ok: (res?.status() ?? 0) < 400 });
   }

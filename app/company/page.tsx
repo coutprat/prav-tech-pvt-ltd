@@ -7,6 +7,7 @@ import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, ecosystem, founderStory, people } from "@/content/company";
 import { PraverseLockup } from "@/components/ui/PraverseLockup";
+import { Downloads } from "@/components/sections/Downloads";
 import { locations, site } from "@/content/site";
 import { Footprint } from "@/components/sections/Footprint";
 import { TeamGrid } from "@/components/sections/TeamGrid";
@@ -147,6 +148,18 @@ export default function CompanyPage() {
               {site.enquiryEmail}
             </a>
           </p>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel>Take it with you</SectionLabel>
+          <Headline onScroll>The same argument, on paper.</Headline>
+          <p className="body-2" style={{ marginTop: 18 }}>
+            Both decks say what this site says and stop where it stops. If a
+            claim is not on these pages, it is not in there either.
+          </p>
+          <Downloads />
         </div>
       </section>
 

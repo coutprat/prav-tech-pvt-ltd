@@ -1,13 +1,13 @@
 # QA report
 
 Base: http://localhost:3000
-Generated: 2026-10-14T14:00:01.848Z
+Generated: 2026-10-14T14:31:42.424Z
 
 ## Summary
 
 - Screenshots: **208** — 13 pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}
 - axe violations: **0 light**, **0 dark**
-- Internal links: 13 checked, **0** broken
+- Internal links: 17 checked, **0** broken
 - Redirects: 10 checked, **0** wrong
 - Page/console errors: **0**
 
@@ -62,7 +62,7 @@ Generated: 2026-10-14T14:00:01.848Z
 
 ## Internal links
 
-All 13 internal links return < 400.
+All 17 internal links return < 400.
 
 ## Console / page errors
 
