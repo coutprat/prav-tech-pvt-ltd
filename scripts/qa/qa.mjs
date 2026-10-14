@@ -100,6 +100,23 @@ async function visit(browser, engine, name, url, vpName, viewport, reduced, them
     // that is a capture limitation, not a page defect.
   }
 
+  // Once per page, walk the whole thing and wait. Sections that mount on
+  // scroll intent - the 3D module, the films - only fail after they have been
+  // reached, loaded and initialised, which is well past the 1.6s above. This
+  // is exactly how a crashing /photonics passed a green sweep: nothing had
+  // asked the page how it was doing after the part that breaks had loaded.
+  if (engine === "chromium" && vpName === "desktop" && theme === "light" && !reduced) {
+    for (let i = 1; i <= 12; i += 1) {
+      await page.evaluate((f) => window.scrollTo(0, document.body.scrollHeight * f), i / 12);
+      await page.waitForTimeout(350);
+    }
+    await page.waitForTimeout(2500);
+    const broke = await page.locator("[data-error-boundary]").count();
+    if (broke) {
+      consoleErrors.push("RENDER FAILED: the page fell into the error boundary while scrolling");
+    }
+  }
+
   if (consoleErrors.length) {
     report.errors.push({ page: name, engine, vp: vpName, theme, reduced, errors: [...new Set(consoleErrors)] });
   }

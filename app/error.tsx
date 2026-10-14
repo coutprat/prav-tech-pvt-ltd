@@ -40,6 +40,10 @@ export default function Error({
         maxWidth: 640,
         margin: "0 auto"
       }}
+      // A stable hook for the QA sweep. /photonics shipped broken because the
+      // suite had nothing to assert on: it collected console errors 1.6s after
+      // load, long before the lazily-mounted 3D section had tried and failed.
+      data-error-boundary="true"
     >
       <p
         style={{

@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Html } from "@react-three/drei";
+import { Environment, Html, Lightformer } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
@@ -240,7 +240,62 @@ export function ModuleExploded({ explode }: { explode: number }) {
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 7, 4]} intensity={2.1} />
       <directionalLight position={[-5, 2, -4]} intensity={0.7} color={TEAL} />
-      <Environment preset="studio" />
+      {/*
+        The studio environment is built here, not downloaded.
+
+        <Environment preset="studio" /> fetches an HDRI from raw.githack.com.
+        Our CSP allows no foreign connect-src, so the browser refused the
+        request, drei's loader threw, and the whole of /photonics fell into the
+        error boundary — the module did not degrade quietly, it took the page
+        down with it.
+
+        Widening the CSP for a git CDN would have been the wrong trade twice
+        over: it is a third-party origin contacted on every visit to the page,
+        and /trust tells readers that loading a page calls no third-party asset
+        service. Passing children instead makes <Environment> render them into
+        a cube target, which costs one 256px bake at mount and nothing on the
+        network.
+
+        Every surface in this module sits at metalness 1 with roughness under
+        0.5, so there is nothing to see unless there is something to reflect.
+        These panels are what it reflects: a broad key above, a cool rim down
+        one side, the brand teal down the other, and a dim bounce underneath so
+        the undersides are not solid black.
+      */}
+      <Environment resolution={256} frames={1}>
+        <Lightformer
+          form="rect"
+          intensity={2.6}
+          color="#ffffff"
+          position={[0, 6, 1]}
+          scale={[12, 12, 1]}
+          target={[0, 0, 0]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={1.5}
+          color="#cfe0f5"
+          position={[-7, 1.5, -2]}
+          scale={[7, 5, 1]}
+          target={[0, 0, 0]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={1.1}
+          color={TEAL}
+          position={[6.5, 1, 3]}
+          scale={[7, 4, 1]}
+          target={[0, 0, 0]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={0.45}
+          color="#7e93b5"
+          position={[0, -5, 0]}
+          scale={[10, 10, 1]}
+          target={[0, 0, 0]}
+        />
+      </Environment>
       <CameraRig explode={explode} />
       <Module explode={explode} />
       <EffectComposer>
