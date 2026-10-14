@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
@@ -42,35 +42,12 @@ export function MennieFilm() {
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
   const [progress, setProgress] = useState(0);
-  const [ready, setReady] = useState(false);
   /** 0..1 within the clip, written on the ticker; never re-renders. */
   const cineRef = useRef(0);
 
-  /**
-   * Upgrade from the image hero to the film on the first sign of scrolling.
-   *
-   * Someone who never scrolls never sees a frame of it, so there is no reason
-   * to spend their first paint on a 3 MB video. The poster is a complete hero
-   * until then, and ScrubVideo preloads metadata only.
-   */
-  useEffect(() => {
-    if (highPower !== true) return;
-
-    const onIntent = () => setReady(true);
-    window.addEventListener("scroll", onIntent, { once: true, passive: true });
-    window.addEventListener("wheel", onIntent, { once: true, passive: true });
-    window.addEventListener("touchstart", onIntent, { once: true, passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onIntent);
-      window.removeEventListener("wheel", onIntent);
-      window.removeEventListener("touchstart", onIntent);
-    };
-  }, [highPower]);
-
   useGSAP(
     () => {
-      if (!highPower || !ready || prefersReducedMotion()) return;
+      if (!highPower || prefersReducedMotion()) return;
 
       const cancel = afterPaint(() => {
         const st = gsap.to(
@@ -105,12 +82,20 @@ export function MennieFilm() {
 
       return cancel;
     },
-    { scope: root, dependencies: [highPower, ready] }
+    { scope: root, dependencies: [highPower] }
   );
 
   // Not capable, reduced motion, still measuring, or not yet idle → the image
   // hero, which is a complete hero in its own right.
-  if (highPower !== true || !ready) return <MennieHero />;
+  // The film is the hero now, not an upgrade unlocked by scrolling. It used
+  // to wait for the first scroll so that a visitor who never moved never paid
+  // for the video — but what they saw instead was a still of the same robot
+  // from the same angle, which read as a photograph that had got stuck. The
+  // clip plays itself until they scroll, so the page opens in motion.
+  //
+  // The image hero is still the right answer for a device that cannot carry
+  // the film, or for someone who has asked for less motion.
+  if (highPower !== true) return <MennieHero />;
 
   // chapter windows
   const title = progress < 0.1;
@@ -150,6 +135,7 @@ export function MennieFilm() {
             srcMobile="/media/mennie/cine-854.mp4"
             poster="/media/mennie/cine-poster.webp"
             progressRef={cineRef}
+            playUntilScroll
             alt="Concept visualisation: the MENNIE assistive robot stands at a rooftop balustrade above an Indian city at sunrise, seen from behind."
           />
         </div>
