@@ -9,6 +9,7 @@ import { themeScript } from "@/components/layout/theme";
 import { company } from "@/content/company";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -72,7 +73,14 @@ export default function RootLayout({
           exists nowhere else, so including it locally or on any other host just
           puts a 404 in everyone's console.
         */}
+        {/*
+          Both are gated on VERCEL so local and preview builds do not report,
+          and so a self-hosted copy of this site ships with no measurement at
+          all. Both are cookieless — see /privacy, which describes exactly
+          this and has to stay true.
+        */}
         {process.env.VERCEL ? <SpeedInsights /> : null}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );

@@ -28,7 +28,9 @@ const PATHS = [
   "/research",
   "/start-a-project",
   "/privacy",
-  "/terms"
+  "/terms",
+  "/trust",
+  "/nope-404-check"
 ];
 
 const browser = await chromium.launch();

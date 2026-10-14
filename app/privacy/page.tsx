@@ -7,7 +7,7 @@ import { company } from "@/content/company";
 
 export const metadata: Metadata = pageMeta({
   title: "Privacy",
-  description: "How Praverse Tech handles personal data under the GDPR and India's DPDP Act 2023. No cookies, no analytics trackers.",
+  description: "How Praverse Tech handles personal data under the GDPR and India's DPDP Act 2023. No cookies, no advertising trackers, no profiling.",
   path: '/privacy'
 });
 
@@ -62,6 +62,16 @@ export default function PrivacyPage() {
             such as route, country and device type, and it does not set
             identifiers or track you between sites. We use it only to find slow
             pages.
+          </p>
+          <p>
+            <strong>Page measurement.</strong> We also use Vercel Web Analytics
+            to count page views, so we can tell which pages people actually
+            read. It is cookieless and sets no identifier on your device: it
+            records the page, the referring site, and coarse context such as
+            country, browser and device type. It does not record your IP
+            address, does not build a profile, and cannot follow you to any
+            other website. We use it to decide what to write and what to fix —
+            nothing else, and we do not sell or share it.
           </p>
           <p>
             <strong>Enquiry and waitlist forms.</strong> When you submit a form,

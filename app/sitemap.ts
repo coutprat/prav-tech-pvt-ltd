@@ -13,6 +13,7 @@ const ROUTES: { path: string; priority: number; freq: MetadataRoute.Sitemap[numb
   { path: "/careers", priority: 0.6, freq: "weekly" },
   { path: "/contact", priority: 0.6, freq: "yearly" },
   { path: "/start-a-project", priority: 0.6, freq: "yearly" },
+  { path: "/trust", priority: 0.6, freq: "yearly" },
   { path: "/privacy", priority: 0.2, freq: "yearly" },
   { path: "/terms", priority: 0.2, freq: "yearly" }
 ];

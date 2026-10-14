@@ -473,7 +473,7 @@ export const people = [
     proof: [
       "30+ years in specialty pharma, formulation to global regulatory strategy.",
       "IDMA-APTAR Innovation of the Year 2022 (Pentosan Polysulfate Sodium).",
-      "Advises Praverse on pharma and regulatory direction."
+      "Guides the sovereign AI data centre and photonics direction, and advises on pharma and regulatory strategy."
     ]
   },
   {

@@ -56,16 +56,6 @@ export const verifyItems = [
     confirmed: false
   },
   {
-    id: "mennie-patent",
-    where: "Home proof bar · MENNIE",
-    claim: "MENNIE patented",
-    fallback: "MENNIE patented",
-    needs:
-      "The owner states MENNIE is patented, not patent-pending, and the site now says so. What is still missing is the patent number and jurisdiction. Publish them: \"patented\" with no number is the one claim on this site a competitor or a buyer's counsel is most likely to go and check, and in several jurisdictions marking something as patented when it is not is an offence in its own right. Once the number is here it becomes a strength rather than an exposure.",
-    confirmed: true,
-    source: "Owner, October 2026 — number and jurisdiction still to be supplied"
-  },
-  {
     id: "infraeo-consent",
     where: "Home ProofBar · Photonics · Company",
     claim: "Technology partner: Infraeo Inc. (USA)",
@@ -140,6 +130,42 @@ export const verifyItems = [
       "Resolved by the owner: the work began in 2023 as research, and the private limited company was incorporated in 2026, which is what the CIN encodes. The site now says both rather than only the first, which is what a US or EU buyer's diligence would otherwise have caught.",
     confirmed: true,
     source: "Owner, October 2026"
+  },
+  {
+    id: "dpa",
+    where: "Trust — in an engagement",
+    claim: "We sign a data processing agreement before any client data is shared",
+    fallback: "",
+    needs:
+      "Do you have a DPA you are willing to sign, and who signs it? Enterprise and pharma procurement will ask for one before a pilot, so a yes here removes a real blocker. Withheld entirely until confirmed - claiming a DPA you do not have is worse than saying nothing.",
+    confirmed: false
+  },
+  {
+    id: "client-data-training",
+    where: "Trust — in an engagement",
+    claim: "Client data is never used to train models for anyone else",
+    fallback: "",
+    needs:
+      "Confirm this is actually your policy and that it holds for every vendor in your stack, including any model provider you call. It is the single most common question an enterprise AI buyer asks, and the one where a vague answer loses the deal. Withheld until confirmed.",
+    confirmed: false
+  },
+  {
+    id: "data-residency",
+    where: "Trust — in an engagement",
+    claim: "Client data can be kept inside India for engagements that require it",
+    fallback: "",
+    needs:
+      "Confirm what you can actually commit to on residency, and under which conditions. This is load-bearing for the sovereign AI positioning, so it should be exact rather than aspirational.",
+    confirmed: false
+  },
+  {
+    id: "security-contact",
+    where: "Trust — reporting a problem",
+    claim: "security@praversetech.com",
+    fallback: "inquiry@praversetech.com",
+    needs:
+      "Create security@ and confirm who monitors it. Until then the page points at the enquiry inbox, which is honest but slower than a security report deserves.",
+    confirmed: false
   },
   {
     id: "nexgen-relationship",

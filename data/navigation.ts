@@ -23,6 +23,7 @@ export const footerNav = {
     { label: "Start a project", href: "/start-a-project" }
   ],
   legal: [
+    { label: "Trust", href: "/trust" },
     { label: "Privacy", href: "/privacy" },
     { label: "Terms", href: "/terms" }
   ]

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import Link from "next/link";
-import Image from "next/image";
 import { HomeHero } from "@/components/sections/HomeHero";
 import { Aurora, allLineBlobs } from "@/components/ui/Aurora";
 import { ScrollTint } from "@/components/ui/ScrollTint";
@@ -12,7 +10,7 @@ import { BusinessLineCard } from "@/components/ui/BusinessLineCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
 import { homeFrames } from "@/content/media";
-import { businessLines, company, howWeWork, people, pillars } from "@/content/company";
+import { businessLines, company, howWeWork, pillars } from "@/content/company";
 
 /** Accent per line, in the same order as content/company.ts businessLines. */
 const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
@@ -65,7 +63,6 @@ export default function HomePage() {
           `Idea ${company.ideaFrom} · incorporated ${company.founded}`,
           "Vadodara, India",
           <Verify key="pubs" id="publications-count" />,
-          <Verify key="patent" id="mennie-patent" />,
           <Verify key="infraeo" id="infraeo-consent" />,
           "Pharma advisory: SWATI Spentose (V-Group, est. 1952)"
         ]}
@@ -116,39 +113,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------ leadership */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Who you work with</SectionLabel>
-          <div className="leader-head">
-            <Headline onScroll>People who have done the work.</Headline>
-            <Link className="btn btn-ghost" href="/company">
-              Meet the team
-            </Link>
-          </div>
-
-          <ul className="leader-strip">
-            {people.map((p, i) => (
-              <Reveal key={p.slug} as="li" delay={i * 0.1}>
-                <Link href="/company">
-                  <Image
-                    src={`/team/${p.slug}-plate.webp`}
-                    alt={`Portrait of ${p.name}`}
-                    width={800}
-                    height={1000}
-                    sizes="(min-width: 900px) 30vw, 90vw"
-                  />
-                  <p className="person-name" style={{ fontSize: 19 }}>
-                    {p.name}
-                  </p>
-                  <p className="person-role">{p.role}</p>
-                </Link>
-              </Reveal>
-            ))}
-          </ul>
         </div>
       </section>
 

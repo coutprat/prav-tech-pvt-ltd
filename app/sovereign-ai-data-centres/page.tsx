@@ -54,7 +54,7 @@ export const metadata: Metadata = pageMeta({
   description:
     "What sovereignty actually requires of an AI cluster built in India, and where the interconnect decides whether it holds. Architecture, design-in, qualification and support from Praverse Tech.",
   path: "/sovereign-ai-data-centres",
-  og: "photonics"
+  og: "sovereign-ai-data-centres"
 });
 
 export default function SovereignPage() {

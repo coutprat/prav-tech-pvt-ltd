@@ -10,7 +10,8 @@ import { site } from "@/content/site";
 export const metadata: Metadata = pageMeta({
   title: "Contact",
   description: "Talk to Praverse Tech about enterprise AI, pharma AI, MENNIE or photonics. A written plan within two business days.",
-  path: '/contact'
+  path: '/contact',
+  og: 'contact'
 });
 
 export default function ContactPage() {

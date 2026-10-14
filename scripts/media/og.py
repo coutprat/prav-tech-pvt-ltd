@@ -1,9 +1,14 @@
 """
 Build 1200x630 Open Graph cards.
 
-Each card is a real frame from that page's hero (or the MENNIE still) with a
-dark scrim and the page title, so a shared link looks like the page it opens
-rather than a generic logo.
+Each card is a real frame from that page's own hero or film, with a dark
+scrim and the page title, so a shared link looks like the page it opens rather
+than a generic logo.
+
+Sources are committed files under public/. They used to be frames from the
+Blender output directory, which is intermediate build product and is not in
+the repo - so the script could not actually be re-run, which is how three
+pages ended up shipping with no card at all and one card outliving its page.
 
 Run: python scripts/media/og.py
 """
@@ -14,15 +19,19 @@ W, H = 1200, 630
 PAPER = (238, 237, 234)
 INK = (14, 18, 32)
 
+HOME = "public/media/home/poster.webp"
+
 CARDS = [
-    ("home", "render2/home/desktop/frame-0120.png", "Intelligence, engineered for industry.", "#4BD6C4"),
-    ("enterprise-ai", "render2/home/desktop/frame-0050.png", "Enterprise AI & Agents", "#7C5CFF"),
-    ("pharma", "render2/home/desktop/frame-0075.png", "Pharma & Regulatory AI", "#10B981"),
-    ("mennie", None, "MENNIE — voice-first patient assistant", "#38BDF8"),
-    ("photonics", "render2/photonics/desktop/frame-0095.png", "Photonics & AI Data Centres", "#F59E0B"),
-    ("company", "render2/home/desktop/frame-0118.png", "Praverse Tech — Company", "#4BD6C4"),
-    ("careers", "render2/home/desktop/frame-0030.png", "Careers at Praverse Tech", "#7C5CFF"),
-    ("research", "render2/home/desktop/frame-0010.png", "Research", "#4BD6C4"),
+    ("home", HOME, "Intelligence, engineered for industry.", "#4BD6C4"),
+    ("enterprise-ai", "public/media/enterprise-ai/cine-poster.webp", "Enterprise AI & Agents", "#9B85FF"),
+    ("pharma", "public/media/pharma/cine-poster.webp", "Pharma & Regulatory AI", "#10B981"),
+    ("mennie", "public/media/mennie/cine-poster.webp", "MENNIE — voice-first patient assistant", "#38BDF8"),
+    ("photonics", "public/media/photonics/poster.webp", "Photonics & AI Data Centres", "#F59E0B"),
+    ("sovereign-ai-data-centres", "public/media/sovereign/cine-poster.webp", "Sovereign AI data centres", "#F59E0B"),
+    ("company", "public/media/company/cine-poster.webp", "Praverse Tech — Company", "#4BD6C4"),
+    ("careers", "public/media/company/cine-poster.webp", "Careers at Praverse Tech", "#9B85FF"),
+    ("contact", HOME, "Start a conversation.", "#4BD6C4"),
+    ("start-a-project", HOME, "Start a project.", "#4BD6C4"),
 ]
 
 
@@ -39,11 +48,11 @@ def font(size, bold=False):
 
 
 def build(slug, src, title, accent, scratch: Path, out: Path):
-    if src and (scratch / src).exists():
-        base = Image.open(scratch / src).convert("RGB")
+    path_in = scratch / src if src else None
+    if path_in and path_in.exists():
+        base = Image.open(path_in).convert("RGB")
     else:
-        p = Path("public/media/mennie/still.webp")
-        base = Image.open(p).convert("RGB") if p.exists() else Image.new("RGB", (W, H), INK)
+        raise SystemExit(f"source missing for {slug}: {src}")
 
     # cover-fit to 1200x630
     r = max(W / base.width, H / base.height)

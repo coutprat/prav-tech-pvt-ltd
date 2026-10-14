@@ -10,7 +10,6 @@ import {
   Disclaimer,
   CTASection
 } from "@/components/ui/primitives";
-import { Verify } from "@/components/ui/Verify";
 import { mennie } from "@/content/company";
 
 export const metadata: Metadata = pageMeta({
@@ -41,8 +40,7 @@ export default function MenniePage() {
             {mennie.summary}
           </p>
           <p className="body-2" style={{ marginTop: 24 }}>
-            MENNIE stands for <strong>{mennie.expansion}</strong>.{" "}
-            <Verify id="mennie-patent" />.
+            MENNIE stands for <strong>{mennie.expansion}</strong>.
           </p>
         </div>
       </section>
