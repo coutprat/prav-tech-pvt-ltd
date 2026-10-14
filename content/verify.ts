@@ -56,18 +56,9 @@ export const verifyItems = [
     confirmed: false
   },
   {
-    id: "infraeo-consent",
-    where: "Home ProofBar · Photonics · Company",
-    claim: "Technology partner: Infraeo Inc. (USA)",
-    fallback: "Technology partner: our US technology partner",
-    needs:
-      "Written consent to name Infraeo Inc. publicly, and the formal status of the partnership (authorised India partner?).",
-    confirmed: false
-  },
-  {
     id: "aec-reach",
     where: "Photonics — portfolio",
-    claim: "AEC: up to 9 m at 800G (Infraeo)",
+    claim: "AEC: up to 9 m at 800G (partner specification)",
     fallback: "AEC: up to 9 m at 800G (partner specification)",
     needs: "Confirm the 9 m figure against the partner datasheet.",
     confirmed: false
@@ -165,24 +156,6 @@ export const verifyItems = [
     fallback: "inquiry@praversetech.com",
     needs:
       "Create security@ and confirm who monitors it. Until then the page points at the enquiry inbox, which is honest but slower than a security report deserves.",
-    confirmed: false
-  },
-  {
-    id: "nexgen-relationship",
-    where: "Pharma AI — why us; Company — the group",
-    claim: "Nexgen Pharma Solutions is a sister/group company of Praverse Tech",
-    fallback: "",
-    needs:
-      "Is Nexgen a sister company, a group company, or a consulting partner? Until confirmed the site says \"our pharma consulting partner\", which is true either way.",
-    confirmed: false
-  },
-  {
-    id: "nexgen-logo",
-    where: "Company — the group",
-    claim: "Nexgen Pharma Solutions logo",
-    fallback: "",
-    needs:
-      "Permission and a source URL for Nexgen's logo (likely nexgenpharmasolutions.com). Text only until then.",
     confirmed: false
   },
   {

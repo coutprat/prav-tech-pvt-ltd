@@ -86,7 +86,7 @@ export default function PhotonicsPage() {
           <SectionLabel accent="line">Portfolio</SectionLabel>
           <Headline onScroll>Six families, one supply chain.</Headline>
           <p className="body-2" style={{ marginTop: 20 }}>
-            Supplied through <Verify id="infraeo-consent">our US technology partner</Verify>.
+            Supplied through our USA technology partner.
           </p>
 
           <div className="grid-3">
@@ -172,8 +172,7 @@ export default function PhotonicsPage() {
           <div className="grid-2" style={{ alignItems: "start" }}>
             <div>
               <p className="lede">
-                <Verify id="infraeo-consent">Our US technology partner</Verify> builds
-                the interconnect. Praverse does the Indian architecture, design-in,
+                Our USA technology partner builds the interconnect. Praverse does the Indian architecture, design-in,
                 integration, qualification and support, for sovereign AI data centres.
               </p>
               <p className="body-2" style={{ marginTop: 24 }}>

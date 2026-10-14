@@ -63,7 +63,7 @@ export default function HomePage() {
           `Idea ${company.ideaFrom} · incorporated ${company.founded}`,
           "Vadodara, India",
           <Verify key="pubs" id="publications-count" />,
-          <Verify key="infraeo" id="infraeo-consent" />,
+          "Technology partner: our USA technology partner",
           "Pharma advisory: SWATI Spentose (V-Group, est. 1952)"
         ]}
       />

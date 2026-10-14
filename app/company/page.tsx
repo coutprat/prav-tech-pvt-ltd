@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
+import Image from "next/image";
 import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
@@ -88,7 +89,7 @@ export default function CompanyPage() {
 
           <div className="grid-4">
             {ecosystem.map((e) => (
-              <article className="card" key={e.name}>
+              <article className="card eco-card" key={e.name}>
                 <p className="line-card-n">{e.role}</p>
                 <h3 className="h3" style={{ fontSize: 19, marginTop: 12 }}>
                   {e.name}
@@ -96,12 +97,32 @@ export default function CompanyPage() {
                 <p className="body-2" style={{ marginTop: 10, fontSize: 14 }}>
                   {e.body}
                 </p>
+                {/*
+                  At the foot, not the head: only two of the four have a logo,
+                  and placing it above the title pushed those two names down
+                  while the others stayed put. Titles align now, and the logos
+                  sit on a fixed light tile in both themes — both marks are
+                  black-on-white artwork, and inverting or recolouring someone
+                  else's logo to suit our dark mode is not ours to do.
+                */}
+                {"logo" in e && e.logo ? (
+                  <span className="eco-logo">
+                    <Image
+                      src={e.logo}
+                      alt={`${e.name} logo`}
+                      width={320}
+                      height={120}
+                      style={{ height: e.logoHeight, width: "auto" }}
+                      unoptimized
+                    />
+                  </span>
+                ) : null}
               </article>
             ))}
           </div>
           <p className="body-2" style={{ marginTop: 24, fontSize: 14 }}>
-            Named in text only. We do not display a partner&rsquo;s logo without
-            written permission.
+            Logos are shown only where we have been given them to use. Where a
+            partner is named in text alone, that is deliberate.
           </p>
         </div>
       </section>

@@ -52,7 +52,6 @@ const PH_CHAPTERS: Chapter[] = [
   }
 ];
 
-import { Verify } from "@/components/ui/Verify";
 import { Headline } from "@/components/ui/Headline";
 import {
   SectionLabel,
@@ -110,8 +109,7 @@ export default function PharmaPage() {
           <div className="grid-2" style={{ alignItems: "start" }}>
             <div>
               <p className="lede">
-                Praverse builds the AI. Nexgen Pharma Solutions, our pharma
-                consulting partner <Verify id="nexgen-relationship" />, brings
+                Praverse builds the AI. Nexgen Pharma Solutions brings
                 inspection-floor practice — QMS, QA and QC, DMF filings in eCTD
                 format, audit readiness, and inspection support across USFDA,
                 EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea).

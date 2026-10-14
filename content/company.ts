@@ -503,16 +503,20 @@ export const ecosystem = [
   },
   {
     name: "Nexgen Pharma Solutions",
+    logo: "/partners/nexgen.webp",
+    logoHeight: 60,
     role: "Pharma quality and regulatory consulting",
     body: "QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). Led by Ashwani Shrivastav."
   },
   {
     name: "SWATI Spentose",
+    logo: "/partners/swati.webp",
+    logoHeight: 26,
     role: "Pharma advisory",
     body: "V-Group, established 1952. USFDA, EU-GMP, PMDA Japan and WHO-GMP approvals; three units in Vapi, Gujarat."
   },
   {
-    name: "Our US technology partner",
+    name: "Our USA technology partner",
     role: "Interconnect technology",
     body: "AI-cluster copper and optical interconnect, supplied into Indian data-centre projects."
   }
@@ -561,11 +565,17 @@ export const photonicsPhases = [
   }
 ] as const;
 
+/**
+ * The US interconnect partner is deliberately unnamed, at the owner's
+ * instruction. Naming a partner publicly is their call to make, not ours, and
+ * "our USA technology partner" carries the same weight to a buyer while
+ * committing us to nothing we have not been authorised to say.
+ */
 export const partners = [
   {
-    name: "Infraeo Inc. (USA)",
+    name: "Our USA technology partner",
     role: "Technology partner",
-    body: "AI-cluster copper and optical interconnect."
+    body: "AI-cluster copper and optical interconnect, supplied into Indian data-centre projects."
   },
   {
     name: "SWATI Spentose",

@@ -4,7 +4,6 @@ import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
 import { SectionLabel, CTASection, Disclaimer } from "@/components/ui/primitives";
-import { Verify } from "@/components/ui/Verify";
 import { Footprint } from "@/components/sections/Footprint";
 import { stories, sovereignTests } from "@/content/sovereign";
 import { photonicsPhases } from "@/content/company";
@@ -180,9 +179,8 @@ export default function SovereignPage() {
           <div className="grid-2" style={{ alignItems: "start", marginTop: 32 }}>
             <div>
               <p className="lede">
-                High-speed copper and optical interconnect for AI clusters, with{" "}
-                <Verify id="infraeo-consent">our US technology partner</Verify>{" "}
-                building the technology and Praverse doing the Indian
+                High-speed copper and optical interconnect for AI clusters, with
+                our USA technology partner building the technology and Praverse doing the Indian
                 architecture, design-in, integration, qualification and support.
               </p>
               <p className="body-2" style={{ marginTop: 24 }}>

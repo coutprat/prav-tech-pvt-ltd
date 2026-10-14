@@ -1,5 +1,5 @@
 {
- "builtAt": "2026-10-14T10:54:15.505Z",
+ "builtAt": "2026-10-14T11:10:14.532Z",
  "chunks": [
   {
    "id": "/#0",
@@ -13,7 +13,7 @@
    "url": "/",
    "page": "Home",
    "heading": "Intelligence, engineered for industry.",
-   "text": "Enterprise AI for healthcare, pharma and regulated industries — and the high-speed interconnect layer for India's sovereign AI data centres. IDEA 2023 · INCORPORATED 2026 VADODARA, INDIA PEER-REVIEWED PUBLICATIONS TECHNOLOGY PARTNER: OUR US TECHNOLOGY PARTNER PHARMA ADVISORY: SWATI SPENTOSE (V-GROUP, EST. 1952) FOUR LINES"
+   "text": "Enterprise AI for healthcare, pharma and regulated industries — and the high-speed interconnect layer for India's sovereign AI data centres. IDEA 2023 · INCORPORATED 2026 VADODARA, INDIA PEER-REVIEWED PUBLICATIONS TECHNOLOGY PARTNER: OUR USA TECHNOLOGY PARTNER PHARMA ADVISORY: SWATI SPENTOSE (V-GROUP, EST. 1952) FOUR LINES"
   },
   {
    "id": "/#2",
@@ -97,7 +97,7 @@
    "url": "/pharma",
    "page": "Pharma & Regulatory AI",
    "heading": "AI built with the people who face the inspectors.",
-   "text": "Praverse builds the AI. Nexgen Pharma Solutions, our pharma consulting partner , brings inspection-floor practice — QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). It is led by Ashwani Shrivastav, who also advises Praverse on quality systems. One engagement can cover audit readiness and the systems that keep you ready, without two vendors blaming each other. The draft is written by people who know the finding Not a general-purpose model guessing at what an investigator wanted to see. Review is done by the same practice The consultants who would sit with you in an inspection also shape what the system drafts. One accountable engagement The software and the quality advice answer to each other. THE SUITE"
+   "text": "Praverse builds the AI. Nexgen Pharma Solutions brings inspection-floor practice — QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). It is led by Ashwani Shrivastav, who also advises Praverse on quality systems. One engagement can cover audit readiness and the systems that keep you ready, without two vendors blaming each other. The draft is written by people who know the finding Not a general-purpose model guessing at what an investigator wanted to see. Review is done by the same practice The consultants who would sit with you in an inspection also shape what the system drafts. One accountable engagement The software and the quality advice answer to each other. THE SUITE"
   },
   {
    "id": "/pharma#3",
@@ -209,7 +209,7 @@
    "url": "/photonics",
    "page": "Photonics",
    "heading": "Building India’s AI interconnect capability — in three phases.",
-   "text": "Our US technology partner builds the interconnect. Praverse does the Indian architecture, design-in, integration, qualification and support, for sovereign AI data centres. Each phase is unlocked by customer demand, so capacity arrives when India’s AI build-out needs it — not before. Our team works from the cities that hold most of India’s data-centre capacity, close to where deployments happen. Vadodara to Mumbai is about 400 km. Data stays under Indian law Built around the DPDP Act 2023. Resilient domestic supply Design-in and qualification happen in India. Engineers and support in India On the same clock as you. ROADMAP"
+   "text": "Our USA technology partner builds the interconnect. Praverse does the Indian architecture, design-in, integration, qualification and support, for sovereign AI data centres. Each phase is unlocked by customer demand, so capacity arrives when India’s AI build-out needs it — not before. Our team works from the cities that hold most of India’s data-centre capacity, close to where deployments happen. Vadodara to Mumbai is about 400 km. Data stays under Indian law Built around the DPDP Act 2023. Resilient domestic supply Design-in and qualification happen in India. Engineers and support in India On the same clock as you. ROADMAP"
   },
   {
    "id": "/photonics#7",
@@ -251,7 +251,7 @@
    "url": "/sovereign-ai-data-centres",
    "page": "Sovereign AI data centres",
    "heading": "The layer underneath.",
-   "text": "High-speed copper and optical interconnect for AI clusters, with our US technology partner building the technology and Praverse doing the Indian architecture, design-in, integration, qualification and support. We do not manufacture in India today. Local testing and qualification come first; assembly follows when volumes justify it. Phases 2 and 3 below are plans, not facilities. The full photonics capability → PHASE 1 · NOW Supply and design-in Interconnect supplied with our US technology partner, with India-side programming, testing, labelling and qualification, and support on local time. PHASE 2 · NEXT Semi-finished assembly in India Assembly of semi-finished interconnect in India, close to the clusters being built. PHASE 3 · PLANNED Indian manufacturing An Indian manufacturing facility for copper interconnect first, then optical, as volumes justify it."
+   "text": "High-speed copper and optical interconnect for AI clusters, with our USA technology partner building the technology and Praverse doing the Indian architecture, design-in, integration, qualification and support. We do not manufacture in India today. Local testing and qualification come first; assembly follows when volumes justify it. Phases 2 and 3 below are plans, not facilities. The full photonics capability → PHASE 1 · NOW Supply and design-in Interconnect supplied with our US technology partner, with India-side programming, testing, labelling and qualification, and support on local time. PHASE 2 · NEXT Semi-finished assembly in India Assembly of semi-finished interconnect in India, close to the clusters being built. PHASE 3 · PLANNED Indian manufacturing An Indian manufacturing facility for copper interconnect first, then optical, as volumes justify it."
   },
   {
    "id": "/sovereign-ai-data-centres#5",
@@ -334,8 +334,8 @@
    "id": "/company#10",
    "url": "/company",
    "page": "Company",
-   "heading": "Our US technology partner",
-   "text": "AI-cluster copper and optical interconnect, supplied into Indian data-centre projects. Named in text only. We do not display a partner’s logo without written permission. WHERE WE ARE"
+   "heading": "Our USA technology partner",
+   "text": "AI-cluster copper and optical interconnect, supplied into Indian data-centre projects. Logos are shown only where we have been given them to use. Where a partner is named in text alone, that is deliberate. WHERE WE ARE"
   },
   {
    "id": "/company#11",
@@ -391,14 +391,14 @@
    "url": "/trust",
    "page": "Trust",
    "heading": "Checkable from outside.",
-   "text": "Everything in this section can be verified without taking our word for it — run a header scan, open developer tools, read the source. 01 No cookies, and no consent banner to click This site sets no cookies at all. Both measurement tools are cookieless and set no identifier on your device, which is why there is nothing to consent to. 02 Nothing you send is stored here Enquiries and job applications are validated, emailed, and dropped. No database, no file storage. A CV is held in memory just long enough to attach it to one email — the safest store is the one that does not exist. 03 Served over TLS, with the headers to match HSTS with a two-year max-age and preload, a content security policy that permits no foreign script origins, X-Frame-Options DENY, nosniff, a strict referrer policy, and a permissions policy that denies camera, microphone and location outright. 04 Fonts and media are served from our own domain Loading a page calls no third-party font or asset service, so reading this site does not announce you to anyone else. 05 Accessible by design, and measured Every page scores 100 on the Lighthouse accessibility audit in both light and dark themes, with zero axe violations — checked on every change, not once at launch. SUB-PROCESSORS"
+   "text": "Everything in this section can be verified without taking our word for it — run a header scan, open developer tools, read the source. 01 No cookies, and no consent banner to click This site sets no cookies at all. Both measurement tools are cookieless and set no identifier on your device, which is why there is nothing to consent to. 02 Nothing you send is stored here Enquiries and job applications are validated, emailed, and dropped. No database, no file storage. A CV is held in memory just long enough to attach it to one email — the safest store is the one that does not exist. Assistant conversations are not logged either. 03 The assistant only knows what you can read Its entire knowledge is an index built by crawling these published pages. It cannot tell you anything the site does not state, it shows which page each answer came from, and it is built to refuse pricing, clinical, regulatory and legal questions outright rather than guess at them. 04 Served over TLS, with the headers to match HSTS with a two-year max-age and preload, a content security policy that permits no foreign script origins, X-Frame-Options DENY, nosniff, a strict referrer policy, and a permissions policy that denies camera, microphone and location outright. 05 Fonts and media are served from our own domain Loading a page calls no third-party font or asset service, so reading this site does not announce yo"
   },
   {
    "id": "/trust#2",
    "url": "/trust",
    "page": "Trust",
    "heading": "Everyone who touches it.",
-   "text": "The complete list for this website. If we engage with you, any additional processor is named in the contract before work starts. PROCESSOR WHY WHERE WHAT REACHES THEM Vercel Hosting, CDN and TLS for praversetech.com Global edge network; functions run in the configured region Standard request data — IP address and user agent at the network layer, as any web host receives. Not retained by us. Zoho Mail Our mailboxes, and delivery of anything you send through a form India (smtp.zoho.in / mx.zoho.in) Whatever you typed into the form, plus any CV you attached to an application. Vercel Speed Insights & Web Analytics Page performance and page-view counts Vercel infrastructure Route, referrer, and coarse context such as country, browser and device type. Cookieless, no identifier, no IP address recorded. IN AN ENGAGEMENT"
+   "text": "The complete list for this website. If we engage with you, any additional processor is named in the contract before work starts. PROCESSOR WHY WHERE WHAT REACHES THEM Vercel Hosting, CDN and TLS for praversetech.com Global edge network; functions run in the configured region Standard request data — IP address and user agent at the network layer, as any web host receives. Not retained by us. Zoho Mail Our mailboxes, and delivery of anything you send through a form India (smtp.zoho.in / mx.zoho.in) Whatever you typed into the form, plus any CV you attached to an application. Anthropic The assistant in the corner of this site, if you choose to use it Anthropic infrastructure Only what you type into the assistant, plus the published page text it answers from. It is not used to train models, we keep no transcript, and the assistant is never required — every page can be read without it. Vercel Speed Insights & Web Analytics Page performance and page-view counts Vercel infrastructure Route, referrer, and coarse context such as country, browser and device type. Cookieless, no identifier, no IP address recorded. IN AN ENGAGEMENT"
   },
   {
    "id": "/trust#3",
@@ -433,7 +433,7 @@
    "url": "/privacy",
    "page": "Privacy",
    "heading": "What this website collects",
-   "text": "No cookies and no advertising trackers. This site sets no cookies, embeds no advertising trackers, and does not build a profile of you or follow you across other sites. Fonts are served from our own domain, so loading a page does not call out to a third-party font service. Because we set no non-essential cookies, there is no consent banner to click through. Speed measurement. We use Vercel Speed Insights to see how quickly pages actually load for real visitors. It is cookieless: it records page performance timings and coarse context such as route, country and device type, and it does not set identifiers or track you between sites. We use it only to find slow pages. Page measurement. We also use Vercel Web Analytics to count page views, so we can tell which pages people actually read. It is cookieless and sets no identifier on your device: it records the page, the referring site, and coarse context such as country, browser and device type. It does not record your IP address, does not build a profile, and cannot follow you to any other website. We use it to decide what to write and what to fix — nothing else, and we do not sell or share it. Enquiry and waitlist forms. When you submit a form, the details you enter — typically your name, work email, organisation and what you write in the message — are sent to our server and emailed to our enquiry mailbox, which is hosted on Zoho Ma"
+   "text": "No cookies and no advertising trackers. This site sets no cookies, embeds no advertising trackers, and does not build a profile of you or follow you across other sites. Fonts are served from our own domain, so loading a page does not call out to a third-party font service. Because we set no non-essential cookies, there is no consent banner to click through. Speed measurement. We use Vercel Speed Insights to see how quickly pages actually load for real visitors. It is cookieless: it records page performance timings and coarse context such as route, country and device type, and it does not set identifiers or track you between sites. We use it only to find slow pages. The assistant. If you open the assistant in the corner of the site and send it a message, that message is sent to Anthropic, which generates the reply. Only what you type is sent, together with text from these public pages. We keep no transcript, your conversation is not used to train models, and nothing you type is stored on this site or linked to you. Using it is entirely optional — every page can be read without it, and for anything that matters you should use the contact form and talk to a person. Page measurement. We also use Vercel Web Analytics to count page views, so we can tell which pages people actually read. It is cookieless and sets no identifier on your device: it records the page, the referring site, a"
   },
   {
    "id": "/privacy#3",

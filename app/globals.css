@@ -6088,3 +6088,31 @@ body::before {
     opacity: 0.6;
   }
 }
+
+/* ------------------------------------------------------------ partner logos */
+/*
+ * A fixed light tile in both themes. Both marks are black-on-white artwork;
+ * inverting or recolouring someone else's logo to suit our dark mode is not a
+ * licence we have, and a tile is what a logo wall does anyway.
+ */
+.eco-card {
+  display: flex;
+  flex-direction: column;
+}
+.eco-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: auto;
+  padding-top: 18px;
+  padding: 14px 16px;
+  min-height: 86px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+.eco-logo img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
