@@ -64,6 +64,16 @@ export default function PrivacyPage() {
             pages.
           </p>
           <p>
+            <strong>The assistant.</strong> If you open the assistant in the
+            corner of the site and send it a message, that message is sent to
+            Anthropic, which generates the reply. Only what you type is sent,
+            together with text from these public pages. We keep no transcript,
+            your conversation is not used to train models, and nothing you
+            type is stored on this site or linked to you. Using it is entirely
+            optional — every page can be read without it, and for anything
+            that matters you should use the contact form and talk to a person.
+          </p>
+          <p>
             <strong>Page measurement.</strong> We also use Vercel Web Analytics
             to count page views, so we can tell which pages people actually
             read. It is cookieless and sets no identifier on your device: it
