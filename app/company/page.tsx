@@ -6,6 +6,7 @@ import { Headline } from "@/components/ui/Headline";
 import { PersonCard } from "@/components/ui/PersonCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { company, ecosystem, founderStory, people } from "@/content/company";
+import { PraverseLockup } from "@/components/ui/PraverseLockup";
 import { locations, site } from "@/content/site";
 import { Footprint } from "@/components/sections/Footprint";
 import { TeamGrid } from "@/components/sections/TeamGrid";
@@ -105,14 +106,19 @@ export default function CompanyPage() {
                   black-on-white artwork, and inverting or recolouring someone
                   else's logo to suit our dark mode is not ours to do.
                 */}
+                {"lockup" in e && e.lockup ? (
+                  <span className="eco-logo">
+                    <PraverseLockup />
+                  </span>
+                ) : null}
                 {"logo" in e && e.logo ? (
                   <span className="eco-logo">
                     <Image
                       src={e.logo}
                       alt={`${e.name} logo`}
-                      width={320}
-                      height={120}
-                      style={{ height: e.logoHeight, width: "auto" }}
+                      width={640}
+                      height={296}
+                      sizes="(min-width: 1100px) 260px, (min-width: 680px) 44vw, 88vw"
                       unoptimized
                     />
                   </span>

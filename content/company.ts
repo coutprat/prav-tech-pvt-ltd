@@ -498,20 +498,22 @@ export const people = [
 export const ecosystem = [
   {
     name: "Praverse Tech",
+    // Our own mark, drawn inline by PraverseLockup rather than loaded as a
+    // file: the tile is white in both themes and the orbits take currentColor,
+    // which an <img> could not be told to keep dark.
+    lockup: true,
     role: "AI and photonics",
     body: "Enterprise AI, pharma and regulatory AI, MENNIE, and the interconnect layer for AI data centres."
   },
   {
     name: "Nexgen Pharma Solutions",
     logo: "/partners/nexgen.webp",
-    logoHeight: 60,
     role: "Pharma quality and regulatory consulting",
     body: "QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). Led by Ashwani Shrivastav."
   },
   {
     name: "SWATI Spentose",
     logo: "/partners/swati.webp",
-    logoHeight: 26,
     role: "Pharma advisory",
     body: "V-Group, established 1952. USFDA, EU-GMP, PMDA Japan and WHO-GMP approvals; three units in Vapi, Gujarat."
   },
