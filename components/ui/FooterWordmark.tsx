@@ -79,9 +79,23 @@ export function FooterWordmark() {
       // The reveal follows the pointer. Written straight to the gradient
       // rather than through React state: this fires on every mouse move, and
       // a re-render per move for a decorative flourish is not a good trade.
+      //
+      // The eased value is carried on a plain object and copied onto the
+      // gradient in onUpdate. The obvious-looking quickTo(reveal, "attr:cx")
+      // does not work and does not complain: quickTo builds a single vars key
+      // from the property name, so that asks for {"attr:cx": n}, whereas
+      // AttrPlugin reads {attr: {cx: n}}. GSAP sees a property it does not
+      // recognise, writes nothing, and throws nothing — the reveal simply sat
+      // at the centre of the wordmark forever, in every browser.
       if (!reveal) return;
-      const quickX = gsap.quickTo(reveal, "attr:cx", { duration: 0.42, ease: "power3" });
-      const quickY = gsap.quickTo(reveal, "attr:cy", { duration: 0.42, ease: "power3" });
+      const at = { cx: MID_X, cy: MID_Y };
+      const apply = () => {
+        reveal.setAttribute("cx", String(at.cx));
+        reveal.setAttribute("cy", String(at.cy));
+      };
+      const ease = { duration: 0.42, ease: "power3", onUpdate: apply } as const;
+      const quickX = gsap.quickTo(at, "cx", ease);
+      const quickY = gsap.quickTo(at, "cy", ease);
 
       const onMove = (e: PointerEvent) => {
         const r = svg.getBoundingClientRect();

@@ -48,8 +48,13 @@ const nextConfig = {
       "media-src 'self'",
       "font-src 'self' data:",
       "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com",
-      "manifest-src 'self'",
-      "upgrade-insecure-requests"
+      "manifest-src 'self'"
+      // Deliberately no upgrade-insecure-requests. HSTS with preload already
+      // guarantees https for this domain, so it adds nothing in production —
+      // and over plain http it rewrites every asset URL to https, which WebKit
+      // applies even on localhost. That silently stripped CSS, scripts, fonts
+      // and images from every local WebKit run, which is how a whole browser's
+      // worth of QA came back green while testing nothing.
     ].join("; ");
 
     return [

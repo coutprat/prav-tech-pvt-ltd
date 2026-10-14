@@ -6,12 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings=0",
-    "ai:index": "node scripts/ai/build-index.mjs",
-    "ai:probe": "node scripts/ai/probe.mjs"
+    "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.133.0",
     "@gsap/react": "^2.1.2",
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.9",

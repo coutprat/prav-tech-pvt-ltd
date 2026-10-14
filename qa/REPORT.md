@@ -1,14 +1,14 @@
 # QA report
 
 Base: http://localhost:3000
-Generated: 2026-10-13T18:41:05.876Z
+Generated: 2026-10-14T12:17:29.494Z
 
 ## Summary
 
-- Screenshots: **192** — 12 pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}
+- Screenshots: **208** — 13 pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}
 - axe violations: **0 light**, **0 dark**
-- Internal links: 12 checked, **0** broken
-- Redirects: 8 checked, **0** wrong
+- Internal links: 13 checked, **0** broken
+- Redirects: 9 checked, **0** wrong
 - Page/console errors: **0**
 
 ## Accessibility (axe, WCAG 2.2 AA)
@@ -20,11 +20,12 @@ Generated: 2026-10-13T18:41:05.876Z
 - **pharma** — none
 - **mennie** — none
 - **photonics** — none
-- **research** — none
+- **sovereign-ai-data-centres** — none
 - **company** — none
 - **careers** — none
 - **contact** — none
 - **start-a-project** — none
+- **trust** — none
 - **privacy** — none
 - **terms** — none
 
@@ -35,11 +36,12 @@ Generated: 2026-10-13T18:41:05.876Z
 - **pharma** — none
 - **mennie** — none
 - **photonics** — none
-- **research** — none
+- **sovereign-ai-data-centres** — none
 - **company** — none
 - **careers** — none
 - **contact** — none
 - **start-a-project** — none
+- **trust** — none
 - **privacy** — none
 - **terms** — none
 
@@ -52,13 +54,14 @@ Generated: 2026-10-13T18:41:05.876Z
 | /team | /company | /company | yes |
 | /healthmate | /mennie | /mennie | yes |
 | /domains | /enterprise-ai | /enterprise-ai | yes |
-| /innovate | /research | /research | yes |
-| /insights | /research | /research | yes |
+| /research | /company | /company | yes |
+| /innovate | /company | /company | yes |
+| /insights | /company | /company | yes |
 | /orbit | / | / | yes |
 
 ## Internal links
 
-All 12 internal links return < 400.
+All 13 internal links return < 400.
 
 ## Console / page errors
 

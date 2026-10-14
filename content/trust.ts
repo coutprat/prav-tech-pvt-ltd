@@ -37,12 +37,6 @@ export const subProcessors: SubProcessor[] = [
     data: "Whatever you typed into the form, plus any CV you attached to an application."
   },
   {
-    name: "Anthropic",
-    purpose: "The assistant in the corner of this site, if you choose to use it",
-    region: "Anthropic infrastructure",
-    data: "Only what you type into the assistant, plus the published page text it answers from. It is not used to train models, we keep no transcript, and the assistant is never required — every page can be read without it."
-  },
-  {
     name: "Vercel Speed Insights & Web Analytics",
     purpose: "Page performance and page-view counts",
     region: "Vercel infrastructure",
@@ -58,11 +52,7 @@ export const siteFacts = [
   },
   {
     head: "Nothing you send is stored here",
-    body: "Enquiries and job applications are validated, emailed, and dropped. No database, no file storage. A CV is held in memory just long enough to attach it to one email — the safest store is the one that does not exist. Assistant conversations are not logged either."
-  },
-  {
-    head: "The assistant only knows what you can read",
-    body: "Its entire knowledge is an index built by crawling these published pages. It cannot tell you anything the site does not state, it shows which page each answer came from, and it is built to refuse pricing, clinical, regulatory and legal questions outright rather than guess at them."
+    body: "Enquiries and job applications are validated, emailed, and dropped. No database, no file storage. A CV is held in memory just long enough to attach it to one email — the safest store is the one that does not exist."
   },
   {
     head: "Served over TLS, with the headers to match",

@@ -27,11 +27,12 @@ const PAGES = [
   ["pharma", "/pharma"],
   ["mennie", "/mennie"],
   ["photonics", "/photonics"],
-  ["research", "/research"],
+  ["sovereign-ai-data-centres", "/sovereign-ai-data-centres"],
   ["company", "/company"],
   ["careers", "/careers"],
   ["contact", "/contact"],
   ["start-a-project", "/start-a-project"],
+  ["trust", "/trust"],
   ["privacy", "/privacy"],
   ["terms", "/terms"]
 ];
@@ -42,8 +43,10 @@ const REDIRECTS = [
   ["/team", "/company"],
   ["/healthmate", "/mennie"],
   ["/domains", "/enterprise-ai"],
-  ["/innovate", "/research"],
-  ["/insights", "/research"],
+  // /research is gone; the work behind it is now the Company origin story.
+  ["/research", "/company"],
+  ["/innovate", "/company"],
+  ["/insights", "/company"],
   ["/orbit", "/"]
 ];
 
