@@ -22,6 +22,23 @@ export function useMediaQuery(query: string, serverValue = false): boolean {
   );
 }
 
+/**
+ * False on the server and for the hydration render, true from then on.
+ *
+ * useSyncExternalStore has to hand back the server's answer for the first
+ * client render so the markup matches, which means any media query reads as
+ * its server default for exactly one render. An effect firing on that render
+ * acts on a value that is about to change. Gate on this and the work happens
+ * once, with the real answer.
+ */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
+
 /** True when the visitor has asked for reduced motion. */
 export function useReducedMotion(): boolean {
   return useMediaQuery("(prefers-reduced-motion: reduce)");

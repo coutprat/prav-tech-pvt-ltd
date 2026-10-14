@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import { gsap } from "@/lib/gsap";
+import { fetchTracks } from "@/lib/tracks";
 
 /**
  * Screen-space tracks exported by the Blender scenes alongside the frames.
@@ -219,10 +220,9 @@ export function SequenceOverlay({
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
-    fetch(tracksUrl)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j: RawTracks | null) => {
-        if (!cancelled && j) tracksRef.current = flatten(j);
+    fetchTracks(tracksUrl)
+      .then((j) => {
+        if (!cancelled && j) tracksRef.current = flatten(j as RawTracks);
       })
       .catch(() => {
         /* the overlay is an enhancement; the sequence stands on its own */

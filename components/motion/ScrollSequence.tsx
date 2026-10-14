@@ -110,6 +110,20 @@ export function ScrollSequence({
       const ctx = canvas.getContext("2d", { alpha: false });
       if (!ctx) return;
 
+      // alpha:false means "no transparency", and an untouched canvas with no
+      // transparency is solid black. This one is stacked above the poster, so
+      // between getContext() and the first drawn frame the hero went black —
+      // invisible on a warm cache, a hard black flash on a forced reload over
+      // a slow connection. Fill it with paper immediately, and again whenever
+      // the backing store is resized, which clears it right back to black.
+      const fillPaper = () => {
+        ctx.fillStyle =
+          getComputedStyle(document.body).getPropertyValue("--paper").trim() ||
+          "#eeedea";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      };
+      fillPaper();
+
       const isMobile = window.matchMedia("(max-width: 899px)").matches;
       const set = isMobile ? mobileSet : desktopSet;
 
@@ -121,8 +135,46 @@ export function ScrollSequence({
       type Frame = ImageBitmap | HTMLImageElement;
       const images: (Frame | undefined)[] = new Array(set.count);
       const loaded = new Set<number>();
+      const pending = new Set<number>();
       let current = 0;
       let disposed = false;
+
+      // A decoded frame is raw RGBA, whatever the webp on disk weighs: 1.8 MB
+      // for a 900x506 mobile frame, 5.8 MB for a 1600x900 desktop one. Holding
+      // the whole sequence therefore cost 109 MB on a phone and 691 MB on a
+      // laptop — per sequence, and two pages build one. That is the weight you
+      // could feel: not dropped frames, but a tab the device is struggling to
+      // keep resident.
+      //
+      // So the set is bounded. An evenly spaced spine is never evicted, which
+      // keeps draw()'s nearest-frame fallback close to whatever is wanted, and
+      // the rest is a window that follows the reader. Frames outside it are
+      // closed and re-fetched from the HTTP cache on demand — off the main
+      // thread, so a re-decode never lands as jank.
+      const BUDGET = (isMobile ? 40 : 240) * 1024 * 1024;
+      const spineStep = Math.max(1, Math.ceil(set.count / 10));
+      const isSpine = (i: number) => i % spineStep === 0;
+      let maxDecoded = set.count;
+
+      const evict = () => {
+        while (loaded.size > maxDecoded) {
+          let worst = -1;
+          let worstDist = -1;
+          for (const j of loaded) {
+            if (isSpine(j)) continue;
+            const d = Math.abs(j - current);
+            if (d > worstDist) {
+              worstDist = d;
+              worst = j;
+            }
+          }
+          if (worst < 0) return; // only the spine is left; it stays
+          const f = images[worst];
+          if (f && "close" in f) f.close();
+          images[worst] = undefined;
+          loaded.delete(worst);
+        }
+      };
 
       /* ---------------------------------------------------------- drawing */
 
@@ -131,6 +183,7 @@ export function ScrollSequence({
         const rect = canvas.getBoundingClientRect();
         canvas.width = Math.round(rect.width * dpr);
         canvas.height = Math.round(rect.height * dpr);
+        fillPaper();
         draw(current);
       };
 
@@ -185,12 +238,22 @@ export function ScrollSequence({
         }
         images[i] = frame;
         loaded.add(i);
+        evict();
         // Redraw if this is what we are currently meant to be showing.
         if (Math.abs(i - current) <= 1) draw(current);
       };
 
       const load = async (i: number): Promise<void> => {
-        if (images[i]) return;
+        if (images[i] || pending.has(i)) return;
+        pending.add(i);
+        try {
+          await fetchFrame(i);
+        } finally {
+          pending.delete(i);
+        }
+      };
+
+      const fetchFrame = async (i: number): Promise<void> => {
         const url = frameUrl(set, i + 1);
 
         if (typeof createImageBitmap === "function") {
@@ -228,12 +291,26 @@ export function ScrollSequence({
         await load(0);
         resize();
 
-        const stride = 4;
-        for (let i = stride; i < set.count && !disposed; i += stride) {
+        // Frame 0 is decoded, so the real cost per frame is now known rather
+        // than taken on trust from the FrameSet.
+        const first = images[0];
+        if (first) {
+          const bytes = frameWidth(first) * frameHeight(first) * 4;
+          maxDecoded = Math.max(12, Math.min(set.count, Math.floor(BUDGET / bytes)));
+        }
+
+        // The spine, so every scroll position has something near it to draw.
+        for (let i = spineStep; i < set.count && !disposed; i += spineStep) {
           await load(i);
         }
-        for (let i = 1; i < set.count && !disposed; i += 1) {
-          if (!images[i]) await load(i);
+        // Then fill outward from wherever the reader actually is, and stop at
+        // the budget instead of fetching 60 frames to throw most of them away.
+        for (let r = 1; r < set.count && !disposed; r += 1) {
+          for (const i of [current - r, current + r]) {
+            if (i < 0 || i >= set.count || images[i]) continue;
+            if (loaded.size >= maxDecoded) return;
+            await load(i);
+          }
         }
       };
 
@@ -287,6 +364,14 @@ export function ScrollSequence({
             current = Math.round(state.frame);
             if (frameRef) frameRef.current = current;
             draw(current);
+            // Scrolled into a stretch that has been evicted, or never fetched:
+            // ask for it and the two either side. draw() keeps showing the
+            // nearest frame until they arrive.
+            if (!images[current]) {
+              for (const i of [current, current - 1, current + 1]) {
+                if (i >= 0 && i < set.count) void load(i);
+              }
+            }
           }
         });
       });
@@ -314,6 +399,7 @@ export function ScrollSequence({
           ref={canvasRef}
           role="img"
           aria-label={alt}
+          data-ready={painted ? "true" : "false"}
         />
         {/*
           The first frame, in the markup, so the browser can discover and

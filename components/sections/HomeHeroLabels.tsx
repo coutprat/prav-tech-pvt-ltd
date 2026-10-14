@@ -4,6 +4,7 @@ import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
 import type { Tracks } from "@/components/motion/SequenceOverlay";
+import { fetchTracks } from "@/lib/tracks";
 
 /**
  * Labels and clickable hotspots that track each docked module.
@@ -73,9 +74,12 @@ export function HomeHeroLabels({
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
-    fetch(tracksUrl)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
+    fetchTracks(tracksUrl)
+      .then((raw) => {
+        const j = raw as {
+          resolution: [number, number];
+          tracks: Record<string, unknown>;
+        } | null;
         if (cancelled || !j) return;
         resRef.current = j.resolution;
         const flat: Record<string, Float32Array> = {};

@@ -135,13 +135,19 @@ export function HomeRingOverlay({
     [frameRef, frameCount]
   );
 
+  // Not merely inactive — absent. Passing active={false} still mounted the
+  // overlay, and on a phone in dark mode the theme-driven remount fetched the
+  // 144 KB track file before the gate settled. A component that never renders
+  // cannot lose that race.
+  if (!wideEnough) return null;
+
   return (
     <SequenceOverlay
       tracksUrl="/media/home/desktop/positions.json"
       frameRef={frameRef}
       frameCount={frameCount}
       draw={draw}
-      active={active && wideEnough}
+      active={active}
     />
   );
 }

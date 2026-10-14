@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { ScrollSequence, type FrameSet } from "@/components/motion/ScrollSequence";
 import { HomeRingOverlay } from "@/components/sections/HomeRingOverlay";
 import { HomeHeroLabels } from "@/components/sections/HomeHeroLabels";
-import { useTheme } from "@/lib/useMediaQuery";
+import { useHydrated, useMediaQuery, useTheme } from "@/lib/useMediaQuery";
 import { HeroFinalCaption } from "@/components/sections/HeroFinalCaption";
 import { useReducedMotion } from "@/lib/useMediaQuery";
 
@@ -30,7 +30,19 @@ export function HomeHero({
   const frameRef = useRef(0);
   const reduced = useReducedMotion();
   const theme = useTheme();
-  const dir = theme === "dark" ? "desktop-dark" : "desktop";
+  // Matched to the frames actually being drawn. The mobile track files are
+  // half the size of the desktop ones and were sitting unused while every
+  // phone downloaded 144 KB of desktop coordinates for a 900px-wide render.
+  const wide = useMediaQuery("(min-width: 900px)");
+  const dir = `${wide ? "desktop" : "mobile"}${theme === "dark" ? "-dark" : ""}`;
+
+  // The labels wait one tick before mounting. useSyncExternalStore has to
+  // render the server's answer first to match the markup, so `wide` is false
+  // for that render even on a desktop — long enough for the effect to fetch
+  // the mobile track file, then fetch the desktop one when the real value
+  // arrives. Mounting after hydration means the first URL asked for is the
+  // right one, and it is the only one asked for.
+  const settled = useHydrated();
 
   return (
     <ScrollSequence
@@ -51,12 +63,14 @@ export function HomeHero({
             active={!reduced}
           />
           <HeroFinalCaption frameRef={frameRef} frameCount={frames.desktop.count} />
-          <HomeHeroLabels
-            frameRef={frameRef}
-            frameCount={frames.desktop.count}
-            tracksUrl={`/media/home/${dir}/positions.json`}
-            active={!reduced}
-          />
+          {settled ? (
+            <HomeHeroLabels
+              frameRef={frameRef}
+              frameCount={frames.desktop.count}
+              tracksUrl={`/media/home/${dir}/positions.json`}
+              active={!reduced}
+            />
+          ) : null}
         </>
       }
       chapters={[
