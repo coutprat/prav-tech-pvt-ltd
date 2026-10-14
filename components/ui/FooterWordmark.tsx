@@ -29,6 +29,24 @@ import { gsap, prefersReducedMotion } from "@/lib/gsap";
  */
 const TEXT = "PRAVERSE";
 
+/**
+ * The viewBox, as constants rather than literals.
+ *
+ * This bit me: the text used to be placed with x="50%" y="50%", and an SVG
+ * percentage resolves against the *viewBox* height, not against a fixed
+ * canvas. Cropping the box to the letterforms therefore moved the text with
+ * it — the baseline landed above the visible area and the footer showed only
+ * the bottom few pixels of each glyph. Absolute coordinates stay put, and
+ * keeping the numbers in one place means the pointer mapping below cannot
+ * drift away from the box either.
+ *
+ * At 62px with a middle baseline the capitals span roughly y 53..97, so the
+ * box gives them about 6px of air top and bottom.
+ */
+const BOX = { x: 0, y: 47, w: 450, h: 56 };
+const MID_X = BOX.w / 2;
+const MID_Y = 75;
+
 export function FooterWordmark() {
   const root = useRef<SVGSVGElement>(null);
 
@@ -67,12 +85,12 @@ export function FooterWordmark() {
 
       const onMove = (e: PointerEvent) => {
         const r = svg.getBoundingClientRect();
-        quickX(((e.clientX - r.left) / r.width) * 450);
-        quickY(((e.clientY - r.top) / r.height) * 150);
+        quickX(BOX.x + ((e.clientX - r.left) / r.width) * BOX.w);
+        quickY(BOX.y + ((e.clientY - r.top) / r.height) * BOX.h);
       };
       const onLeave = () => {
-        quickX(225);
-        quickY(75);
+        quickX(MID_X);
+        quickY(MID_Y);
       };
 
       svg.addEventListener("pointermove", onMove);
@@ -88,8 +106,8 @@ export function FooterWordmark() {
   );
 
   const common = {
-    x: "50%",
-    y: "50%",
+    x: MID_X,
+    y: MID_Y,
     textAnchor: "middle" as const,
     dominantBaseline: "middle" as const,
     fontSize: 62,
@@ -102,12 +120,7 @@ export function FooterWordmark() {
     <svg
       ref={root}
       className="wm"
-      /*
-       * Cropped to the letterforms. The text sits at y=75 with a 62px face, so
-       * the glyphs occupy roughly 44..106 — a full 0..150 box left a third of
-       * the footer as empty space above and below the word.
-       */
-      viewBox="0 41 450 68"
+      viewBox={`${BOX.x} ${BOX.y} ${BOX.w} ${BOX.h}`}
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
@@ -138,13 +151,13 @@ export function FooterWordmark() {
           <stop offset="1" stopColor="#3B7FC2" />
         </linearGradient>
 
-        <radialGradient id="wm-reveal" gradientUnits="userSpaceOnUse" r="78" cx="225" cy="75">
+        <radialGradient id="wm-reveal" gradientUnits="userSpaceOnUse" r="78" cx={MID_X} cy={MID_Y}>
           <stop offset="0%" stopColor="white" />
           <stop offset="100%" stopColor="black" />
         </radialGradient>
 
         <mask id="wm-mask">
-          <rect x="0" y="0" width="450" height="150" fill="url(#wm-reveal)" />
+          <rect x={BOX.x} y={BOX.y} width={BOX.w} height={BOX.h} fill="url(#wm-reveal)" />
         </mask>
 
         <filter id="wm-glow" x="-10%" y="-40%" width="120%" height="180%">
