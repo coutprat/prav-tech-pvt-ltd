@@ -1,130 +1,75 @@
-"use client";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { EnquiryForm } from "@/components/sections/EnquiryForm";
+import { Headline } from "@/components/ui/Headline";
+import { SectionLabel } from "@/components/ui/primitives";
+import { company, howWeWork } from "@/content/company";
 
-import { useState } from "react";
-import Link from "next/link";
+export const metadata: Metadata = pageMeta({
+  title: "Start a project",
+  description: "Tell us the problem. You get a written plan within two business days — no pitch deck, no discovery retainer.",
+  path: '/start-a-project'
+});
 
 export default function StartAProjectPage() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("sending");
-    const fd = new FormData(e.currentTarget);
-    const res = await fetch("/api/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        formType: "project",
-        name: fd.get("Name"),
-        email: fd.get("Email"),
-        company: fd.get("Company"),
-        inquiryType: fd.get("Inquiry Type"),
-        timeline: fd.get("Timeline"),
-        budget: fd.get("Budget Range"),
-        message: fd.get("Message"),
-      }),
-    });
-    setStatus(res.ok ? "sent" : "error");
-  }
-
   return (
-    <main>
-      <header className="page-hero">
-        <div className="eyebrow rv">
-          <span className="pulse" />
-          Start a Project
-        </div>
-        <h1 className="rv">
-          Tell us what you&apos;re <span className="grad-text">building.</span>
-        </h1>
-        <p className="sub rv">
-          Share the problem, domain, and timeline. We&apos;ll get back with a plan within two business days.
-        </p>
-      </header>
+    <>
+      <section className="page-head">
+        <div className="wrap-narrow" style={{ paddingInline: 0 }}>
+          <SectionLabel accent="teal">Start a project</SectionLabel>
+          <Headline as="h1" className="display">
+            Tell us the problem.
+          </Headline>
+          <p className="lede" style={{ marginTop: 32 }}>
+            {company.promise} No pitch deck, no discovery retainer — a written
+            plan you can take to your team and act on, whoever builds it.
+          </p>
 
-      <section className="sec-pad-sm">
-        <div className="wrap">
-          {status === "sent" ? (
-            <div className="inquiry-form" style={{ textAlign: "center", padding: "4rem 2rem" }}>
-              <p style={{ fontFamily: "var(--font-m)", fontSize: "11px", letterSpacing: ".18em", textTransform: "uppercase", color: "var(--cyan)", marginBottom: "16px" }}>Brief received</p>
-              <h2 style={{ fontSize: "clamp(26px,4vw,40px)", marginBottom: "14px" }}>We&apos;ll be in touch.</h2>
-              <p style={{ color: "var(--ink-soft)", maxWidth: "44ch", margin: "0 auto 32px", lineHeight: "1.7" }}>
-                Your project brief has been sent to the Praverse team. Expect a response within two business days.
-              </p>
-              <Link href="/" className="btn btn-grad">Back to Home →</Link>
-            </div>
-          ) : (
-            <form className="inquiry-form rv" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="field">
-                  <label htmlFor="name">Name</label>
-                  <input id="name" name="Name" type="text" autoComplete="name" required placeholder="Your full name" />
-                </div>
-                <div className="field">
-                  <label htmlFor="email">Email</label>
-                  <input id="email" name="Email" type="email" autoComplete="email" required placeholder="you@company.com" />
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="field">
-                  <label htmlFor="company">Company / Organization</label>
-                  <input id="company" name="Company" type="text" autoComplete="organization" placeholder="Where do you work?" />
-                </div>
-                <div className="field">
-                  <label htmlFor="domain">Inquiry Type</label>
-                  <select id="domain" name="Inquiry Type" defaultValue="Enterprise AI / ML">
-                    <option>Enterprise AI / ML</option>
-                    <option>HealthMate / Healthcare AI</option>
-                    <option>Pharma &amp; Regulatory AI</option>
-                    <option>Research Collaboration</option>
-                    <option>Venture Lab / Idea</option>
-                    <option>Press / General</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="field">
-                  <label htmlFor="timeline">Timeline</label>
-                  <select id="timeline" name="Timeline" defaultValue="Exploring">
-                    <option>Exploring</option>
-                    <option>0-3 months</option>
-                    <option>3-6 months</option>
-                    <option>6+ months</option>
-                  </select>
-                </div>
-                <div className="field">
-                  <label htmlFor="budget">Budget Range <span className="opt">optional</span></label>
-                  <input id="budget" name="Budget Range" type="text" placeholder="Pilot / project range" />
-                </div>
-              </div>
-              <div className="field">
-                <label htmlFor="message">What should we help you build?</label>
-                <textarea
-                  id="message"
-                  name="Message"
-                  rows={6}
-                  placeholder="Tell us about the workflow, data, users, constraints, and desired outcome."
-                  required
-                />
-              </div>
-              <div className="inquiry-actions">
-                <button className="btn btn-grad" type="submit" disabled={status === "sending"}>
-                  {status === "sending" ? "Sending…" : "Send Project Brief →"}
-                </button>
-                {status === "error" && (
-                  <p className="form-note" style={{ color: "#e05" }}>
-                    Something went wrong. Email us directly at inquiry@praversetech.com.
-                  </p>
-                )}
-                <p className="form-note">
-                  No diagnosis, compliance guarantee, or automated decisioning is implied. Every
-                  high-stakes workflow is designed for expert review.
-                </p>
-              </div>
-            </form>
-          )}
+          <EnquiryForm
+            subject="New project enquiry"
+            submitLabel="Send the brief"
+            fields={[
+              { name: "name", label: "Name", required: true, autoComplete: "name" },
+              { name: "email", label: "Work email", type: "email", required: true, autoComplete: "email" },
+              { name: "org", label: "Organisation", required: true, autoComplete: "organization" },
+              {
+                name: "area",
+                label: "Which line",
+                type: "select",
+                options: ["Enterprise AI", "Pharma AI", "MENNIE / Healthcare", "Photonics", "Not sure yet"]
+              },
+              {
+                name: "problem",
+                label: "The problem",
+                type: "textarea",
+                required: true,
+                placeholder: "What happens today, who it slows down, and what it costs you."
+              },
+              {
+                name: "constraints",
+                label: "Constraints",
+                type: "textarea",
+                placeholder: "Data residency, validation, timelines, systems it must live inside."
+              }
+            ]}
+          />
         </div>
       </section>
-    </main>
+
+      <section className="section section-alt">
+        <div className="wrap">
+          <SectionLabel>What happens next</SectionLabel>
+          <ol className="steps">
+            {howWeWork.map((s, i) => (
+              <li key={s.step}>
+                <span className="steps-n num">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="h3">{s.step}</h3>
+                <p className="body-2">{s.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    </>
   );
 }

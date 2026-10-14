@@ -1,67 +1,99 @@
-import Image from "next/image";
 import Link from "next/link";
-import { site } from "@/data/site";
-import { TextHoverEffect, FooterBackgroundGradient } from "@/components/ui/TextHoverEffect";
+import { Mark } from "@/components/ui/Mark";
+import { FooterWordmark } from "@/components/ui/FooterWordmark";
+import { company } from "@/content/company";
+import { site } from "@/content/site";
+import { footerNav } from "@/data/navigation";
+import { Verify, isWithheld } from "@/components/ui/Verify";
 
 export function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer style={{ position: "relative", overflow: "hidden" }}>
-      <FooterBackgroundGradient />
-      <div className="wrap" style={{ position: "relative", zIndex: 1 }}>
-        <div className="foot-grid">
-          <div>
-            <div className="logo">
-              <Image src="/logo.svg" className="logo-mark" alt="PraverseTech" width={30} height={30} />
-              PraverseTech
-            </div>
+    <footer className="footer">
+      <div className="wrap">
+        <div className="footer-grid">
+          <div className="footer-identity">
+            <h2>
+              <Mark size={30} />
+              <span>
+                Praverse<span style={{ color: "var(--teal)" }}>.</span>
+              </span>
+            </h2>
             <p>
-              Engineering human-centered intelligence. Enterprise-grade AI/ML systems across healthcare,
-              pharma, robotics, infrastructure, and advanced future-tech domains.
+              {company.legalName} · Registered in India
+              <br />
+              <Verify id="registered-address" />
+              <br />
+              <Verify id="cin" />
             </p>
-            <div className="foot-contact">
-              <a href={`mailto:${site.email}`}>{site.email}</a>
-              <a href={`tel:${site.tel}`}>{site.phone}</a>
-              <span>{site.location}</span>
-            </div>
+            <dl className="footer-contact">
+              <div>
+                <dt>Enquiries</dt>
+                <dd>
+                  <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>Careers</dt>
+                <dd>
+                  <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>
+                </dd>
+              </div>
+            </dl>
           </div>
-          <div>
-            <h5>Explore</h5>
+
+          <nav aria-label="Work">
+            <h3>Work</h3>
             <ul>
-              <li><Link href="/foundry#domains">Innovation Domains</Link></li>
-              <li><Link href="/healthmate">MENNIE</Link></li>
-              <li><Link href="/pharma">Pharma &amp; Regulatory AI</Link></li>
-              <li><Link href="/photonics">Photonics</Link></li>
-              <li><Link href="/research">Research &amp; Labs</Link></li>
-              <li><Link href="/insights">Insights</Link></li>
-              <li><Link href="/innovate">Innovate</Link></li>
+              {footerNav.work.map((i) => (
+                <li key={i.href}>
+                  <Link href={i.href}>{i.label}</Link>
+                </li>
+              ))}
             </ul>
-          </div>
-          <div>
-            <h5>Capabilities</h5>
+          </nav>
+
+          <nav aria-label="Company">
+            <h3>Company</h3>
             <ul>
-              <li><Link href="/#capabilities">AI/ML Systems</Link></li>
-              <li><Link href="/#agents">AI Agents</Link></li>
-              <li><Link href="/#capabilities">Vision &amp; Imaging</Link></li>
-              <li><Link href="/#frontier">Frontier Lab</Link></li>
+              {footerNav.company.map((i) => (
+                <li key={i.href}>
+                  <Link href={i.href}>{i.label}</Link>
+                </li>
+              ))}
             </ul>
-          </div>
-          <div>
-            <h5>Company</h5>
+          </nav>
+
+          <nav aria-label="Legal">
+            <h3>Legal</h3>
             <ul>
-              <li><Link href="/foundry">About</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><a href={site.linkedIn} target="_blank" rel="noopener">LinkedIn</a></li>
-              <li><Link href="/foundry#legal">Terms &amp; Privacy</Link></li>
+              {footerNav.legal.map((i) => (
+                <li key={i.href}>
+                  <Link href={i.href}>{i.label}</Link>
+                </li>
+              ))}
+              {isWithheld("linkedin-company") ? null : (
+                <li>
+                  <a href={company.linkedIn} target="_blank" rel="noreferrer">
+                    LinkedIn
+                  </a>
+                </li>
+              )}
             </ul>
-          </div>
+          </nav>
         </div>
-        <div className="foot-bottom">
-          <span>© 2026 Praverse Tech Pvt Ltd. All rights reserved.</span>
-          <span className="mono">INTELLIGENCE · ENGINEERED</span>
+
+        <div className="wm-wrap">
+          <FooterWordmark />
         </div>
-      </div>
-      <div className="bwm-outer">
-        <TextHoverEffect text="PRAVERSE" />
+
+        <div className="footer-legal">
+          <span>
+            © {year} {company.legalName}
+          </span>
+          <span>{company.hq}</span>
+        </div>
       </div>
     </footer>
   );

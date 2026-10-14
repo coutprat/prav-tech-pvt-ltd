@@ -1,14 +1,31 @@
-.next/
 node_modules/
-*.tsbuildinfo
-.claude/
+.next/
 out/
-dist/
-coverage/
+*.tsbuildinfo
+.env*.local
+.DS_Store
+
+# QA output: large binaries, regenerate with scripts/qa/*
+qa/*.png
+qa/scroll/
+qa/*.report.html
+qa/*.report.json
+
+# Secrets — .env.example documents the shape, never the values
 .env
 .env.local
-.env.*.local
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+.env*.local
+
+# Tooling worktrees
+.claude/
+
+# Large incoming source media; the processed outputs are committed
+assets-incoming/*.mp4
+assets-incoming/*.jpg
+assets-incoming/*.mov
+
+# Raw Lighthouse / trace JSON. The numbers that matter are written up in
+# qa/LIGHTHOUSE.md and REDESIGN_OVERVIEW.md; the dumps are 8MB of noise.
+qa/lh-*.json
+qa/t-*.json
+qa/perf/*.json

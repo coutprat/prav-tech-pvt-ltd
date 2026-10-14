@@ -1,0 +1,199 @@
+/**
+ * Registry of every unverified claim on the site.
+ *
+ * Nothing in here is treated as fact. Each entry carries the text we would
+ * *like* to show once it is confirmed (`claim`) and the text that actually
+ * ships until then (`fallback`). <Verify> renders `fallback` in production and
+ * outlines it in yellow in development so it is impossible to miss.
+ *
+ * Flip `confirmed: true` (and fill in the real value) only with a source.
+ */
+
+export type VerifyItem = {
+  /** Stable key, used as the <Verify id>. */
+  id: string;
+  /** Where it appears, for the open-items report. */
+  where: string;
+  /** What we want to say once confirmed. */
+  claim: string;
+  /** What ships until someone confirms it. */
+  fallback: string;
+  /** What exactly needs checking. */
+  needs: string;
+  confirmed: boolean;
+  /** Where a confirmed value came from. Required whenever confirmed is true. */
+  source?: string;
+};
+
+export const verifyItems = [
+  {
+    id: "cin",
+    where: "Footer — company identity",
+    claim: "CIN U62020GJ2026PTC175386",
+    fallback: "CIN available on request",
+    needs:
+      "Read off the owner's own signage artwork. Worth one check against the MCA register before launch, since a wrong CIN is a wrong legal identifier. The code decomposes consistently: U62020 (computer programming and consultancy), GJ (Gujarat), 2026 (incorporation year, matching company.founded), PTC (private limited).",
+    confirmed: true,
+    source: "Owner-supplied company signage artwork (PRAVERSE BOARD.png), October 2026"
+  },
+  {
+    id: "registered-address",
+    where: "Footer — company identity",
+    claim:
+      "Office No. 413, Tower 2, PL No. 71, Prince Cube, Nr. Gangotri Exotica, T B Sanatorium, Vadodara 390021, Gujarat, India",
+    fallback: "Vadodara, Gujarat, India",
+    needs:
+      "Read off the owner's own signage artwork. Check it matches the address as filed before launch.",
+    confirmed: true,
+    source: "Owner-supplied company signage artwork (PRAVERSE BOARD.png), October 2026"
+  },
+  {
+    id: "publications-count",
+    where: "Home ProofBar · Research",
+    claim: "Peer-reviewed publications",
+    fallback: "Peer-reviewed publications",
+    needs: "Exact count plus links/DOIs for each venue.",
+    confirmed: false
+  },
+  {
+    id: "aec-reach",
+    where: "Photonics — portfolio",
+    claim: "AEC: up to 9 m at 800G (partner specification)",
+    fallback: "AEC: up to 9 m at 800G (partner specification)",
+    needs: "Confirm the 9 m figure against the partner datasheet.",
+    confirmed: false
+  },
+  {
+    id: "dme-accuracy",
+    where: "Research — track record",
+    claim: "Reported 98% accuracy",
+    fallback: "Results reported in the published paper",
+    needs: "Check the 98% figure against the paper, including the dataset it refers to.",
+    confirmed: false
+  },
+  {
+    id: "netra-sakhi-scopus",
+    where: "Research — track record",
+    claim: "Scopus-indexed",
+    fallback: "Published at a peer-reviewed conference",
+    needs: "Confirm Scopus indexing and supply the link.",
+    confirmed: false
+  },
+  {
+    id: "intel-collaboration",
+    where: "Company — Pratham",
+    claim: "Intel collaboration",
+    fallback: "",
+    needs:
+      "Exact nature of the Intel relationship: programme, partnership, or use of tools? Omitted entirely until confirmed.",
+    confirmed: false
+  },
+  {
+    id: "pps-cost",
+    where: "Company — Vishal",
+    claim: "PPS cost reduced from USD 25,000 to USD 1,200",
+    fallback: "",
+    needs: "Primary source for the cost figures. Omitted entirely until confirmed.",
+    confirmed: false
+  },
+  {
+    id: "ashwani-title",
+    where: "Company — Ashwani",
+    claim: "Advisor, Praverse Tech",
+    fallback: "Managing Director, Nexgen Pharma Solutions Pvt Ltd",
+    needs: "Confirm what title Ashwani should carry on this site.",
+    confirmed: false
+  },
+  {
+    id: "linkedin-people",
+    where: "Company — PersonCard links",
+    claim: "Individual LinkedIn profile URLs",
+    fallback: "",
+    needs: "LinkedIn URLs for all three people. Links omitted until supplied.",
+    confirmed: false
+  },
+  {
+    id: "founded-vs-incorporated",
+    where: "Company — intro; Home — leadership; footer",
+    claim: "The idea began in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
+    fallback: "The idea began in 2023; Praverse Tech Pvt Ltd incorporated in 2026",
+    needs:
+      "Resolved by the owner: the work began in 2023 as research, and the private limited company was incorporated in 2026, which is what the CIN encodes. The site now says both rather than only the first, which is what a US or EU buyer's diligence would otherwise have caught.",
+    confirmed: true,
+    source: "Owner, October 2026"
+  },
+  {
+    id: "dpa",
+    where: "Trust — in an engagement",
+    claim: "We sign a data processing agreement before any client data is shared",
+    fallback: "",
+    needs:
+      "Do you have a DPA you are willing to sign, and who signs it? Enterprise and pharma procurement will ask for one before a pilot, so a yes here removes a real blocker. Withheld entirely until confirmed - claiming a DPA you do not have is worse than saying nothing.",
+    confirmed: false
+  },
+  {
+    id: "client-data-training",
+    where: "Trust — in an engagement",
+    claim: "Client data is never used to train models for anyone else",
+    fallback: "",
+    needs:
+      "Confirm this is actually your policy and that it holds for every vendor in your stack, including any model provider you call. It is the single most common question an enterprise AI buyer asks, and the one where a vague answer loses the deal. Withheld until confirmed.",
+    confirmed: false
+  },
+  {
+    id: "data-residency",
+    where: "Trust — in an engagement",
+    claim: "Client data can be kept inside India for engagements that require it",
+    fallback: "",
+    needs:
+      "Confirm what you can actually commit to on residency, and under which conditions. This is load-bearing for the sovereign AI positioning, so it should be exact rather than aspirational.",
+    confirmed: false
+  },
+  {
+    id: "security-contact",
+    where: "Trust — reporting a problem",
+    claim: "security@praversetech.com",
+    fallback: "inquiry@praversetech.com",
+    needs:
+      "Create security@ and confirm who monitors it. Until then the page points at the enquiry inbox, which is honest but slower than a security report deserves.",
+    confirmed: false
+  },
+  {
+    id: "photonics-india-qualification",
+    where: "Photonics — Phase 1",
+    claim: "India-side programming, testing, labelling and qualification are live today",
+    fallback: "India-side programming, testing, labelling and qualification",
+    needs:
+      "Confirm which of these are actually running today versus planned, so Phase 1 does not overstate current capability.",
+    confirmed: false
+  },
+  {
+    id: "careers-compensation",
+    where: "Careers — open role",
+    claim: "Compensation range for the Full Stack Engineer role",
+    fallback: "Discussed at offer stage",
+    needs:
+      "Salary band, and whether the intern track is paid. Nothing about pay, stack, benefits or other roles was supplied, so none is stated.",
+    confirmed: false
+  },
+  {
+    id: "linkedin-company",
+    where: "Footer",
+    claim: "Company LinkedIn page",
+    fallback: "",
+    needs: "Confirm the company LinkedIn URL.",
+    confirmed: false
+  }
+] as const satisfies readonly VerifyItem[];
+
+export type VerifyId = (typeof verifyItems)[number]["id"];
+
+const byId = new Map(verifyItems.map((i) => [i.id, i as VerifyItem]));
+
+export function getVerifyItem(id: VerifyId): VerifyItem {
+  const item = byId.get(id);
+  if (!item) throw new Error(`Unknown verify id: ${id}`);
+  return item;
+}
+
+export const openVerifyItems = verifyItems.filter((i) => !i.confirmed);

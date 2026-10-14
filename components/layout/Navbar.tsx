@@ -1,66 +1,109 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { List, X } from "@phosphor-icons/react";
+import { Mark } from "@/components/ui/Mark";
 import Link from "next/link";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/layout/theme";
+import { useScrolled } from "@/lib/useMediaQuery";
 import { navigation } from "@/data/navigation";
-import ThemeToggleSwitch from "@/components/ui/ThemeToggleSwitch";
 
 export function Navbar() {
+  const pathname = usePathname();
+  const scrolled = useScrolled(8);
+  // The drawer remembers which route it was opened on, so a navigation closes
+  // it by derivation rather than by an effect that fires after paint.
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const open = openedAt === pathname;
+  const setOpen = (next: boolean) => setOpenedAt(next ? pathname : null);
+
   useEffect(() => {
-    const nav = document.getElementById("nav");
-    if (!nav) return;
-    let lastY = window.scrollY;
-    let ticking = false;
-
-    const update = () => {
-      const y = window.scrollY;
-      if (y < 80) {
-        nav.classList.remove("nav-hidden");
-      } else if (y > lastY + 6) {
-        nav.classList.add("nav-hidden");
-        // close mobile menu when hiding
-        document.getElementById("navLinks")?.classList.remove("open");
-      } else if (y < lastY - 6) {
-        nav.classList.remove("nav-hidden");
-      }
-      lastY = y;
-      ticking = false;
+    document.body.style.overflow = open ? "hidden" : "";
+    // The WhatsApp button watches this so it cannot sit on top of the menu.
+    document.documentElement.setAttribute("data-nav-open", String(open));
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.removeAttribute("data-nav-open");
     };
+  }, [open]);
 
-    const onScroll = () => {
-      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenedAt(null);
     };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const isCurrent = (href: string) =>
+    pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 
   return (
-    <nav id="nav">
-      <Link href="/" className="logo">
-        <Image src="/logo.svg" className="logo-mark" alt="PraverseTech" width={28} height={28} priority />
-        PraverseTech
-      </Link>
-      <ul id="navLinks">
-        {navigation.map((item) => (
-          <li key={item.href}>
-            <Link href={item.href}>{item.label}</Link>
-          </li>
-        ))}
-        <li className="nav-cta-mobile">
-          <Link href="/start-a-project">Start a Project →</Link>
-        </li>
-      </ul>
-      <ThemeToggleSwitch />
-      <Link href="/start-a-project" className="btn btn-primary">
-        Start a Project
-      </Link>
-      <button id="menuBtn" aria-label="Menu" type="button">
-        <span />
-        <span />
-        <span />
-      </button>
-    </nav>
+    <header className="nav" data-scrolled={scrolled}>
+      <nav className="wrap nav-inner" aria-label="Main">
+        <Link className="nav-logo" href="/">
+          <Mark size={26} />
+          <span>
+            Praverse<span className="dot">.</span>
+          </span>
+        </Link>
+
+        <ul className="nav-links">
+          {navigation.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="nav-actions">
+          <ThemeToggle />
+          <Link className="btn btn-primary nav-cta" href="/start-a-project">
+            Start a project
+          </Link>
+          <button
+            type="button"
+            className="icon-btn menu-btn"
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-controls="nav-drawer"
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            {open ? (
+              <X size={18} weight="bold" aria-hidden="true" />
+            ) : (
+              <List size={18} weight="bold" aria-hidden="true" />
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {open ? (
+        <div className="nav-drawer" id="nav-drawer">
+          <ul>
+            {navigation.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isCurrent(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link className="btn btn-primary" href="/start-a-project">
+            Start a project
+          </Link>
+        </div>
+      ) : null}
+    </header>
   );
 }
