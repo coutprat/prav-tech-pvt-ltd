@@ -103,6 +103,12 @@ const nextConfig = {
       { source: "/innovate", destination: "/company", statusCode: 301 },
       { source: "/insights", destination: "/company", statusCode: 301 },
 
+      // The CPHI Milan 2026 stand page, from the site this one replaces. The
+      // show ran 6-8 October 2026 and is over, so the page itself has had its
+      // day — but the URL was on show material and posts, and a dead link is
+      // a worse answer than the page that carries the same argument.
+      { source: "/cphi", destination: "/pharma", statusCode: 301 },
+
       // the Orbit experience is not part of this redesign
       { source: "/orbit", destination: "/", statusCode: 307 }
     ];

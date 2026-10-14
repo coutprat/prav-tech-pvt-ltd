@@ -47,6 +47,7 @@ const REDIRECTS = [
   ["/research", "/company"],
   ["/innovate", "/company"],
   ["/insights", "/company"],
+  ["/cphi", "/pharma"],
   ["/orbit", "/"]
 ];
 

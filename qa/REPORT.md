@@ -1,14 +1,14 @@
 # QA report
 
 Base: http://localhost:3000
-Generated: 2026-10-14T12:17:29.494Z
+Generated: 2026-10-14T12:41:38.603Z
 
 ## Summary
 
 - Screenshots: **208** — 13 pages x {chromium, webkit} x {desktop, mobile} x {light, dark} x {motion, reduced}
 - axe violations: **0 light**, **0 dark**
 - Internal links: 13 checked, **0** broken
-- Redirects: 9 checked, **0** wrong
+- Redirects: 10 checked, **0** wrong
 - Page/console errors: **0**
 
 ## Accessibility (axe, WCAG 2.2 AA)
@@ -57,6 +57,7 @@ Generated: 2026-10-14T12:17:29.494Z
 | /research | /company | /company | yes |
 | /innovate | /company | /company | yes |
 | /insights | /company | /company | yes |
+| /cphi | /pharma | /pharma | yes |
 | /orbit | / | / | yes |
 
 ## Internal links
