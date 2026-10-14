@@ -346,16 +346,39 @@ export function ScrollSequence({
         ) : null}
       </div>
 
-      {/* Reduced motion: the same chapters, as plain stacked text. */}
+{/*
+        Reduced motion, and low-power devices, get the same chapters as a
+        designed list rather than as five stacked headings.
+
+        The first chapter is the lead the film opens on, so it reads as a
+        standfirst; the rest are the numbered items it introduces. This used to
+        be `display:grid; gap:32px` and nothing else, which looked like markup
+        nobody had styled — a poor thing to show the people who opted out of
+        the animation, since it is the only version of this section they will
+        ever see.
+      */}
       {chapters.length > 0 && reduced ? (
         <div className="wrap">
-          <div className="chapters" data-static="true">
-            {chapters.map((c) => (
-              <div className="chapter" key={c.title} data-active="true">
-                <h2 className="h3">{c.title}</h2>
-                {c.body ? <p>{c.body}</p> : null}
-              </div>
-            ))}
+          <div className="chapters-static">
+            <div className="cs-lead">
+              <h2>{chapters[0].title}</h2>
+              {chapters[0].body ? <p>{chapters[0].body}</p> : null}
+            </div>
+            {chapters.length > 1 ? (
+              <ol className="cs-list">
+                {chapters.slice(1).map((c, i) => (
+                  <li key={c.title}>
+                    <span className="cs-n mono">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="cs-body">
+                      <h3>{c.title}</h3>
+                      {c.body ? <p>{c.body}</p> : null}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            ) : null}
           </div>
         </div>
       ) : null}

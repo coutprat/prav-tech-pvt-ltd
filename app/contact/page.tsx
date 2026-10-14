@@ -3,6 +3,7 @@ import { pageMeta } from "@/lib/seo";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
+import { Aurora } from "@/components/ui/Aurora";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
 
@@ -14,7 +15,13 @@ export const metadata: Metadata = pageMeta({
 
 export default function ContactPage() {
   return (
-    <section className="page-head">
+    <section className="page-head" style={{ position: "relative" }}>
+      <Aurora
+        blobs={[
+          { color: "var(--acc-ent)", x: 14, y: 26, size: 460 },
+          { color: "var(--teal)", x: 86, y: 62, size: 420 }
+        ]}
+      />
       <div className="wrap">
         <SectionLabel accent="teal">Contact</SectionLabel>
         <Headline as="h1" className="display">
@@ -42,7 +49,7 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div>
-                <dt>Office</dt>
+                <dt>Registered office</dt>
                 <dd>{company.hq}</dd>
               </div>
               <div>

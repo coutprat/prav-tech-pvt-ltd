@@ -27,20 +27,67 @@ export function Footprint() {
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
+      const nums = q<HTMLElement>(".fp-n");
+
       if (prefersReducedMotion()) {
         gsap.set(q(".fp-fill"), { scaleX: 1 });
+        nums.forEach((el) => {
+          el.textContent = el.dataset.to ?? el.textContent;
+        });
         return;
       }
+
       gsap.set(q(".fp-fill"), { scaleX: 0, transformOrigin: "left center" });
-      return afterPaint(() =>
-        gsap.to(q(".fp-fill"), {
+      nums.forEach((el) => {
+        el.textContent = "0";
+      });
+
+      return afterPaint(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: root.current, start: "top 72%" }
+        });
+
+        tl.to(q(".fp-fill"), {
           scaleX: 1,
           duration: 0.9,
           ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: { trigger: root.current, start: "top 72%" }
-        })
-      );
+          stagger: 0.08
+        });
+
+        /*
+         * The figures count up alongside their own bar.
+         *
+         * Not decoration: these are the numbers the whole section is about,
+         * and watching 790 climb past the others is the point being made. The
+         * counter is driven off a plain object and written to textContent, so
+         * it costs no re-renders, and the end value comes from data-to rather
+         * than from the tween so it can never land on a rounding error.
+         */
+        nums.forEach((el, i) => {
+          const to = Number(el.dataset.to ?? 0);
+          const counter = { v: 0 };
+          tl.to(
+            counter,
+            {
+              v: to,
+              duration: 0.9,
+              ease: "power3.out",
+              onUpdate: () => {
+                el.textContent = String(Math.round(counter.v));
+              },
+              onComplete: () => {
+                el.textContent = String(to);
+              }
+            },
+            i * 0.08
+          );
+        });
+
+        return () => {
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
+      });
     },
     { scope: root }
   );
@@ -58,7 +105,9 @@ export function Footprint() {
               <span className="fp-fill" style={{ width: `${(c.mw / MAX) * 100}%` }} />
             </span>
             <span className="fp-mw num">
-              {c.mw}
+              <span className="fp-n" data-to={c.mw}>
+                {c.mw}
+              </span>
               <small> {unit}</small>
             </span>
           </li>

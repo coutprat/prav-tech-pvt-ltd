@@ -508,32 +508,48 @@ textarea {
    PROOF BAR
    ========================================================================== */
 
+/*
+ * The first credential a visitor meets, so it should not read like a footer
+ * disclaimer.
+ *
+ * It used to be one flex line of uppercase mono separated by middots, which
+ * ran on, wrapped mid-item and left an orphan on a second row. A grid gives
+ * each claim its own cell and its own rule, so the strip has rhythm and wraps
+ * without stranding anything.
+ */
 .proof-bar {
   border-block: 1px solid var(--line);
-  padding-block: 20px;
+  padding-block: 32px;
+  background: var(--paper);
 }
 .proof-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+  gap: 26px 36px;
   list-style: none;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-2);
+  margin: 0;
+  padding: 0;
 }
 .proof-list li {
-  display: flex;
-  align-items: center;
-  gap: 28px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding-top: 14px;
+  position: relative;
 }
-.proof-list li:not(:last-child)::after {
+.proof-list li::before {
   content: "";
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--line-strong);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--teal-ink);
+  opacity: 0.75;
 }
 
 /* ==========================================================================
@@ -784,10 +800,50 @@ textarea {
   transition: box-shadow 0.35s ease, border-color 0.35s ease,
     transform 0.35s ease;
 }
+/*
+ * Each card already carries its line's accent as --acc, and until now it did
+ * nothing on hover: four cards that are visually identical to a reader moving
+ * a cursor across them. A rule wipes in along the top edge in that line's own
+ * colour, so the four lines start to feel like four different things before
+ * you have read a word of them.
+ */
+.line-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--acc, var(--teal-ink));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-out);
+}
+.line-card:hover::before,
+.line-card:focus-visible::before {
+  transform: scaleX(1);
+}
 .line-card:hover {
-  box-shadow: var(--shadow-2);
-  border-color: var(--line-strong);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-3);
+  border-color: color-mix(in srgb, var(--acc, var(--line-strong)) 42%, var(--line));
+  transform: translateY(-3px);
+}
+.line-card:hover .line-card-n {
+  color: var(--acc, var(--teal-ink));
+}
+.line-card-n {
+  transition: color 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-card,
+  .line-card::before,
+  .line-card-n {
+    transition: none;
+  }
+  .line-card:hover {
+    transform: none;
+  }
 }
 .line-card-n {
   font-family: var(--font-mono);
@@ -1219,16 +1275,83 @@ textarea {
   margin-top: 10px;
 }
 
-/* static fallback: every chapter visible, stacked */
-.chapters[data-static="true"] {
-  position: static;
-  max-width: none;
-  display: grid;
-  gap: 32px;
-  padding: 48px var(--gutter);
+/*
+ * The hero chapters for anyone who will not see them animate.
+ *
+ * Reduced motion and low-power devices get this instead of the film, so it is
+ * the only version of the section they ever see — it has to be designed, not
+ * merely present.
+ */
+.chapters-static {
+  padding: 72px 0 8px;
 }
-.chapters[data-static="true"] .chapter {
-  opacity: 1;
+.cs-lead {
+  max-width: 54ch;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+}
+.cs-lead h2 {
+  margin: 0;
+  font-size: clamp(30px, 4.4vw, 50px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  color: var(--ink);
+}
+.cs-lead p {
+  margin: 16px 0 0;
+  font-size: clamp(16px, 1.7vw, 19px);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.cs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.cs-list li {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 8px;
+  align-items: start;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cs-n {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+  padding-top: 7px;
+}
+.cs-body h3 {
+  margin: 0;
+  font-size: clamp(19px, 2.2vw, 26px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--ink);
+}
+.cs-body p {
+  margin: 8px 0 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+
+@media (min-width: 900px) {
+  .cs-list li {
+    grid-template-columns: 72px 1fr 1fr;
+    gap: 28px;
+    align-items: baseline;
+  }
+  .cs-body {
+    display: contents;
+  }
+  .cs-body p {
+    margin: 0;
+  }
 }
 
 /* ==========================================================================
@@ -2242,21 +2365,42 @@ textarea {
     gap: 72px;
   }
 }
+/*
+ * Ruled rows rather than four stacked label/value pairs floating in space.
+ * On a page this short, the details column is half the composition, and it
+ * was reading as leftover text beside the form.
+ */
 .contact-details {
-  margin-top: 36px;
+  margin-top: 40px;
   display: grid;
-  gap: 20px;
+  border-top: 1px solid var(--line);
+}
+.contact-details > div {
+  display: grid;
+  gap: 4px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 560px) {
+  .contact-details > div {
+    grid-template-columns: 150px 1fr;
+    gap: 20px;
+    align-items: baseline;
+  }
 }
 .contact-details dt {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-2);
-  margin-bottom: 5px;
+  margin: 0;
 }
 .contact-details dd {
-  font-size: 17px;
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--ink);
 }
 
 /* ==========================================================================
@@ -5466,4 +5610,15 @@ body::before {
   .card:hover {
     transform: none;
   }
+}
+
+/*
+ * The counting figures need a reserved width, or every row shifts sideways as
+ * the digits climb from 0 to 790.
+ */
+.fp-n {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
