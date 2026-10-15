@@ -55,6 +55,7 @@ export function HomeHero({
       alt="A white ceramic core on a plinth. An orbital ring draws around it and four modules dock onto the ring in turn, each lighting its own colour: violet Enterprise AI, emerald Pharma AI, sky Healthcare AI, amber Photonics."
       scrollLength={420}
       frameRef={frameRef}
+      autoplay
       overlay={
         <>
           <HomeRingOverlay

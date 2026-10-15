@@ -62,6 +62,7 @@ export function ScrollSequence({
   alt,
   scrollLength = 400,
   frameRef,
+  autoplay = false,
   overlay
 }: {
   desktop: FrameSet;
@@ -78,6 +79,13 @@ export function ScrollSequence({
   scrollLength?: number;
   /** Written on every scrub tick so an overlay can track the render. */
   frameRef?: RefObject<number>;
+  /**
+   * Play the sequence on its own until the reader scrolls, then hand the
+   * playhead back to the scroll. For the hero, where a scrubbed sequence
+   * sitting on frame one is indistinguishable from a still that failed to
+   * load.
+   */
+  autoplay?: boolean;
   /** Rendered inside the pinned stage, above the canvas. */
   overlay?: ReactNode;
 }) {
@@ -133,6 +141,10 @@ export function ScrollSequence({
 
       paintedRef.current = false;
       setPainted(false);
+
+      // Assigned further down, once the playhead state exists. The loader runs
+      // before that point, so it calls through this rather than naming it.
+      let onFrameStored: (() => void) | null = null;
       // ImageBitmap, not HTMLImageElement: createImageBitmap decodes off the
       // main thread, so scrubbing never stalls on a frame that has arrived but
       // not yet been decoded. Falls back to Image() where it is unavailable.
@@ -261,6 +273,7 @@ export function ScrollSequence({
         images[i] = frame;
         loaded.add(i);
         evict();
+        onFrameStored?.();
         // Redraw if this is what we are currently meant to be showing.
         if (Math.abs(i - current) <= 1) draw(current);
       };
@@ -357,6 +370,96 @@ export function ScrollSequence({
       let tween: gsap.core.Tween | null = null;
       let activeRef = 0;
 
+      /* -------------------------------------------------------- autoplay */
+
+      /**
+       * The hero plays itself until the reader does something.
+       *
+       * Driven from a separate object rather than from `state.frame`: the
+       * scrub tween already owns that property, and two tweens writing one
+       * value is how you get a fight nobody can see in the code. This one
+       * advances, then copies across.
+       */
+      let playing = false;
+      let auto: gsap.core.Tween | null = null;
+      const autoState = { f: 0 };
+
+      const paint = () => {
+        current = Math.round(state.frame);
+        if (frameRef) frameRef.current = current;
+        draw(current);
+        if (!images[current]) {
+          // Pull in what is coming, not what has been: this is running
+          // forwards, so the next frames are the ones about to be wanted.
+          for (const i of [current, current + 1, current + 2]) {
+            if (i >= 0 && i < set.count) void load(i);
+          }
+        }
+        const p = current / Math.max(1, set.count - 1);
+        const idx = chapters.findIndex((c) => p >= c.from && p < c.to);
+        const next = idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx;
+        if (next !== activeRef) {
+          activeRef = next;
+          setActive(next);
+        }
+      };
+
+      /** The reader has taken over; ease to where their scroll says we are. */
+      const handOver = () => {
+        if (!playing) return;
+        auto?.kill();
+        auto = null;
+        const target = (tween?.scrollTrigger?.progress ?? 0) * (set.count - 1);
+        // Not a cut. At the top of the page the scroll position maps to frame
+        // zero, so releasing control outright would snap the hero backwards
+        // through everything it had just played.
+        gsap.to(state, {
+          frame: target,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: true,
+          onUpdate: paint,
+          onComplete: () => {
+            playing = false;
+          }
+        });
+      };
+
+      const startAutoplay = () => {
+        if (!autoplay || playing || auto || disposed) return;
+        // Enough decoded to run without stuttering through the fallback.
+        if (loaded.size < Math.min(10, set.count)) return;
+        playing = true;
+        auto = gsap.to(autoState, {
+          f: set.count - 1,
+          duration: 9,
+          ease: "none",
+          repeat: -1,
+          onUpdate: () => {
+            state.frame = autoState.f;
+            paint();
+          }
+        });
+      };
+
+      // A plain scroll listener is no good: pinning this section fires one
+      // during load. The handover is a distance, or direct input, whichever
+      // comes first.
+      const startY = window.scrollY;
+      const onScroll = () => {
+        if (Math.abs(window.scrollY - startY) > 8) handOver();
+      };
+      const intents = ["wheel", "touchmove", "keydown"] as const;
+
+      if (autoplay) {
+        onFrameStored = startAutoplay;
+        startAutoplay();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        for (const ev of intents) {
+          window.addEventListener(ev, handOver, { once: true, passive: true });
+        }
+      }
+
       // Deferred past first paint: creating a pinned ScrollTrigger forces a
       // full-page layout, and useGSAP runs before the browser paints.
       const cancel = afterPaint(() => {
@@ -378,6 +481,7 @@ export function ScrollSequence({
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
+              if (playing) return;
               const p = self.progress;
               const idx = chapters.findIndex((c) => p >= c.from && p < c.to);
               const next = idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx;
@@ -389,6 +493,7 @@ export function ScrollSequence({
             }
           },
           onUpdate: () => {
+            if (playing) return;
             current = Math.round(state.frame);
             if (frameRef) frameRef.current = current;
             draw(current);
@@ -406,6 +511,10 @@ export function ScrollSequence({
 
       return () => {
         disposed = true;
+        onFrameStored = null;
+        auto?.kill();
+        window.removeEventListener("scroll", onScroll);
+        for (const ev of intents) window.removeEventListener(ev, handOver);
         cancel();
         // ImageBitmaps hold GPU memory until closed.
         for (const f of images) {
