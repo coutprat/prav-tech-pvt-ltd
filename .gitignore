@@ -29,3 +29,6 @@ assets-incoming/*.mov
 qa/lh-*.json
 qa/t-*.json
 qa/perf/*.json
+
+# Decks built for selective distribution, not for publishing on the site.
+/deliverables/
