@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
-import { gsap } from "@/lib/gsap";
+import { gsap, observeVisible } from "@/lib/gsap";
 import type { Tracks } from "@/components/motion/SequenceOverlay";
 import { fetchTracks } from "@/lib/tracks";
 
@@ -109,11 +109,27 @@ export function HomeHeroLabels({
       root.querySelector<HTMLElement>(`[data-mod="${m.key}"]`)
     );
 
+    // Measured on resize, not per tick: a getBoundingClientRect() after last
+    // tick's transform writes forced a synchronous layout on every frame.
+    let rect = { width: 0, height: 0 };
+    const measure = () => {
+      const r = root.getBoundingClientRect();
+      rect = { width: r.width, height: r.height };
+      lastFrame = -1;
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+
+    let lastFrame = -1;
     const tick = () => {
       const tracks = tracksRef.current as unknown as Record<string, Float32Array> | null;
       if (!tracks) return;
+      if (!rect.width) measure();
 
-      const rect = root.getBoundingClientRect();
+      // Nothing moves unless the scrubbed frame does.
+      const current = Math.round(frameRef.current ?? 0);
+      if (current === lastFrame) return;
+      lastFrame = current;
       const [rw, rh] = resRef.current;
       // Match the sequence canvas's contain-fit box.
       const scale = Math.min(rect.width / rw, rect.height / rh);
@@ -122,7 +138,7 @@ export function HomeHeroLabels({
       const ox = (rect.width - dw) / 2;
       const oy = (rect.height - dh) / 2;
 
-      const frame = Math.round(frameRef.current ?? 0);
+      const frame = current;
       const progress = frame / Math.max(1, frameCount - 1);
 
       MODULES.forEach((m, i) => {
@@ -145,8 +161,18 @@ export function HomeHeroLabels({
       });
     };
 
-    gsap.ticker.add(tick);
-    return () => gsap.ticker.remove(tick);
+    let ticking = false;
+    const stopObserving = observeVisible(root, (visible) => {
+      if (visible === ticking) return;
+      ticking = visible;
+      if (visible) gsap.ticker.add(tick);
+      else gsap.ticker.remove(tick);
+    });
+    return () => {
+      stopObserving();
+      ro.disconnect();
+      gsap.ticker.remove(tick);
+    };
   }, [frameRef, frameCount, active]);
 
   if (!active) return null;

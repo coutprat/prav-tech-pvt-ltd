@@ -80,7 +80,34 @@ const nextConfig = {
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "Cross-Origin-Resource-Policy", value: "same-origin" }
         ]
-      }
+      },
+
+      /**
+       * Browser caching for the heavy static media.
+       *
+       * Vercel serves public/ files with `max-age=0, must-revalidate`, so every
+       * visit re-validated every scroll-sequence frame and every film — ~750
+       * requests on a full read — and ScrollSequence's memory cap, which
+       * re-reads evicted frames "from the HTTP cache", was really going back
+       * to the network each time.
+       *
+       * These filenames are not content-hashed, so this is a day of freshness
+       * rather than `immutable`: a re-rendered frame set reaches everyone
+       * within a day without a rename, and stale-while-revalidate means the
+       * refresh after that happens in the background instead of on scroll.
+       * Rename the folder (or the files) if a change has to land instantly.
+       */
+      ...["/media/:path*", "/images/:path*", "/team/:path*", "/partners/:path*", "/og/:path*"].map(
+        (source) => ({
+          source,
+          headers: [
+            {
+              key: "Cache-Control",
+              value: "public, max-age=86400, stale-while-revalidate=2592000"
+            }
+          ]
+        })
+      )
     ];
   },
 

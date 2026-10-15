@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, observeVisible } from "@/lib/gsap";
 import { fetchTracks } from "@/lib/tracks";
 
 /**
@@ -307,9 +307,18 @@ export function SequenceOverlay({
       ctx.globalCompositeOperation = "source-over";
     };
 
-    // Same loop as ScrollTrigger, Lenis and the frame canvas.
-    gsap.ticker.add(tick);
+    // Same loop as ScrollTrigger, Lenis and the frame canvas — but only while
+    // the canvas is on screen. The pulses are time-driven, so this used to
+    // clear and redraw a full-viewport canvas every frame for the whole visit.
+    let ticking = false;
+    const stopObserving = observeVisible(canvas, (visible) => {
+      if (visible === ticking) return;
+      ticking = visible;
+      if (visible) gsap.ticker.add(tick);
+      else gsap.ticker.remove(tick);
+    });
     return () => {
+      stopObserving();
       gsap.ticker.remove(tick);
       window.removeEventListener("resize", resize);
     };

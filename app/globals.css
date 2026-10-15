@@ -2130,9 +2130,7 @@ textarea {
   line-height: 1.12;
   font-weight: 500;
   /* the glass HUD slab */
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
   border: 1px solid var(--glass-line);
   border-left: 2px solid var(--teal-ink);
   border-radius: var(--r-md);
@@ -2971,7 +2969,9 @@ textarea {
   position: absolute;
   display: block;
   border-radius: 50%;
-  filter: blur(70px);
+  /* A radial gradient, not filter: blur(). Four ~500px blurred layers
+     drifting forever kept the GPU re-filtering the hero on every frame; the
+     gradient is the same soft wash, painted once. */
   opacity: 0.13;
   will-change: transform;
   /* cursor reactivity: --mx/--my are set on the parent by Aurora.tsx */
@@ -2984,7 +2984,6 @@ textarea {
 }
 [data-theme="dark"] .aurora span {
   opacity: 0.2;
-  filter: blur(84px);
 }
 
 .aurora-drift span {
@@ -3209,8 +3208,7 @@ body::before {
 }
 .mod-label {
   width: 168px;
-  background: rgba(11, 14, 24, 0.82);
-  backdrop-filter: blur(8px);
+  background: rgba(11, 14, 24, 0.93);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-left: 2px solid var(--acc-pho);
   border-radius: 8px;
@@ -3618,10 +3616,9 @@ body::before {
   color: #c9d4e4;
   max-width: 46ch;
   line-height: 1.7;
-  background: rgba(5, 7, 13, 0.6);
+  background: rgba(5, 7, 13, 0.8);
   padding: 22px 26px;
   border-radius: 12px;
-  backdrop-filter: blur(8px);
 }
 
 /* glass HUD panels at different depths */
@@ -3677,13 +3674,13 @@ body::before {
   right: -34px;
   background: linear-gradient(270deg, transparent, var(--acc-men));
 }
+/* The plates over moving footage are solid enough to read without
+   backdrop-filter, which re-blurs the video underneath on every frame. */
 .film-panel-text {
   font-size: clamp(15px, 1.7vw, 19px);
   line-height: 1.4;
   color: #eaf6ff;
-  background: rgba(10, 18, 32, 0.52);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(10, 18, 32, 0.8);
   border: 1px solid rgba(125, 211, 252, 0.3);
   border-left: 2px solid var(--acc-men);
   border-radius: 12px;
@@ -3705,9 +3702,7 @@ body::before {
   display: inline-block;
   padding: 5px 9px;
   border-radius: 7px;
-  background: rgba(10, 18, 32, 0.62);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 18, 32, 0.84);
 }
 
 /* three surfaces */
@@ -3735,8 +3730,7 @@ body::before {
   opacity: 1;
 }
 .film-surfaces article {
-  background: rgba(10, 18, 32, 0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(10, 18, 32, 0.84);
   border: 1px solid rgba(125, 211, 252, 0.22);
   border-radius: 14px;
   padding: 20px;
@@ -3886,9 +3880,7 @@ body::before {
 }
 .hero-label-body {
   display: block;
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
   border: 1px solid var(--line);
   border-left: 2px solid var(--acc);
   border-radius: 10px;

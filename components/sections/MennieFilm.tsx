@@ -38,16 +38,45 @@ const SURFACES = mennie.surfaces;
 const CINE_FROM = 0.04;
 const CINE_TO = 0.96;
 
+/** Chapter windows. STOPS lists every value the render compares against. */
+const TITLE_TO = 0.1;
+const SCRIM_TO = 0.12;
+const HUD_FROM = 0.4;
+const HUD_TO = 0.72;
+const SURFACES_FROM = 0.74;
+const CAPTION_FROM = 0.93;
+const STOPS = [
+  TITLE_TO,
+  SCRIM_TO,
+  HUD_FROM,
+  ...mennie.hudSteps
+    .slice(1)
+    .map((_, k) => HUD_FROM + ((HUD_TO - HUD_FROM) * (k + 1)) / mennie.hudSteps.length),
+  SURFACES_FROM,
+  CAPTION_FROM
+].sort((a, b) => a - b);
+
+function countPassed(p: number): number {
+  let n = 0;
+  while (n < STOPS.length && p >= STOPS[n]) n++;
+  return n;
+}
+
 export function MennieFilm() {
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
   const [progress, setProgress] = useState(0);
   /** 0..1 within the clip, written on the ticker; never re-renders. */
   const cineRef = useRef(0);
+  const barTop = useRef<HTMLDivElement>(null);
+  const barBottom = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       if (!highPower || prefersReducedMotion()) return;
+
+      let passedRef = -1;
+      let lastBar = -1;
 
       const cancel = afterPaint(() => {
         const st = gsap.to(
@@ -64,7 +93,21 @@ export function MennieFilm() {
               anticipatePin: 1,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
-                setProgress(self.progress);
+                // The letterbox is the only continuous change: write it
+                // straight to the DOM. Everything else flips at fixed stops,
+                // so React re-renders when one is crossed, not every frame.
+                const bar = Math.max(0, 1 - self.progress * 9);
+                if (bar !== lastBar) {
+                  lastBar = bar;
+                  const t = `scaleY(${bar})`;
+                  if (barTop.current) barTop.current.style.transform = t;
+                  if (barBottom.current) barBottom.current.style.transform = t;
+                }
+                const passed = countPassed(self.progress);
+                if (passed !== passedRef) {
+                  passedRef = passed;
+                  setProgress(self.progress);
+                }
                 // The cinematic owns the opening; map its window onto 0..1.
                 cineRef.current = Math.max(
                   0,
@@ -98,11 +141,11 @@ export function MennieFilm() {
   if (highPower !== true) return <MennieHero />;
 
   // chapter windows
-  const title = progress < 0.1;
-  const hudFrom = 0.4;
-  const hudTo = 0.72;
-  const surfacesFrom = 0.74;
-  const captionFrom = 0.93;
+  const title = progress < TITLE_TO;
+  const hudFrom = HUD_FROM;
+  const hudTo = HUD_TO;
+  const surfacesFrom = SURFACES_FROM;
+  const captionFrom = CAPTION_FROM;
 
   const hudStep = Math.min(
     mennie.hudSteps.length - 1,
@@ -117,13 +160,13 @@ export function MennieFilm() {
       <div className="film-stage">
         {/* 2.39:1 letterbox bars, opening as the film starts */}
         <div
+          ref={barTop}
           className="film-bar film-bar-top"
-          style={{ transform: `scaleY(${Math.max(0, 1 - progress * 9)})` }}
           aria-hidden="true"
         />
         <div
+          ref={barBottom}
           className="film-bar film-bar-bottom"
-          style={{ transform: `scaleY(${Math.max(0, 1 - progress * 9)})` }}
           aria-hidden="true"
         />
 
@@ -150,7 +193,7 @@ export function MennieFilm() {
         */}
         <div
           className="film-scrim"
-          data-on={progress >= hudFrom || progress < 0.12}
+          data-on={progress >= hudFrom || progress < SCRIM_TO}
           aria-hidden="true"
         />
 

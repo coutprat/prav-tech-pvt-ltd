@@ -116,10 +116,14 @@ export function ScrollSequence({
       // invisible on a warm cache, a hard black flash on a forced reload over
       // a slow connection. Fill it with paper immediately, and again whenever
       // the backing store is resized, which clears it right back to black.
+      // Read once per mount (the effect re-runs on theme change). draw() used
+      // to call getComputedStyle on every scrub tick, which forces a style
+      // recalc of the page sixty times a second while scrolling.
+      const paper =
+        getComputedStyle(document.body).getPropertyValue("--paper").trim() ||
+        "#eeedea";
       const fillPaper = () => {
-        ctx.fillStyle =
-          getComputedStyle(document.body).getPropertyValue("--paper").trim() ||
-          "#eeedea";
+        ctx.fillStyle = paper;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       };
       fillPaper();
@@ -178,11 +182,26 @@ export function ScrollSequence({
 
       /* ---------------------------------------------------------- drawing */
 
+      // What is on the canvas now, so a scrub tick that resolves to the same
+      // frame (most of them, with snap: "frame") costs nothing.
+      let lastDrawn: Frame | undefined;
+      let lastW = 0;
+      let lastH = 0;
+
       const resize = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const rect = canvas.getBoundingClientRect();
+        // No denser than the frames themselves: a 1600px frame on a 2x
+        // backing store is upscaled either way, and the bigger canvas only
+        // costs fill on every draw. CSS scales it the rest of the way.
+        const dpr = Math.min(
+          window.devicePixelRatio || 1,
+          2,
+          Math.max(1, set.width / Math.max(1, rect.width))
+        );
         canvas.width = Math.round(rect.width * dpr);
         canvas.height = Math.round(rect.height * dpr);
+        // Assigning width/height clears the canvas even when unchanged.
+        lastDrawn = undefined;
         fillPaper();
         draw(current);
       };
@@ -219,9 +238,12 @@ export function ScrollSequence({
         const scale = Math.min(cw / iw, ch / ih);
         const w = iw * scale;
         const h = ih * scale;
-        const styles = getComputedStyle(document.body);
-        ctx.fillStyle = styles.getPropertyValue("--paper").trim() || "#eeedea";
-        ctx.fillRect(0, 0, cw, ch);
+        // Same image at the same size is already on the canvas.
+        if (img === lastDrawn && cw === lastW && ch === lastH) return;
+        lastDrawn = img;
+        lastW = cw;
+        lastH = ch;
+        fillPaper();
         ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
         if (!paintedRef.current) {
           paintedRef.current = true;
@@ -333,6 +355,7 @@ export function ScrollSequence({
 
       const state = { frame: 0 };
       let tween: gsap.core.Tween | null = null;
+      let activeRef = 0;
 
       // Deferred past first paint: creating a pinned ScrollTrigger forces a
       // full-page layout, and useGSAP runs before the browser paints.
@@ -357,7 +380,12 @@ export function ScrollSequence({
             onUpdate: (self) => {
               const p = self.progress;
               const idx = chapters.findIndex((c) => p >= c.from && p < c.to);
-              setActive(idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx);
+              const next = idx < 0 ? (p >= 1 ? chapters.length - 1 : 0) : idx;
+              // Re-render only when the chapter actually changes.
+              if (next !== activeRef) {
+                activeRef = next;
+                setActive(next);
+              }
             }
           },
           onUpdate: () => {

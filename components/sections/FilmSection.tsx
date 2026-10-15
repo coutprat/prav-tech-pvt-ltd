@@ -50,6 +50,31 @@ function chapterText(c: Chapter): string {
   return c.parts.map((p) => p.text).join("");
 }
 
+/**
+ * Every progress value the render below compares against. Keep in step with
+ * the `data-on` conditions in the JSX.
+ */
+function chapterStops(chapters: Chapter[]): number[] {
+  const stops: number[] = [];
+  for (const c of chapters) {
+    const [from, to] = c.at;
+    stops.push(from, to);
+    if (c.kind === "beats") {
+      const span = (to - from) / (c.beats.length + 1);
+      c.beats.forEach((_, k) => stops.push(from + span * k));
+    } else if (c.kind === "marked") {
+      c.parts.forEach((_, k) => stops.push(from + (to - from) * (0.18 + k * 0.06)));
+    }
+  }
+  return stops.sort((a, b) => a - b);
+}
+
+function countPassed(stops: number[], p: number): number {
+  let n = 0;
+  while (n < stops.length && p >= stops[n]) n++;
+  return n;
+}
+
 export function FilmSection({
   id,
   video,
@@ -96,6 +121,9 @@ export function FilmSection({
     () => {
       if (!highPower || !ready || prefersReducedMotion()) return;
 
+      const stops = chapterStops(chapters);
+      let passedRef = -1;
+
       return afterPaint(() => {
         const st = gsap.to(
           { v: 0 },
@@ -111,7 +139,13 @@ export function FilmSection({
               anticipatePin: 1,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
-                setProgress(self.progress);
+                // The render only compares progress against fixed stops, so
+                // re-render when one is crossed — not on every scroll frame.
+                const passed = countPassed(stops, self.progress);
+                if (passed !== passedRef) {
+                  passedRef = passed;
+                  setProgress(self.progress);
+                }
                 // A short lead-in and run-out hold the first and last frames
                 // while the opening and closing lines read.
                 clipRef.current = Math.max(

@@ -22,9 +22,15 @@ export function HeroFinalCaption({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    let last = "";
     const tick = () => {
       const p = (frameRef.current ?? 0) / Math.max(1, frameCount - 1);
-      el.dataset.on = String(p > 0.9);
+      const on = String(p > 0.9);
+      // Only touch the DOM when it changes; an attribute write is a style
+      // invalidation even when the value is the same.
+      if (on === last) return;
+      last = on;
+      el.dataset.on = on;
     };
     gsap.ticker.add(tick);
     return () => gsap.ticker.remove(tick);

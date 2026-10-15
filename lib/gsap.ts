@@ -47,4 +47,30 @@ export function afterPaint(cb: () => void): () => void {
   };
 }
 
+/**
+ * Report whether `el` is on (or near) the screen.
+ *
+ * Every ticker callback on this site used to run on every frame for the life
+ * of the page, including canvases several screens away. Each one is cheap on
+ * its own; together, on an ordinary laptop, they were a steady tax on every
+ * scroll frame. Gate per-frame work on this so it only runs where it can be
+ * seen. Returns a disconnect for the effect cleanup.
+ */
+export function observeVisible(
+  el: Element,
+  cb: (visible: boolean) => void,
+  rootMargin = "200px 0px"
+): () => void {
+  if (typeof IntersectionObserver === "undefined") {
+    cb(true);
+    return () => {};
+  }
+  const io = new IntersectionObserver(
+    (entries) => cb(entries[entries.length - 1].isIntersecting),
+    { rootMargin }
+  );
+  io.observe(el);
+  return () => io.disconnect();
+}
+
 export { gsap, ScrollTrigger };

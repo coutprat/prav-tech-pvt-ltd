@@ -24,6 +24,8 @@ type Blob = {
  * Pointer tracking is skipped on touch (no cursor to follow) and under
  * reduced motion, where the blobs are simply static.
  */
+const SOFTEN = 80;
+
 export function Aurora({ blobs }: { blobs: Blob[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -57,13 +59,15 @@ export function Aurora({ blobs }: { blobs: Blob[] }) {
         <span
           key={i}
           style={{
-            background: b.color,
+            // The soft edge the old blur(70px) gave, as a gradient: grown by
+            // the blur radius each side, solid core, fading out to the rim.
+            background: `radial-gradient(closest-side, ${b.color} 30%, transparent)`,
             left: `${b.x}%`,
             top: `${b.y}%`,
-            width: `${b.size}px`,
-            height: `${b.size}px`,
-            marginLeft: `${-b.size / 2}px`,
-            marginTop: `${-b.size / 2}px`,
+            width: `${b.size + SOFTEN * 2}px`,
+            height: `${b.size + SOFTEN * 2}px`,
+            marginLeft: `${-b.size / 2 - SOFTEN}px`,
+            marginTop: `${-b.size / 2 - SOFTEN}px`,
             // Alternating sign gives the layers opposite drift, which reads
             // as depth rather than the whole field sliding together.
             ["--px" as string]: `${(b.parallax ?? 24) * (i % 2 ? -1 : 1)}px`,

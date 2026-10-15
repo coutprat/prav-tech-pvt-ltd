@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState, type ComponentType, type RefObject } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, afterPaint, observeVisible } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
 import { PARTS } from "@/components/three/module-parts";
 
@@ -15,12 +15,15 @@ import { PARTS } from "@/components/three/module-parts";
  * A bare import() inside an event handler is invisible to that machinery, so
  * nothing is fetched until the visitor actually scrolls toward this section.
  */
-type ModuleProps = { explode: number };
+type ModuleProps = { explode: RefObject<number>; labels: boolean; active: boolean };
 
 export function ModuleSection() {
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
-  const [explode, setExplode] = useState(0);
+  /** Written on scroll, read by the scene's own frame loop; never re-renders. */
+  const explode = useRef(0);
+  const [labels, setLabels] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
   const [Scene, setScene] = useState<ComponentType<ModuleProps> | null>(null);
 
   /**
@@ -68,6 +71,13 @@ export function ModuleSection() {
     };
   }, [highPower]);
 
+  // Pause the 3D render loop whenever the section is off screen.
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !Scene) return;
+    return observeVisible(el, setOnScreen, "100px 0px");
+  }, [Scene]);
+
   useGSAP(
     () => {
       if (prefersReducedMotion() || !highPower) return;
@@ -86,7 +96,10 @@ export function ModuleSection() {
               scrub: 0.6,
               anticipatePin: 1,
               invalidateOnRefresh: true,
-              onUpdate: (self) => setExplode(self.progress)
+              onUpdate: (self) => {
+                explode.current = self.progress;
+                setLabels(self.progress > 0.62);
+              }
             }
           }
         );
@@ -132,7 +145,7 @@ export function ModuleSection() {
       <div className="mod-stage">
         <div className="mod-canvas">
           {Scene ? (
-            <Scene explode={explode} />
+            <Scene explode={explode} labels={labels} active={onScreen} />
           ) : (
             <div className="mod-poster" aria-hidden="true" />
           )}

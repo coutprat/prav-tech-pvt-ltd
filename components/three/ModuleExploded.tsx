@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Html, Lightformer } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -72,25 +72,26 @@ function useMaterials() {
 function PartGroup({
   part,
   explode,
+  labels,
   onHover,
   children
 }: {
   part: Part;
-  explode: number;
+  explode: RefObject<number>;
+  labels: boolean;
   onHover: (id: string | null) => void;
   children: React.ReactNode;
 }) {
   const ref = useRef<THREE.Group>(null);
+  const target = useMemo(() => new THREE.Vector3(), []);
 
   useFrame(() => {
     const g = ref.current;
     if (!g) return;
     const [x, y, z] = part.offset;
+    const e = explode.current ?? 0;
     // ease toward the exploded offset
-    g.position.lerp(
-      new THREE.Vector3(x * explode, y * explode, z * explode),
-      0.12
-    );
+    g.position.lerp(target.set(x * e, y * e, z * e), 0.12);
   });
 
   return (
@@ -103,7 +104,7 @@ function PartGroup({
       onPointerOut={() => onHover(null)}
     >
       {children}
-      {explode > 0.62 ? (
+      {labels ? (
         <Html
           position={part.labelAt}
           center
@@ -121,9 +122,10 @@ function PartGroup({
 }
 
 /** Dollies back and tilts down as the stack spreads, keeping it all framed. */
-function CameraRig({ explode }: { explode: number }) {
+function CameraRig({ explode: ref }: { explode: RefObject<number> }) {
   const { camera } = useThree();
   useFrame((_, delta) => {
+    const explode = ref.current ?? 0;
     const z = THREE.MathUtils.lerp(5.4, 7.9, explode);
     const x = THREE.MathUtils.lerp(4.6, 5.2, explode);
     const y = THREE.MathUtils.lerp(2.4, 2.1, explode);
@@ -136,7 +138,7 @@ function CameraRig({ explode }: { explode: number }) {
   return null;
 }
 
-function Module({ explode }: { explode: number }) {
+function Module({ explode, labels }: { explode: RefObject<number>; labels: boolean }) {
   const m = useMaterials();
   const [, setHover] = useState<string | null>(null);
   const root = useRef<THREE.Group>(null);
@@ -151,7 +153,7 @@ function Module({ explode }: { explode: number }) {
 
   return (
     <group ref={root} scale={0.78}>
-      <PartGroup part={PARTS[1]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[1]} explode={explode} labels={labels} onHover={setHover}>
         {/* heat sink: a finned block */}
         <group position={[0, 0.52, 0]}>
           {Array.from({ length: 9 }, (_, i) => (
@@ -165,7 +167,7 @@ function Module({ explode }: { explode: number }) {
         </group>
       </PartGroup>
 
-      <PartGroup part={PARTS[0]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[0]} explode={explode} labels={labels} onHover={setHover}>
         {/* housing: open shell */}
         <mesh position={[0, 0.2, 0]} material={m.darkMetal}>
           <boxGeometry args={[2.2, 0.1, 2.6]} />
@@ -181,7 +183,7 @@ function Module({ explode }: { explode: number }) {
         </mesh>
       </PartGroup>
 
-      <PartGroup part={PARTS[2]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[2]} explode={explode} labels={labels} onHover={setHover}>
         <mesh material={m.pcb}>
           <boxGeometry args={[2.0, 0.07, 2.4]} />
         </mesh>
@@ -193,7 +195,7 @@ function Module({ explode }: { explode: number }) {
         ))}
       </PartGroup>
 
-      <PartGroup part={PARTS[3]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[3]} explode={explode} labels={labels} onHover={setHover}>
         <mesh position={[0, 0.12, 0.25]} material={m.chip}>
           <boxGeometry args={[0.8, 0.16, 0.8]} />
         </mesh>
@@ -202,7 +204,7 @@ function Module({ explode }: { explode: number }) {
         </mesh>
       </PartGroup>
 
-      <PartGroup part={PARTS[4]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[4]} explode={explode} labels={labels} onHover={setHover}>
         <mesh position={[0, 0.1, -0.75]} material={m.chip}>
           <boxGeometry args={[1.2, 0.13, 0.5]} />
         </mesh>
@@ -217,7 +219,7 @@ function Module({ explode }: { explode: number }) {
         ))}
       </PartGroup>
 
-      <PartGroup part={PARTS[5]} explode={explode} onHover={setHover}>
+      <PartGroup part={PARTS[5]} explode={explode} labels={labels} onHover={setHover}>
         <mesh position={[0, 0.16, -1.75]} rotation={[Math.PI / 2, 0, 0]} material={m.fibre}>
           <cylinderGeometry args={[0.035, 0.035, 1.6, 12]} />
         </mesh>
@@ -229,12 +231,33 @@ function Module({ explode }: { explode: number }) {
   );
 }
 
-export function ModuleExploded({ explode }: { explode: number }) {
+/**
+ * `explode` is a ref, read inside useFrame, so scrolling does not re-render
+ * the scene graph through React on every frame. `labels` is the only part of
+ * it React needs to know about. `active` stops the render loop entirely while
+ * the section is off screen; R3F otherwise renders at 60fps for the whole
+ * visit, bloom pass included, whether or not anyone can see it.
+ *
+ * Antialiasing is the composer's job (multisampling below): with
+ * postprocessing on, a default-framebuffer MSAA buffer is paid for and never
+ * shown. 1.5 DPR is visually indistinguishable here, and ~25% fewer pixels
+ * than 1.75 through every pass.
+ */
+export function ModuleExploded({
+  explode,
+  labels,
+  active
+}: {
+  explode: RefObject<number>;
+  labels: boolean;
+  active: boolean;
+}) {
   return (
     <Canvas
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]}
+      frameloop={active ? "always" : "never"}
       camera={{ position: [4.6, 2.4, 5.4], fov: 38 }}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      gl={{ antialias: false, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#0b0e18"]} />
       <ambientLight intensity={0.5} />
@@ -297,8 +320,8 @@ export function ModuleExploded({ explode }: { explode: number }) {
         />
       </Environment>
       <CameraRig explode={explode} />
-      <Module explode={explode} />
-      <EffectComposer>
+      <Module explode={explode} labels={labels} />
+      <EffectComposer multisampling={4}>
         <Bloom intensity={0.55} luminanceThreshold={0.82} mipmapBlur />
       </EffectComposer>
     </Canvas>
