@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type RefObject } from "react";
+import { preload } from "react-dom";
 import { gsap } from "@/lib/gsap";
 
 /**
@@ -42,6 +43,13 @@ export function ScrubVideo({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
+
+  // On the pages where the film is the hero, this poster is the largest thing
+  // on screen and therefore the LCP element — but a `poster` attribute is
+  // discovered only when the <video> is parsed and carries no priority of its
+  // own. Declaring it here puts it in the document head as a high-priority
+  // image, which is the one request on these pages worth hurrying.
+  preload(poster, { as: "image", fetchPriority: "high" });
 
   useEffect(() => {
     const video = ref.current;
@@ -99,6 +107,16 @@ export function ScrubVideo({
     };
     const intents = ["wheel", "touchmove", "keydown"] as const;
 
+    // The element ships as preload="metadata" and is upgraded here, a beat
+    // after mount. Left at "auto" in the markup, the clip began downloading
+    // 159ms into the page and spent the next second competing for bandwidth
+    // with the poster that is the largest thing on screen — which is how
+    // showing the film sooner ended up showing everything else later.
+    const upgrade = window.setTimeout(() => {
+      video.preload = "auto";
+      video.load();
+    }, 450);
+
     if (playUntilScroll) {
       video.addEventListener("canplay", onCanPlay);
       if (video.readyState >= 3) onCanPlay();
@@ -129,6 +147,7 @@ export function ScrubVideo({
       gsap.ticker.remove(tick);
       video.removeEventListener("loadedmetadata", onMeta);
       video.removeEventListener("canplay", onCanPlay);
+      window.clearTimeout(upgrade);
       window.clearTimeout(arm);
       window.removeEventListener("scroll", onScroll);
       for (const ev of intents) window.removeEventListener(ev, handOver);
@@ -142,7 +161,7 @@ export function ScrubVideo({
       poster={poster}
       muted
       playsInline
-      preload="auto"
+      preload="metadata"
       aria-label={alt}
       data-ready={ready}
     >
