@@ -6106,3 +6106,57 @@ body::before {
 .thesis-soon {
   color: var(--ink-2);
 }
+
+/* ==========================================================================
+   SCROLL SEQUENCE ON A PHONE
+   --------------------------------------------------------------------------
+   The frames are 16:9 and a phone held upright is not. Contained inside a
+   full-height stage they painted a 390x219 band in a 390x664 box — about a
+   third of the screen, the rest flat paper, which is what made these pages
+   look unfinished on a phone.
+
+   Cover was not the answer either: filling the height from a 16:9 source
+   means cropping roughly two thirds of the width, and on the home hero that
+   is where the modules dock.
+
+   So the stage becomes two rows instead of one picture: the frame at its own
+   aspect, edge to edge, and the chapter text directly beneath it in the space
+   that used to be empty. The canvas box now matches the frame's aspect, so
+   the draw fits it exactly and there is no letterbox left to see.
+
+   Every overlay that reads frame coordinates — the ring, the packets, the
+   labels — is already desktop-only below 900px, so none of them has to follow
+   this geometry.
+   ========================================================================== */
+@media (max-width: 899px) {
+  .sequence-pin {
+    /* Sized to what is in it — the frame band plus its chapter — rather than
+       to the viewport, which is where the empty space came from. A floor so
+       short chapters still get a stage, and room to breathe under the nav. */
+    height: auto;
+    min-height: 54svh;
+    padding: 18px 0 34px;
+    grid-template-rows: auto auto;
+    align-content: center;
+    justify-items: stretch;
+    gap: 26px;
+  }
+  .sequence-canvas,
+  .sequence-poster {
+    grid-area: 1 / 1;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 900 / 506;
+    object-fit: cover;
+  }
+  .chapters {
+    grid-area: 2 / 1;
+    position: relative;
+    left: auto;
+    bottom: auto;
+    padding: 0 var(--gutter);
+    max-width: none;
+  }
+}
