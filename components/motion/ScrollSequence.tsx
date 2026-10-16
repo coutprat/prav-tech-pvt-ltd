@@ -413,11 +413,15 @@ export function ScrollSequence({
         // Not a cut. At the top of the page the scroll position maps to frame
         // zero, so releasing control outright would snap the hero backwards
         // through everything it had just played.
+        // No overwrite. The scrub tween targets this same property, and
+        // `overwrite: true` killed it outright — so the hero eased to the
+        // scroll position once and then never moved again, however far anyone
+        // scrolled. The scrub is already held off by `playing`, so the two can
+        // share the property for this third of a second without fighting.
         gsap.to(state, {
           frame: target,
           duration: 0.35,
           ease: "power2.out",
-          overwrite: true,
           onUpdate: paint,
           onComplete: () => {
             playing = false;
@@ -445,9 +449,17 @@ export function ScrollSequence({
       // A plain scroll listener is no good: pinning this section fires one
       // during load. The handover is a distance, or direct input, whichever
       // comes first.
-      const startY = window.scrollY;
+      // Baselined after a beat. The router scrolls a newly navigated page to
+      // the top, and that jump is indistinguishable from a reader scrolling
+      // unless you wait for it to finish first.
+      let startY = window.scrollY;
+      let armed = false;
+      const arm = window.setTimeout(() => {
+        startY = window.scrollY;
+        armed = true;
+      }, 500);
       const onScroll = () => {
-        if (Math.abs(window.scrollY - startY) > 8) handOver();
+        if (armed && Math.abs(window.scrollY - startY) > 8) handOver();
       };
       const intents = ["wheel", "touchmove", "keydown"] as const;
 
@@ -512,6 +524,7 @@ export function ScrollSequence({
       return () => {
         disposed = true;
         onFrameStored = null;
+        window.clearTimeout(arm);
         auto?.kill();
         window.removeEventListener("scroll", onScroll);
         for (const ev of intents) window.removeEventListener(ev, handOver);

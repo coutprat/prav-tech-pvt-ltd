@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
@@ -95,31 +95,12 @@ export function FilmSection({
   const root = useRef<HTMLDivElement>(null);
   const highPower = useHighPower();
   const [progress, setProgress] = useState(0);
-  const [ready, setReady] = useState(false);
   /** 0..1 through the clip; written on the ticker, never re-renders. */
   const clipRef = useRef(0);
 
-  /**
-   * Upgrade from the poster to the film on the first sign of scrolling.
-   * Someone who never scrolls never sees a frame of it, so there is no reason
-   * to spend their first paint on two megabytes of video.
-   */
-  useEffect(() => {
-    if (highPower !== true) return;
-    const arm = () => setReady(true);
-    window.addEventListener("scroll", arm, { once: true, passive: true });
-    window.addEventListener("wheel", arm, { once: true, passive: true });
-    window.addEventListener("touchstart", arm, { once: true, passive: true });
-    return () => {
-      window.removeEventListener("scroll", arm);
-      window.removeEventListener("wheel", arm);
-      window.removeEventListener("touchstart", arm);
-    };
-  }, [highPower]);
-
   useGSAP(
     () => {
-      if (!highPower || !ready || prefersReducedMotion()) return;
+      if (!highPower || prefersReducedMotion()) return;
 
       const stops = chapterStops(chapters);
       let passedRef = -1;
@@ -162,7 +143,7 @@ export function FilmSection({
         };
       });
     },
-    { scope: root, dependencies: [highPower, ready] }
+    { scope: root, dependencies: [highPower] }
   );
 
   /** The readable fallback: every chapter, stacked, no motion. */
@@ -196,7 +177,15 @@ export function FilmSection({
     </div>
   );
 
-  if (highPower !== true || !ready || !video) {
+  // Not gated on a scroll any more. Arriving from the navbar used to land
+  // you on the stacked text with no film at all, and then the video would
+  // appear and start the moment you touched the wheel — which reads as the
+  // page having been broken until you nudged it. The film is the section; it
+  // is there on arrival and plays itself until you scroll.
+  //
+  // The stacked version is still the right answer for a device that cannot
+  // carry the footage, or for someone who asked for less motion.
+  if (highPower !== true || !video) {
     return (
       <section className="fs fs-static" aria-label={label}>
         <div className="wrap">{stacked}</div>
@@ -221,6 +210,7 @@ export function FilmSection({
           poster={video.poster}
           progressRef={clipRef}
           alt={video.alt}
+          playUntilScroll
         />
 
         {/* Held back only while something is being read over the footage. */}

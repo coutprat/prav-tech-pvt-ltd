@@ -82,9 +82,20 @@ export function ScrubVideo({
     // handover has to mean "the reader moved the page", which is a distance,
     // not an event. Direct input still counts immediately — a wheel notch or a
     // drag is intent even before the page has travelled 8px.
-    const startY = window.scrollY;
+    // Baselined after a beat, not at mount. Arriving from the navbar, the
+    // router scrolls the new page to the top, and that jump looked exactly
+    // like a reader scrolling — so the clip handed over before it had played
+    // a frame. Framework scrolling happens immediately; a reader does not.
+    // Direct input still counts from the first moment, because a wheel notch
+    // or a drag is unambiguous.
+    let startY = window.scrollY;
+    let armed = false;
+    const arm = window.setTimeout(() => {
+      startY = window.scrollY;
+      armed = true;
+    }, 500);
     const onScroll = () => {
-      if (Math.abs(window.scrollY - startY) > 8) handOver();
+      if (armed && Math.abs(window.scrollY - startY) > 8) handOver();
     };
     const intents = ["wheel", "touchmove", "keydown"] as const;
 
@@ -118,6 +129,7 @@ export function ScrubVideo({
       gsap.ticker.remove(tick);
       video.removeEventListener("loadedmetadata", onMeta);
       video.removeEventListener("canplay", onCanPlay);
+      window.clearTimeout(arm);
       window.removeEventListener("scroll", onScroll);
       for (const ev of intents) window.removeEventListener(ev, handOver);
     };
