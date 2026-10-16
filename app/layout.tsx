@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { themeScript } from "@/components/layout/theme";
+import { Welcome, welcomeScript } from "@/components/layout/Welcome";
 import { company } from "@/content/company";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -53,9 +54,12 @@ export default function RootLayout({
       <head>
         {/* Sets the theme before first paint so dark loads don't flash light. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Decides before paint whether the opening curtain is shown at all. */}
+        <script dangerouslySetInnerHTML={{ __html: welcomeScript }} />
         <OrganizationJsonLd />
       </head>
       <body>
+        <Welcome />
         <a className="skip-link" href="#main">
           Skip to content
         </a>
