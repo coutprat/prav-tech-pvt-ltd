@@ -53,6 +53,8 @@ const EA_CHAPTERS: Chapter[] = [
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
+import { thesis } from "@/content/thesis";
+import Link from "next/link";
 
 export const metadata: Metadata = pageMeta({
   title: "Enterprise AI & Agents",
@@ -104,6 +106,45 @@ export default function EnterpriseAIPage() {
                 <p className="card-means">{c.means}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- our view */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel accent="line">{thesis.label}</SectionLabel>
+          <Headline onScroll className="h2 thesis-head">
+            {thesis.headline}
+          </Headline>
+
+          <div className="thesis">
+            <p className="thesis-lede">{thesis.lede}</p>
+
+            <ol className="thesis-roles">
+              {thesis.roles.map((r) => (
+                <li key={r.name}>
+                  <span className="thesis-role">{r.name}</span>
+                  <span className="thesis-role-body">{r.body}</span>
+                </li>
+              ))}
+            </ol>
+
+            {thesis.body.map((para) => (
+              <p className="thesis-para" key={para.slice(0, 32)}>
+                {para}
+              </p>
+            ))}
+
+            <p className="thesis-close">
+              {thesis.closing.text}{" "}
+              <span className="thesis-soon">{thesis.closing.note}</span>
+            </p>
+            <p style={{ marginTop: 26 }}>
+              <Link className="btn btn-ghost" href={thesis.closing.href}>
+                {thesis.closing.cta}
+              </Link>
+            </p>
           </div>
         </div>
       </section>

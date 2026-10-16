@@ -6034,3 +6034,75 @@ body::before {
     display: none;
   }
 }
+
+/* ==========================================================================
+   OUR VIEW
+   --------------------------------------------------------------------------
+   An argument, set as prose rather than as another row of cards. The page
+   already has two card grids; a third would read as a feature list, and this
+   is the opposite of a feature list. Measure is held near 60 characters so it
+   reads like something written rather than something laid out.
+   ========================================================================== */
+.thesis {
+  max-width: 62ch;
+  margin-top: 30px;
+}
+.thesis-head {
+  max-width: 20ch;
+}
+.thesis-lede {
+  margin: 0;
+  font-size: clamp(19px, 2.1vw, 23px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.thesis-para {
+  margin: 20px 0 0;
+  font-size: 16.5px;
+  line-height: 1.68;
+  color: var(--ink-2);
+}
+/*
+ * The four roles. A numbered rail rather than four boxes: they are stages of
+ * one argument, and boxes would make them look like four products.
+ */
+.thesis-roles {
+  list-style: none;
+  margin: 34px 0 36px;
+  padding: 0 0 0 22px;
+  border-left: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+}
+.thesis-roles li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.thesis-role {
+  flex: none;
+  min-width: 104px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-ink, var(--ink));
+}
+.thesis-role-body {
+  flex: 1 1 16ch;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.thesis-close {
+  margin: 30px 0 0;
+  font-size: clamp(18px, 2vw, 21px);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.thesis-soon {
+  color: var(--ink-2);
+}
