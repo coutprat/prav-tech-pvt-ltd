@@ -14,25 +14,37 @@ import { useId } from "react";
  * Below 48px the satellites and the dotted lower orbit would turn to grit, so
  * the small mark drops them, thickens what is left, and crops the empty lower
  * half of the ring so it sits level with the text beside it.
+ *
+ * With `tile` the mark sits on the navy plate of the company artwork, so it
+ * reads the same in the light theme as in the dark one: the pale half of the
+ * ring is fixed to the artwork's near-white, and the dotted lower orbit comes
+ * back, drawn heavier so it survives header size.
  */
 
 const P =
   "M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z " +
   "M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z";
 
-export function Mark({ size = 28 }: { size?: number }) {
+export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolean }) {
   const id = useId();
   const g = `${id}p`;
   const l = `${id}l`;
   const d = `${id}d`;
+  const b = `${id}b`;
   const detailed = size >= 48;
   const ring = detailed ? 10 : 26;
+  const pale = tile ? "#E6EAF0" : "currentColor";
+  const viewBox = tile
+    ? "-120 -120 1240 1240"
+    : detailed
+      ? "0 0 1000 1000"
+      : "0 -5 1000 800";
 
   return (
     <svg
       width={size}
-      height={detailed ? size : size * 0.8}
-      viewBox={detailed ? "0 0 1000 1000" : "0 -5 1000 800"}
+      height={detailed || tile ? size : size * 0.8}
+      viewBox={viewBox}
       aria-hidden="true"
       focusable="false"
       className="mark"
@@ -51,21 +63,29 @@ export function Mark({ size = 28 }: { size?: number }) {
           <stop offset="0" stopColor="#4CC8B8" />
           <stop offset="1" stopColor="#4A8FD0" />
         </linearGradient>
+        {tile && (
+          <linearGradient id={b} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#141A30" />
+            <stop offset="1" stopColor="#262E48" />
+          </linearGradient>
+        )}
       </defs>
+
+      {tile && <rect x="-120" y="-120" width="1240" height="1240" rx="260" fill={`url(#${b})`} />}
 
       <g fill="none" strokeLinecap="round">
         <path stroke={`url(#${l})`} strokeWidth={ring} d="M62.4,454 A440,440 0 0 1 454,62.4" />
         <path
-          stroke="currentColor"
+          stroke={pale}
           strokeWidth={ring}
-          opacity=".7"
+          opacity={tile ? 1 : 0.7}
           d="M546,62.4 A440,440 0 0 1 937.6,454"
         />
-        {detailed && (
+        {(detailed || tile) && (
           <path
             stroke={`url(#${d})`}
-            strokeWidth="11"
-            strokeDasharray="0 34"
+            strokeWidth={detailed ? 11 : 24}
+            strokeDasharray={detailed ? "0 34" : "0 62"}
             opacity=".8"
             d="M937.6,546 A440,440 0 0 1 62.4,546"
           />
@@ -88,7 +108,7 @@ export function Mark({ size = 28 }: { size?: number }) {
           <circle cx="500" cy="168" r="8" fill="#4FD2BE" />
           <circle cx="493" cy="440" r="8" fill="#4FD2BE" />
           <circle cx="770" cy="478" r="8" fill="#4FD2BE" />
-          <g fill="currentColor" opacity=".7">
+          <g fill={pale} opacity={tile ? 1 : 0.7}>
             <circle cx="290" cy="480" r="8" />
             <circle cx="205" cy="566" r="7" />
             <circle cx="500" cy="840" r="8" />

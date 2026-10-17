@@ -44,7 +44,7 @@ export function Navbar() {
     <header className="nav" data-scrolled={scrolled}>
       <nav className="wrap nav-inner" aria-label="Main">
         <Link className="nav-logo" href="/">
-          <Mark size={34} />
+          <Mark size={40} tile />
           <span>
             Praverse<span className="dot">.</span>
           </span>
