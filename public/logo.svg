@@ -1,73 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 943 867" role="img" aria-label="Praverse">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="Praverse">
   <defs>
-    <linearGradient id="pv-p" gradientUnits="userSpaceOnUse" x1="672" y1="286" x2="342" y2="742">
-      <stop offset="0" stop-color="#4ACBB4"/>
-      <stop offset=".52" stop-color="#43AABC"/>
-      <stop offset="1" stop-color="#3B7FC2"/>
+    <linearGradient id="pv-p" gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
+      <stop offset="0" stop-color="#5FE0C8"/>
+      <stop offset=".5" stop-color="#47B4C2"/>
+      <stop offset="1" stop-color="#3A80CF"/>
     </linearGradient>
-    <linearGradient id="pv-l" gradientUnits="userSpaceOnUse" x1="44" y1="512" x2="408" y2="85">
-      <stop offset="0" stop-color="#3F7FC0"/>
-      <stop offset="1" stop-color="#3FA8A8"/>
+    <linearGradient id="pv-l" gradientUnits="userSpaceOnUse" x1="60" y1="500" x2="500" y2="60">
+      <stop offset="0" stop-color="#4A8FD0"/>
+      <stop offset="1" stop-color="#4CC8B8"/>
     </linearGradient>
-    <linearGradient id="pv-r" gradientUnits="userSpaceOnUse" x1="546" y1="88" x2="895" y2="505">
-      <stop offset="0" stop-color="#B6BCC6"/>
-      <stop offset="1" stop-color="#8E96A4"/>
+    <linearGradient id="pv-d" gradientUnits="userSpaceOnUse" x1="940" y1="0" x2="60" y2="0">
+      <stop offset="0" stop-color="#4CC8B8"/>
+      <stop offset="1" stop-color="#4A8FD0"/>
+    </linearGradient>
+    <linearGradient id="pv-f" gradientUnits="userSpaceOnUse" x1="0" y1="430" x2="0" y2="780">
+      <stop offset="0" stop-color="#0B1020" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0B1020" stop-opacity=".22"/>
     </linearGradient>
   </defs>
 
-  <!-- outer orbit, broken where the nodes sit -->
+  <!-- outer orbit: solid over the top, broken where the nodes sit, dotted below -->
   <g fill="none" stroke-linecap="round">
-    <path stroke="url(#pv-l)" stroke-width="8" d="M43,492.7 A428,428 0 0 1 433.7,66.4"/>
-    <path stroke="url(#pv-r)" stroke-width="8" d="M508.3,66.4 A428,428 0 0 1 898.7,477.8"/>
+    <path stroke="url(#pv-l)" stroke-width="10" d="M62.4,454 A440,440 0 0 1 454,62.4"/>
+    <path stroke="#E6EAF0" stroke-width="10" d="M546,62.4 A440,440 0 0 1 937.6,454"/>
+    <path stroke="url(#pv-d)" stroke-width="11" stroke-dasharray="0 34" opacity=".8"
+          d="M937.6,546 A440,440 0 0 1 62.4,546"/>
   </g>
 
-  <!-- inner orbit -->
-  <ellipse cx="465" cy="515" rx="354" ry="205" fill="none"
-           stroke="#3F8FA6" stroke-width="7" opacity=".85"/>
+  <!-- inner orbit, passing behind the P -->
+  <path fill="none" stroke="#45C2B4" stroke-width="8" stroke-linecap="round"
+        d="M720,381.8 A361,194 0 1 1 350,355"/>
 
   <!-- the P -->
-  <path fill="url(#pv-p)" fill-rule="evenodd" d="M236,254 L500,254
- C544,256 578,262 612,282 C648,303 670,342 681,382
- C690,416 690,446 681,480 C670,520 646,552 612,573
- C590,587 566,595 540,596 L408,596 L408,781 L324,781
- L320,370 Z M408,312 L498,314
- C536,320 566,336 584,362 C598,382 603,404 603,430
- C603,462 594,492 574,516 C552,542 520,560 480,566
- L408,574 Z"/>
+  <path fill="url(#pv-p)" fill-rule="evenodd"
+        d="M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z
+           M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z"/>
+  <path fill="url(#pv-f)" fill-rule="evenodd"
+        d="M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z
+           M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z"/>
 
-  <!-- orbiting nodes, positions and colours read from the source -->
-  <g>
-    <circle cx="478.5" cy="83.8" r="33.5" fill="#50c8bc"/>
-    <circle cx="43" cy="493.8" r="29.1" fill="#4d98b6"/>
-    <circle cx="898.9" cy="492.7" r="27.9" fill="#5ac5bc"/>
-    <circle cx="882.7" cy="575" r="12.2" fill="#a6adb6"/>
-    <circle cx="871.3" cy="621.4" r="10.5" fill="#479696"/>
-    <circle cx="723.4" cy="796.8" r="9.8" fill="#4a808d"/>
-    <circle cx="473.2" cy="828.9" r="9.8" fill="#a5a8b3"/>
-    <circle cx="795.6" cy="737.8" r="9.3" fill="#438e8d"/>
-    <circle cx="652.3" cy="839.7" r="8.6" fill="#47848d"/>
-    <circle cx="182.9" cy="574.6" r="8.5" fill="#9e9fab"/>
-    <circle cx="234.2" cy="819.7" r="8.5" fill="#3d6b81"/>
-    <circle cx="210.8" cy="801.1" r="8.3" fill="#3c6578"/>
-    <circle cx="273.1" cy="492" r="8" fill="#b0b3bb"/>
-    <circle cx="477" cy="27.5" r="7.5" fill="#5e9b9d"/>
-    <circle cx="726.4" cy="490" r="7.5" fill="#5ea1a0"/>
-    <circle cx="477.1" cy="192.8" r="7.4" fill="#5c9a9b"/>
-    <circle cx="463.4" cy="458.9" r="6.5" fill="#699aa1"/>
-    <circle cx="837" cy="683.7" r="6.1" fill="#55717e"/>
-    <circle cx="856.3" cy="655.1" r="5.5" fill="#5b7581"/>
-    <circle cx="684.7" cy="825.4" r="5.5" fill="#4f6271"/>
-    <circle cx="47.1" cy="549.5" r="5.2" fill="#4c6675"/>
-    <circle cx="818.5" cy="712.4" r="4.8" fill="#516173"/>
-    <circle cx="61.2" cy="599.4" r="4.5" fill="#4b556a"/>
-    <circle cx="53.3" cy="577.6" r="4.4" fill="#48566a"/>
-    <circle cx="124.5" cy="721.9" r="4.4" fill="#4b5367"/>
-    <circle cx="152.1" cy="749.1" r="4.3" fill="#455167"/>
-    <circle cx="756.2" cy="769.2" r="4.3" fill="#4c5b6c"/>
-    <circle cx="67.1" cy="626.7" r="4.3" fill="#3f4d60"/>
-    <circle cx="82.1" cy="656.2" r="4.3" fill="#414d60"/>
-    <circle cx="99.2" cy="691.1" r="4.2" fill="#505b71"/>
-    <circle cx="181" cy="775.8" r="4.2" fill="#3e5163"/>
-    <circle cx="184.6" cy="384" r="2.8" fill="#41495c"/>
-  </g>
+  <!-- nodes on the outer orbit -->
+  <circle cx="500" cy="60" r="32" fill="#4FD2BE"/>
+  <circle cx="60" cy="500" r="28" fill="#4A8FD0"/>
+  <circle cx="940" cy="500" r="28" fill="#4FD2BE"/>
+
+  <!-- satellites -->
+  <circle cx="500" cy="168" r="8" fill="#4FD2BE"/>
+  <circle cx="493" cy="440" r="8" fill="#4FD2BE"/>
+  <circle cx="770" cy="478" r="8" fill="#4FD2BE"/>
+  <circle cx="290" cy="480" r="8" fill="#E6EAF0"/>
+  <circle cx="205" cy="566" r="7" fill="#E6EAF0"/>
+  <circle cx="500" cy="840" r="8" fill="#E6EAF0"/>
 </svg>

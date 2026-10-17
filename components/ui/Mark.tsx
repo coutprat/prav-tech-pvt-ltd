@@ -1,50 +1,100 @@
+import { useId } from "react";
+
 /**
- * The Praverse mark: a P inside two orbit rings with nodes on them.
+ * The Praverse mark: a P inside an orbit, with a tilted inner orbit passing
+ * behind it and three nodes on the outer ring.
  *
  * Inlined rather than an <img src="/logo.svg"> so it never flashes in after
- * first paint in the header, and so the rings can dim independently of the
- * glyph. The same geometry is in public/logo.svg (for JSON-LD and link
- * previews) and public/favicon.svg; all three are generated from the one
- * source raster by scripts/media/logo.py, so they cannot drift apart.
+ * first paint in the header, and so the pale half of the outer orbit can take
+ * currentColor and hold up on light and dark surfaces alike. The same
+ * geometry is in public/logo.svg (for JSON-LD and link previews) and
+ * public/favicon.svg; it is drawn on a 1000-unit grid from plain arcs and
+ * lines, so edit all three together.
+ *
+ * Below 48px the satellites and the dotted lower orbit would turn to grit, so
+ * the small mark drops them, thickens what is left, and crops the empty lower
+ * half of the ring so it sits level with the text beside it.
  */
+
+const P =
+  "M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z " +
+  "M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z";
+
 export function Mark({ size = 28 }: { size?: number }) {
+  const id = useId();
+  const g = `${id}p`;
+  const l = `${id}l`;
+  const d = `${id}d`;
+  const detailed = size >= 48;
+  const ring = detailed ? 10 : 26;
+
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 943 867"
+      height={detailed ? size : size * 0.8}
+      viewBox={detailed ? "0 0 1000 1000" : "0 -5 1000 800"}
       aria-hidden="true"
       focusable="false"
       className="mark"
     >
       <defs>
-        <linearGradient
-          id="mk-p"
-          gradientUnits="userSpaceOnUse"
-          x1="672"
-          y1="286"
-          x2="342"
-          y2="742"
-        >
-          <stop offset="0" stopColor="#4ACBB4" />
-          <stop offset=".52" stopColor="#43AABC" />
-          <stop offset="1" stopColor="#3B7FC2" />
+        <linearGradient id={g} gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
+          <stop offset="0" stopColor="#5FE0C8" />
+          <stop offset=".5" stopColor="#47B4C2" />
+          <stop offset="1" stopColor="#3A80CF" />
+        </linearGradient>
+        <linearGradient id={l} gradientUnits="userSpaceOnUse" x1="60" y1="500" x2="500" y2="60">
+          <stop offset="0" stopColor="#4A8FD0" />
+          <stop offset="1" stopColor="#4CC8B8" />
+        </linearGradient>
+        <linearGradient id={d} gradientUnits="userSpaceOnUse" x1="940" y1="0" x2="60" y2="0">
+          <stop offset="0" stopColor="#4CC8B8" />
+          <stop offset="1" stopColor="#4A8FD0" />
         </linearGradient>
       </defs>
-      {/* orbits, held back so the glyph carries the mark at 28px */}
-      <g fill="none" stroke="currentColor" opacity=".45">
-        <path strokeWidth="14" strokeLinecap="round" d="M43,492.7 A428,428 0 0 0 433.7,882" />
-        <ellipse cx="465" cy="515" rx="354" ry="205" strokeWidth="12" />
+
+      <g fill="none" strokeLinecap="round">
+        <path stroke={`url(#${l})`} strokeWidth={ring} d="M62.4,454 A440,440 0 0 1 454,62.4" />
+        <path
+          stroke="currentColor"
+          strokeWidth={ring}
+          opacity=".7"
+          d="M546,62.4 A440,440 0 0 1 937.6,454"
+        />
+        {detailed && (
+          <path
+            stroke={`url(#${d})`}
+            strokeWidth="11"
+            strokeDasharray="0 34"
+            opacity=".8"
+            d="M937.6,546 A440,440 0 0 1 62.4,546"
+          />
+        )}
+        <path
+          stroke="#45C2B4"
+          strokeWidth={detailed ? 8 : 22}
+          d="M720,381.8 A361,194 0 1 1 350,355"
+        />
       </g>
-      <path
-        fill="url(#mk-p)"
-        fillRule="evenodd"
-        d="M236,254 L500,254 C544,256 578,262 612,282 C648,303 670,342 681,382 C690,416 690,446 681,480 C670,520 646,552 612,573 C590,587 566,595 540,596 L408,596 L408,781 L324,781 L320,370 Z M408,312 L498,314 C536,320 566,336 584,362 C598,382 603,404 603,430 C603,462 594,492 574,516 C552,542 520,560 480,566 L408,574 Z"
-      />
-      {/* the three nodes that sit on the outer orbit */}
-      <circle cx="478" cy="84" r="33.5" fill="#50C8BC" />
-      <circle cx="43" cy="492.7" r="29" fill="#4D98B6" />
-      <circle cx="899" cy="492.7" r="28.5" fill="#5AC5BC" />
+
+      <path fill={`url(#${g})`} fillRule="evenodd" d={P} />
+
+      <circle cx="500" cy="60" r={detailed ? 32 : 46} fill="#4FD2BE" />
+      <circle cx="60" cy="500" r={detailed ? 28 : 42} fill="#4A8FD0" />
+      <circle cx="940" cy="500" r={detailed ? 28 : 42} fill="#4FD2BE" />
+
+      {detailed && (
+        <g>
+          <circle cx="500" cy="168" r="8" fill="#4FD2BE" />
+          <circle cx="493" cy="440" r="8" fill="#4FD2BE" />
+          <circle cx="770" cy="478" r="8" fill="#4FD2BE" />
+          <g fill="currentColor" opacity=".7">
+            <circle cx="290" cy="480" r="8" />
+            <circle cx="205" cy="566" r="7" />
+            <circle cx="500" cy="840" r="8" />
+          </g>
+        </g>
+      )}
     </svg>
   );
 }

@@ -1,24 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Praverse">
   <defs>
-    <linearGradient id="f" gradientUnits="userSpaceOnUse" x1="672" y1="286" x2="342" y2="742">
-      <stop offset="0" stop-color="#4ACBB4"/>
-      <stop offset=".52" stop-color="#43AABC"/>
-      <stop offset="1" stop-color="#3B7FC2"/>
+    <linearGradient id="f" gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
+      <stop offset="0" stop-color="#5FE0C8"/>
+      <stop offset=".5" stop-color="#47B4C2"/>
+      <stop offset="1" stop-color="#3A80CF"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="14" fill="#0B1020"/>
-  <ellipse cx="32" cy="33" rx="24" ry="13.5" fill="none" stroke="#3F8FA6" stroke-width="1.7"/>
-  <circle cx="32" cy="8.6" r="3.2" fill="#50C8BC"/>
-  <circle cx="7.6" cy="33" r="2.8" fill="#4D98B6"/>
-  <circle cx="56.4" cy="33" r="2.8" fill="#5AC5BC"/>
-  <g transform="translate(-5.06,-8.24) scale(0.07970)">
-    <path fill="url(#f)" fill-rule="evenodd" d="M236,254 L500,254
- C544,256 578,262 612,282 C648,303 670,342 681,382
- C690,416 690,446 681,480 C670,520 646,552 612,573
- C590,587 566,595 540,596 L408,596 L408,781 L324,781
- L320,370 Z M408,312 L498,314
- C536,320 566,336 584,362 C598,382 603,404 603,430
- C603,462 594,492 574,516 C552,542 520,560 480,566
- L408,574 Z"/>
+  <!-- the P and its inner orbit only: at tab size the outer ring is noise -->
+  <g transform="translate(-6.3,-7.1) scale(0.0775)">
+    <path fill="none" stroke="#45C2B4" stroke-width="30" stroke-linecap="round"
+          d="M720,381.8 A361,194 0 1 1 350,355"/>
+    <path fill="url(#f)" fill-rule="evenodd"
+          d="M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z
+             M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z"/>
+    <circle cx="500" cy="168" r="44" fill="#4FD2BE"/>
   </g>
 </svg>

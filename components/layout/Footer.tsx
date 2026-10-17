@@ -15,7 +15,7 @@ export function Footer() {
         <div className="footer-grid">
           <div className="footer-identity">
             <h2>
-              <Mark size={30} />
+              <Mark size={38} />
               <span>
                 Praverse<span style={{ color: "var(--teal)" }}>.</span>
               </span>

@@ -927,10 +927,9 @@ positions, radii and colours are read straight out of the raster. An overlay of
 the result against the source lines up to a hairline.
 
 ```
-scripts/media/logo.py    regenerates everything from assets-incoming/
-public/logo.svg          full mark, 3.5 KB (JSON-LD, link previews)
-public/favicon.svg       same glyph path, reduced — the rings and 32 nodes turn
-                         to mush below ~32px. Legible at 16px.
+public/logo.svg          full mark, redrawn 2026-10-17 as clean geometry on a
+                         1000-unit grid (the raster trace read as lumpy)
+public/favicon.svg       same P and inner orbit, no outer ring. Legible at 16px.
 components/ui/Mark.tsx   inlined in header and footer so it cannot flash in
                          after first paint
 ```
