@@ -27,46 +27,57 @@ export function ModuleSection() {
   const [Scene, setScene] = useState<ComponentType<ModuleProps> | null>(null);
 
   /**
-   * Arm the observer only after load, and only once the visitor has scrolled.
+   * Fetch three.js once the page has loaded and the browser is idle; mount the
+   * scene a full screen before it arrives.
    *
-   * Observing immediately pulled the 267 KB three.js chunk into the initial
-   * load window, and compiling it there delayed the hero's own first paint by
-   * ~3.5s of render delay on throttled mobile. This section is several
-   * screens down: nobody reaches it without scrolling first, so nothing is
-   * lost by waiting, and the chunk still arrives well before it is needed.
+   * Observing at first paint pulled the 267 KB chunk into the initial load
+   * window and delayed the hero's first paint by ~3.5s on throttled mobile,
+   * so nothing starts before `load`. But waiting for the visitor to scroll
+   * within 600px made them wait too: the chunk was not even requested until
+   * ~2.1s into the scroll, and then the shaders compiled on the first visible
+   * frame. Idle-time fetching keeps it out of the hero's way and still has it
+   * on hand long before anyone scrolls this far.
    */
   useEffect(() => {
     if (highPower !== true) return;
     const el = root.current;
     if (!el) return;
 
+    let cancelled = false;
     let io: IntersectionObserver | null = null;
+    let idle = 0;
+    let chunk: Promise<ComponentType<ModuleProps>> | null = null;
+    const fetchChunk = () =>
+      (chunk ??= import("@/components/three/ModuleExploded").then((m) => m.default));
 
     const arm = () => {
-      if (io) return;
+      const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1));
+      idle = ric(() => void fetchChunk().catch(() => {}), { timeout: 3000 });
+
       io = new IntersectionObserver(
         (entries) => {
           if (!entries.some((e) => e.isIntersecting)) return;
           io?.disconnect();
-          void import("@/components/three/ModuleExploded")
-            .then((m) => setScene(() => m.default))
+          fetchChunk()
+            .then((C) => {
+              if (!cancelled) setScene(() => C);
+            })
             .catch(() => {
               /* the labelled list below is a complete fallback */
             });
         },
-        { rootMargin: "600px 0px" }
+        { rootMargin: "100% 0px" }
       );
       io.observe(el);
     };
 
-    window.addEventListener("scroll", arm, { once: true, passive: true });
-    window.addEventListener("wheel", arm, { once: true, passive: true });
-    window.addEventListener("touchstart", arm, { once: true, passive: true });
+    if (document.readyState === "complete") arm();
+    else window.addEventListener("load", arm, { once: true });
 
     return () => {
-      window.removeEventListener("scroll", arm);
-      window.removeEventListener("wheel", arm);
-      window.removeEventListener("touchstart", arm);
+      cancelled = true;
+      window.removeEventListener("load", arm);
+      window.cancelIdleCallback?.(idle);
       io?.disconnect();
     };
   }, [highPower]);

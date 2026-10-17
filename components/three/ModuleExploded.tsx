@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Html, Lightformer } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -232,6 +232,27 @@ function Module({ explode, labels }: { explode: RefObject<number>; labels: boole
 }
 
 /**
+ * Draws one frame on mount, even with the render loop stopped.
+ *
+ * The scene mounts a screen before it is visible, but with frameloop "never"
+ * nothing would be drawn until it arrived, so the shader compile, the
+ * environment bake and the composer's targets all landed on the first frame
+ * the visitor could see. This pays for them while it is still off screen.
+ */
+function Warmup() {
+  const advance = useThree((s) => s.advance);
+  const width = useThree((s) => s.size.width);
+  const done = useRef(false);
+  useEffect(() => {
+    // wait for the canvas to be measured, or the frame is drawn at 0×0
+    if (done.current || width === 0) return;
+    done.current = true;
+    advance(performance.now());
+  }, [advance, width]);
+  return null;
+}
+
+/**
  * `explode` is a ref, read inside useFrame, so scrolling does not re-render
  * the scene graph through React on every frame. `labels` is the only part of
  * it React needs to know about. `active` stops the render loop entirely while
@@ -324,6 +345,7 @@ export function ModuleExploded({
       <EffectComposer multisampling={4}>
         <Bloom intensity={0.55} luminanceThreshold={0.82} mipmapBlur />
       </EffectComposer>
+      <Warmup />
     </Canvas>
   );
 }
