@@ -358,47 +358,48 @@ export const portfolio = [
   {
     title: "DAC",
     sub: "Direct attach copper",
-    body: "Passive, in-rack.",
-    speeds: "400G · 800G"
+    body: "Passive, in-rack. No added latency.",
+    speeds: "800G to 4 m · 1.6T to 1 m"
   },
   {
     title: "ACC",
     sub: "Active copper cable",
-    body: "Linear redriver.",
-    speeds: "400G · 800G"
+    body: "Linear redriver, for xPU-to-xPU links.",
+    speeds: "800G to 5 m · 1.6T to 3 m"
   },
   {
     title: "AEC",
     sub: "Active electrical cable",
-    body: "Retimer / DSP.",
+    body: "Retimer / DSP. Copper at row reach.",
     speeds: "800G up to 9 m"
   },
   {
     title: "AOC",
     sub: "Active optical cable",
-    body: "Optical reach inside the hall.",
-    speeds: "400G · 800G"
+    body: "Optical reach inside the hall, LPO or retimed.",
+    speeds: "200G – 800G · to 100 m"
   },
   {
     title: "Optical transceivers",
     sub: "Multi-mode and single-mode",
-    body: "Pluggable optics across form factors.",
+    body: "LPO and full-retimed, SR to FR — 67 models.",
     speeds: "400G · 800G · 1.6T"
   },
   {
     title: "Fibre cable assemblies",
     sub: "Structured fibre",
-    body: "Trunks and breakouts for the spine.",
-    speeds: "—"
+    body: "Trunks, breakouts, shuffle boxes and fibre array units.",
+    speeds: "Rolling out"
   }
 ] as const;
 
 export const formFactors = [
-  "SFP",
-  "QSFP",
+  "SFP56",
+  "QSFP56",
   "QSFP112",
   "QSFP-DD",
   "OSFP",
+  "OSFP-RHS",
   "OSFP-XD"
 ] as const;
 

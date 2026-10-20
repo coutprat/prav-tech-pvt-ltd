@@ -60,8 +60,8 @@ export const verifyItems = [
     where: "Photonics — portfolio",
     claim: "AEC: up to 9 m at 800G (partner specification)",
     fallback: "AEC: up to 9 m at 800G (partner specification)",
-    needs: "Confirm the 9 m figure against the partner datasheet.",
-    confirmed: false
+    needs: "Confirmed against the partner's published reach table (800G 9 m, 1.6T 4 m).",
+    confirmed: true
   },
   {
     id: "dme-accuracy",

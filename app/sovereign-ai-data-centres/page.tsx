@@ -3,10 +3,17 @@ import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
-import { SectionLabel, CTASection, Disclaimer } from "@/components/ui/primitives";
+import { SectionLabel, CTASection, Disclaimer, SpecTable } from "@/components/ui/primitives";
 import { Footprint } from "@/components/sections/Footprint";
 import { stories, sovereignTests } from "@/content/sovereign";
 import { photonicsPhases } from "@/content/company";
+import {
+  fabricScales,
+  interconnectGap,
+  nextLaneRate,
+  nicConfigs,
+  workloads
+} from "@/content/interconnect";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
 
@@ -115,8 +122,46 @@ export default function SovereignPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ market */}
+      {/* ------------------------------------------------------------ fabric */}
       <section className="section section-alt">
+        <div className="wrap">
+          <SectionLabel accent="line">The fabric</SectionLabel>
+          <Headline onScroll>Your GPUs are ready. Is the interconnect?</Headline>
+          <p className="body-2" style={{ marginTop: 18, maxWidth: "64ch" }}>
+            As clusters scale, the hardest decisions move to the links between
+            everything — GPUs, NICs, switches, servers, the whole rack. Get them
+            wrong and you rebuild, burn power, or watch a deployment window
+            disappear. Get them right and everything downstream gets easier.
+          </p>
+
+          <div className="grid-3" style={{ marginTop: 40 }}>
+            {fabricScales.map((f) => (
+              <article className="card" key={f.title}>
+                <p className="line-card-n">{f.where}</p>
+                <h3 className="h3" style={{ marginTop: 12 }}>
+                  {f.title}
+                </h3>
+                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
+                  {f.body}
+                </p>
+                <p className="mono fabric-media">{f.media}</p>
+              </article>
+            ))}
+          </div>
+
+          <ul className="why-list" style={{ marginTop: 48 }}>
+            {interconnectGap.map((g) => (
+              <li key={g.title}>
+                <h3>{g.title}</h3>
+                <p>{g.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ market */}
+      <section className="section">
         <div className="wrap">
           <SectionLabel accent="line">The market</SectionLabel>
           <Headline onScroll>The capacity is being built now.</Headline>
@@ -131,7 +176,7 @@ export default function SovereignPage() {
       </section>
 
       {/* ----------------------------------------------------------- stories */}
-      <section className="section">
+      <section className="section section-alt">
         <div className="wrap">
           <SectionLabel>Where it bites</SectionLabel>
           <Headline onScroll>Three situations we are built for.</Headline>
@@ -170,8 +215,64 @@ export default function SovereignPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------ what we supply */}
+      {/* --------------------------------------------------------- workloads */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel accent="line">By workload</SectionLabel>
+          <Headline onScroll>Don&rsquo;t design around the cable. Design around the cluster.</Headline>
+          <div className="grid-3" style={{ marginTop: 40 }}>
+            {workloads.map((w) => (
+              <article className="card" key={w.title}>
+                <h3 className="h3" style={{ fontSize: 22 }}>
+                  {w.title}
+                </h3>
+                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
+                  {w.body}
+                </p>
+                <ul className="chip-list workload-points">
+                  {w.points.map((pt) => (
+                    <li key={pt}>{pt}</li>
+                  ))}
+                </ul>
+                <p className="workload-foot">{w.foot}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- 800G NICs */}
       <section className="section section-alt">
+        <div className="wrap">
+          <SectionLabel accent="line">800G in practice</SectionLabel>
+          <Headline onScroll>Every way a switch port meets a ConnectX-8.</Headline>
+          <p className="body-2" style={{ marginTop: 18, maxWidth: "64ch" }}>
+            The ConnectX-8 SuperNIC brings 800G to the server on PCIe Gen6, in a
+            single-OSFP card (C8180) and a dual-QSFP112 card (C8240). Against
+            an 800G switch such as the Spectrum SN5600 there are four Ethernet
+            configurations — and a DAC, ACC, AEC, AOC or LPO optic for each,
+            chosen by the distance.
+          </p>
+          <div style={{ marginTop: 40 }}>
+            <SpecTable
+              caption="800G Ethernet to ConnectX-8"
+              columns={[
+                { key: "link", head: "Link" },
+                { key: "mode", head: "Result" }
+              ]}
+              rows={nicConfigs.map((c) => ({ head: c.head, cells: [...c.cells] }))}
+            />
+          </div>
+
+          <div className="grid-2" style={{ alignItems: "start", marginTop: 56 }}>
+            <h3 className="h3">{nextLaneRate.title}</h3>
+            <p className="body-2">{nextLaneRate.body}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ what we supply */}
+      <section className="section">
         <div className="wrap">
           <SectionLabel accent="line">What we supply</SectionLabel>
           <Headline onScroll>The layer underneath.</Headline>
