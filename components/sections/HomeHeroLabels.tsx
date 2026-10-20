@@ -3,6 +3,8 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { stageScale } from "@/lib/fit";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { prefersReducedMotion } from "@/lib/gsap";
 import { gsap, observeVisible } from "@/lib/gsap";
 import type { Tracks } from "@/components/motion/SequenceOverlay";
 import { fetchTracks } from "@/lib/tracks";
@@ -69,6 +71,7 @@ export function HomeHeroLabels({
   active: boolean;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const tracksRef = useRef<Tracks["tracks"] | null>(null);
   const resRef = useRef<[number, number]>([1600, 900]);
 
@@ -176,6 +179,74 @@ export function HomeHeroLabels({
     };
   }, [frameRef, frameCount, active]);
 
+  /* --------------------------------------------- depth: pointer parallax */
+  // The render is pre-baked, so the depth is faked the way a camera would
+  // show it: the stage drifts one way and the labels, nearer the viewer,
+  // drift the other. Desktop pointers only, and never under reduced motion.
+  useEffect(() => {
+    const root = rootRef.current;
+    const pin = root?.closest<HTMLElement>(".sequence-pin");
+    if (!root || !pin || !active || prefersReducedMotion()) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    const state = { x: 0, y: 0 };
+    const write = () => {
+      pin.style.setProperty("--px", state.x.toFixed(3));
+      pin.style.setProperty("--py", state.y.toFixed(3));
+    };
+    const tx = gsap.quickTo(state, "x", { duration: 1.2, ease: "expo.out", onUpdate: write });
+    const ty = gsap.quickTo(state, "y", { duration: 1.2, ease: "expo.out", onUpdate: write });
+    const onMove = (e: PointerEvent) => {
+      const r = pin.getBoundingClientRect();
+      tx(((e.clientX - r.left) / r.width) * 2 - 1);
+      ty(((e.clientY - r.top) / r.height) * 2 - 1);
+    };
+    const onLeave = () => {
+      tx(0);
+      ty(0);
+    };
+    pin.classList.add("has-depth");
+    pin.addEventListener("pointermove", onMove);
+    pin.addEventListener("pointerleave", onLeave);
+    return () => {
+      pin.classList.remove("has-depth");
+      pin.removeEventListener("pointermove", onMove);
+      pin.removeEventListener("pointerleave", onLeave);
+    };
+  }, [active]);
+
+  /* ------------------------------------------- focus and the fly-in */
+  const focusOn = (key: string | null, href?: string) => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (key) root.dataset.focus = key;
+    else delete root.dataset.focus;
+    if (href) router.prefetch(href);
+  };
+
+  const flyTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // New tab, modified click, or no motion: let the link behave as a link.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0 || prefersReducedMotion()) return;
+    const pin = rootRef.current?.closest<HTMLElement>(".sequence-pin");
+    if (!pin) return;
+    e.preventDefault();
+    const dot = e.currentTarget.querySelector(".hero-label-dot") ?? e.currentTarget;
+    const d = dot.getBoundingClientRect();
+    const r = pin.getBoundingClientRect();
+    pin.style.setProperty("--zx", `${d.left + d.width / 2 - r.left}px`);
+    pin.style.setProperty("--zy", `${d.top + d.height / 2 - r.top}px`);
+    pin.style.setProperty("--zacc", e.currentTarget.style.getPropertyValue("--acc"));
+    pin.classList.add("is-flying");
+    window.setTimeout(() => router.push(href), 620);
+  };
+
+  // Coming back with the browser's back button must not land mid-zoom.
+  useEffect(() => {
+    const clear = () =>
+      rootRef.current?.closest(".sequence-pin")?.classList.remove("is-flying");
+    window.addEventListener("pageshow", clear);
+    return () => window.removeEventListener("pageshow", clear);
+  }, []);
+
   if (!active) return null;
 
   return (
@@ -187,6 +258,11 @@ export function HomeHeroLabels({
           className="hero-label"
           data-mod={m.key}
           data-on="false"
+          onPointerEnter={() => focusOn(m.key, m.href)}
+          onPointerLeave={() => focusOn(null)}
+          onFocus={() => focusOn(m.key, m.href)}
+          onBlur={() => focusOn(null)}
+          onClick={(e) => flyTo(e, m.href)}
           style={
             {
               ["--acc" as string]: m.accent,

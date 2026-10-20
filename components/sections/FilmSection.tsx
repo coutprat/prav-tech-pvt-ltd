@@ -159,7 +159,7 @@ export function FilmSection({
           ) : c.kind === "beats" ? (
             <ul className="film-stack-beats">
               {c.beats.map((b) => (
-                <li key={b.label}>
+                <li key={`${b.label}:${b.text}`}>
                   <span className="mono">{b.label}</span>
                   {b.text}
                 </li>
@@ -233,7 +233,7 @@ export function FilmSection({
                     const span = (to - from) / (c.beats.length + 1);
                     const lit = progress >= from + span * k;
                     return (
-                      <li key={b.label} data-on={lit}>
+                      <li key={`${b.label}:${b.text}`} data-on={lit}>
                         <span className="fs-beat-label mono">{b.label}</span>
                         <span className="fs-beat-text">{b.text}</span>
                       </li>

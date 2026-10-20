@@ -171,6 +171,13 @@ export function ModuleSection() {
             Scroll to take it apart. Every part is doing one job, and the job
             is why the module costs what it costs.
           </p>
+          {/* On a phone the 3D callouts have no room beside the module, so
+              they are hidden and the parts are named here instead. */}
+          <ul className="mod-parts" aria-label="Parts of the module">
+            {PARTS.map((p) => (
+              <li key={p.id}>{p.label}</li>
+            ))}
+          </ul>
           <p className="mod-caption mono">
             Illustrative. Not a specific vendor&rsquo;s product.
           </p>

@@ -294,3 +294,85 @@ export const nextLaneRate = {
   title: "From 224G to 448G per lane",
   body: "Doubling the lane rate means new signalling, stronger error correction and moving the connection closer to the silicon. Copper keeps up — retimed 1.6T copper already runs 3 m at 18–20 W per end, against about 22 W for a 1.6T optic over 500 m — but where copper ends and optics begins keeps moving. The job is to measure that boundary for each build, not argue where it should be."
 } as const;
+
+/* ------------------------------------------------------------ reach finder */
+
+export type FinderSpeed = "800G" | "1.6T";
+export type FinderPriority = "power" | "cost" | "latency";
+
+/**
+ * Maximum reach in metres per speed, from the partner's reach ladder above.
+ * Only 800G and 1.6T are published, so the finder offers only those — a 400G
+ * figure here would be a guess.
+ *
+ * Rank lists are lowest-first for each priority: passive copper draws no
+ * power and adds no latency; linear optics (LPO) have no DSP, so they beat
+ * retimed links on both; cost rises with each step from copper to optics.
+ */
+export const finderMedia = [
+  {
+    id: "dac",
+    name: "DAC",
+    long: "Direct attach copper",
+    reach: { "800G": 4, "1.6T": 1 },
+    rank: { power: 0, cost: 0, latency: 0 },
+    why: "Passive copper: no power drawn by the cable, no added latency, the lowest cost per link."
+  },
+  {
+    id: "acc",
+    name: "ACC",
+    long: "Active copper cable",
+    reach: { "800G": 5, "1.6T": 3 },
+    rank: { power: 1, cost: 1, latency: 1 },
+    why: "A linear redriver extends copper past DAC reach while keeping copper's cost and power."
+  },
+  {
+    id: "aec",
+    name: "AEC",
+    long: "Active electrical cable",
+    reach: { "800G": 9, "1.6T": 4 },
+    rank: { power: 2, cost: 2, latency: 3 },
+    why: "Retimed copper — 9 m at 800G — with the link stability that shortens bring-up."
+  },
+  {
+    id: "aoc",
+    name: "AOC (LPO)",
+    long: "Active optical cable, linear",
+    reach: { "800G": 100, "1.6T": 0 },
+    rank: { power: 3, cost: 3, latency: 2 },
+    why: "Optics fused to the cable, linear-drive: about 4.5 W per end, no DSP latency."
+  },
+  {
+    id: "sr",
+    name: "SR8 LPO optics",
+    long: "Multimode pluggable, linear",
+    reach: { "800G": 100, "1.6T": 0 },
+    rank: { power: 4, cost: 4, latency: 4 },
+    why: "Pluggable multimode optics with no DSP — under 5 W per end at 800G — and reconfigurable fibre."
+  },
+  {
+    id: "dr",
+    name: "DR optics",
+    long: "Single-mode pluggable",
+    reach: { "800G": 500, "1.6T": 500 },
+    rank: { power: 5, cost: 5, latency: 5 },
+    why: "Single-mode to 500 m, leaf to spine and across the hall. LPO and retimed versions."
+  },
+  {
+    id: "fr",
+    name: "FR optics",
+    long: "Single-mode pluggable, long reach",
+    reach: { "800G": 2000, "1.6T": 2000 },
+    rank: { power: 6, cost: 6, latency: 6 },
+    why: "Single-mode to 2 km, between halls and buildings on a campus."
+  }
+] as const;
+
+export const finderPresets = [
+  { label: "Inside the rack", m: 2 },
+  { label: "Next rack", m: 5 },
+  { label: "Same row", m: 9 },
+  { label: "Across the hall", m: 80 },
+  { label: "Hall to hall", m: 400 },
+  { label: "Campus", m: 1500 }
+] as const;

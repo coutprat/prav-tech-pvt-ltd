@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { PhotonicsHero } from "@/components/sections/PhotonicsHero";
 import { ModuleSection } from "@/components/sections/ModuleSection";
 import { ReachRace } from "@/components/sections/ReachRace";
+import { ReachFinder } from "@/components/sections/ReachFinder";
 import { CapacityHubs } from "@/components/sections/CapacityHubs";
 import { Aurora } from "@/components/ui/Aurora";
 import { Headline } from "@/components/ui/Headline";
@@ -47,6 +49,7 @@ export const metadata: Metadata = pageMeta({
 export default function PhotonicsPage() {
   return (
     <div data-acc="photonics">
+      <PageJsonLd path="/photonics" />
       {/* The hero's first frame is the LCP element — preload it so it is not
           queued behind the JS bundles. */}
       <link
@@ -126,6 +129,11 @@ export default function PhotonicsPage() {
               }))}
             />
           </div>
+
+          <h3 className="h3" style={{ marginTop: 72 }}>
+            How far, how fast? Find your starting point.
+          </h3>
+          <ReachFinder />
         </div>
       </section>
 

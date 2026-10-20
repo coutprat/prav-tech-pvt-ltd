@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useHighPower } from "@/lib/capability";
 import { MennieHero } from "@/components/sections/MennieHero";
+import { MennieSound } from "@/components/sections/MennieSound";
 import { ScrubVideo } from "@/components/motion/ScrubVideo";
 import { mennie } from "@/content/company";
 
@@ -235,6 +236,8 @@ export function MennieFilm() {
             </article>
           ))}
         </div>
+
+        <MennieSound rootRef={root} progressRef={cineRef} beat={countPassed(progress)} />
 
         {/* 4 — caption */}
         <div className="film-caption" data-on={progress >= captionFrom}>

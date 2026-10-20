@@ -6378,3 +6378,568 @@ html.motion [data-m]:not([data-m-done]) {
   -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
   mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
 }
+
+/* ==========================================================================
+   MENNIE — sound toggle
+   ========================================================================== */
+/* Bottom-left: bottom-right belongs to the WhatsApp button. */
+.film-sound {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 28px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(12, 16, 22, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #eef0f4;
+  font: 500 13px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s var(--ease-expo);
+}
+.film-sound:hover {
+  border-color: rgba(125, 211, 252, 0.6);
+  transform: translateY(-1px);
+}
+.film-sound[data-on="true"] {
+  border-color: rgba(125, 211, 252, 0.45);
+  box-shadow: 0 0 24px -6px rgba(56, 189, 248, 0.6);
+}
+.film-sound-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.film-sound-bars i {
+  display: block;
+  width: 2px;
+  height: 4px;
+  border-radius: 1px;
+  background: #7dd3fc;
+  transition: height 0.3s ease;
+}
+.film-sound[data-on="true"] .film-sound-bars i {
+  animation: sound-bar 1.4s ease-in-out infinite;
+}
+.film-sound[data-on="true"] .film-sound-bars i:nth-child(2) {
+  animation-delay: -0.35s;
+}
+.film-sound[data-on="true"] .film-sound-bars i:nth-child(3) {
+  animation-delay: -0.7s;
+}
+.film-sound[data-on="true"] .film-sound-bars i:nth-child(4) {
+  animation-delay: -1.05s;
+}
+@keyframes sound-bar {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 14px;
+  }
+}
+@media (max-width: 899px) {
+  .film-sound {
+    bottom: 16px;
+    padding: 8px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-sound[data-on="true"] .film-sound-bars i {
+    animation: none;
+    height: 10px;
+  }
+}
+
+/* ==========================================================================
+   PHOTONICS — reach finder
+   ========================================================================== */
+.finder {
+  display: grid;
+  gap: 28px;
+  margin-top: 40px;
+  padding: 28px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(80% 120% at 100% 0%, rgba(245, 158, 11, 0.08), transparent 60%),
+    radial-gradient(70% 120% at 0% 100%, rgba(75, 214, 196, 0.07), transparent 60%),
+    var(--paper-3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 30px 70px -40px rgba(0, 0, 0, 0.7);
+}
+@media (min-width: 1000px) {
+  .finder {
+    grid-template-columns: 1.15fr 1fr;
+    grid-template-areas: "controls result" "map result";
+    padding: 40px;
+    column-gap: 48px;
+  }
+  .finder-controls {
+    grid-area: controls;
+  }
+  .finder-map {
+    grid-area: map;
+  }
+  .finder-result {
+    grid-area: result;
+  }
+}
+.finder-controls {
+  display: grid;
+  gap: 24px;
+}
+.finder-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.finder-value {
+  margin-left: 10px;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--acc-pho-ink);
+  font-weight: 600;
+}
+.finder-range {
+  width: 100%;
+  margin-top: 14px;
+  accent-color: var(--acc-pho);
+  height: 28px;
+}
+.finder-presets {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0;
+}
+.finder-chip {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: 500 13px/1 var(--font-sans);
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+.finder-chip span {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.finder-chip:hover,
+.finder-chip[data-on="true"] {
+  border-color: color-mix(in srgb, var(--acc-pho) 60%, transparent);
+  background: color-mix(in srgb, var(--acc-pho) 12%, transparent);
+}
+.finder-row {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 640px) {
+  .finder-row {
+    grid-template-columns: auto 1fr;
+  }
+}
+.finder-seg {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.finder-seg legend {
+  margin-bottom: 10px;
+}
+.finder-seg label {
+  position: relative;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+.finder-seg label[data-on="true"] {
+  border-color: var(--acc-pho);
+  background: color-mix(in srgb, var(--acc-pho) 14%, transparent);
+  color: var(--ink);
+}
+.finder-seg input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+.finder-seg label:has(input:focus-visible) {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.finder-map {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding-top: 4px;
+  --name-w: 116px;
+  --reach-w: 64px;
+}
+.finder-bar {
+  display: grid;
+  grid-template-columns: var(--name-w) 1fr var(--reach-w);
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ink-2);
+  transition: opacity 0.3s ease;
+}
+.finder-bar[data-fit="false"] {
+  opacity: 0.4;
+}
+.finder-bar-track {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.finder-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--acc-pho), #4bd6c4);
+  opacity: 0.55;
+  transition: width 0.6s var(--ease-expo), opacity 0.3s ease;
+}
+.finder-bar[data-pick="true"] {
+  color: var(--ink);
+}
+.finder-bar[data-pick="true"] .finder-bar-fill {
+  opacity: 1;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+}
+.finder-bar-reach {
+  text-align: right;
+}
+/* A lane over the track column, so the marker's % is the track's %. */
+.finder-lane {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--name-w) + 12px);
+  right: calc(var(--reach-w) + 12px);
+  pointer-events: none;
+}
+.finder-marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ink);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  transition: left 0.4s var(--ease-expo);
+}
+.finder-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.finder-pick {
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.finder-pick span {
+  display: block;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 450;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+.finder-why {
+  color: var(--ink);
+  max-width: 44ch;
+}
+.finder-alt {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.finder-result .btn {
+  margin-top: 8px;
+}
+.finder-note {
+  font-size: 12px;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+/* ==========================================================================
+   HOME HERO — depth, focus and the fly-in
+   ========================================================================== */
+/* Depth: the stage drifts against the pointer, the labels — nearer the
+   viewer — drift a little further, so the baked render reads as a space. */
+.sequence-pin.has-depth .sequence-canvas,
+.sequence-pin.has-depth .sequence-poster,
+.sequence-pin.has-depth .sequence-overlay {
+  transform: translate3d(calc(var(--px, 0) * -12px), calc(var(--py, 0) * -9px), 0) scale(1.035);
+}
+.sequence-pin.has-depth .hero-labels {
+  transform: translate3d(calc(var(--px, 0) * -17px), calc(var(--py, 0) * -13px), 0);
+}
+
+/* Focus: one module forward, the rest step back. */
+.hero-labels[data-focus] .hero-label[data-on="true"]:not(:hover):not(:focus-visible) {
+  opacity: 0.32;
+}
+.hero-label-dot {
+  position: relative;
+}
+.hero-label-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--acc);
+  opacity: 0;
+}
+.hero-label:hover .hero-label-dot::after,
+.hero-label:focus-visible .hero-label-dot::after {
+  animation: beacon 1.6s var(--ease-expo) infinite;
+}
+@keyframes beacon {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+.hero-label:hover .hero-label-body,
+.hero-label:focus-visible .hero-label-body {
+  border-color: color-mix(in srgb, var(--acc) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 20%, transparent),
+    0 14px 40px -12px color-mix(in srgb, var(--acc) 60%, transparent);
+}
+.hero-label-body {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.hero-labels {
+  cursor: default;
+}
+.hero-label {
+  cursor: pointer;
+}
+
+/* The fly-in: the camera dives at the chosen module, light floods in from
+   it in its own colour, and the next page fades up underneath. */
+.hero-labels::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--zx, 50%) var(--zy, 50%),
+    color-mix(in srgb, var(--zacc, var(--teal)) 45%, transparent) 0%,
+    transparent 22%
+  ),
+  radial-gradient(circle at 50% 50%, transparent 0%, var(--paper) 70%);
+  transition: opacity 0.6s ease 0.1s;
+}
+.sequence-pin.is-flying .hero-labels::before {
+  opacity: 1;
+}
+.sequence-pin.is-flying .sequence-canvas,
+.sequence-pin.is-flying .sequence-poster,
+.sequence-pin.is-flying .sequence-overlay {
+  transform-origin: var(--zx) var(--zy);
+  transform: scale(2.8);
+  filter: brightness(1.35) saturate(1.2);
+  transition: transform 0.9s var(--ease-expo), filter 0.9s ease;
+}
+.sequence-pin.is-flying .hero-label,
+.sequence-pin.is-flying .hero-final,
+.sequence-pin.is-flying .chapters {
+  opacity: 0 !important;
+  transition: opacity 0.25s ease;
+}
+
+/* ==========================================================================
+   PHONE PASS
+   ========================================================================== */
+.mod-parts {
+  display: none;
+}
+@media (max-width: 699px) {
+  .mod-label {
+    display: none;
+  }
+  .mod-parts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 0;
+  }
+  .mod-parts li {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(11, 14, 24, 0.7);
+    color: #ecebe7;
+    font-size: 12px;
+  }
+}
+
+/* Pinned heroes on a phone: the band and its caption sit in the middle of
+   the screen while the scene plays, instead of at the top with the rest of
+   the screen empty for the whole scrub. */
+@media (max-width: 899px) {
+  .sequence-pin {
+    min-height: calc(100svh - 72px);
+    align-content: center;
+  }
+}
+
+/* Tables become stacked cards on a phone: each row a card, each cell
+   labelled with its column, so nothing scrolls sideways. */
+@media (max-width: 639px) {
+  .spec-wrap {
+    overflow: visible;
+  }
+  .spec-table,
+  .spec-table tbody,
+  .spec-table tr,
+  .spec-table th,
+  .spec-table td {
+    display: block;
+    width: 100%;
+  }
+  .spec-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .spec-table tr {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .spec-table th,
+  .spec-table td {
+    padding: 0;
+    border: 0;
+  }
+  .spec-table tbody th {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  .spec-table td {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: 12px;
+    padding: 4px 0;
+    font-size: 14px;
+  }
+  .spec-table td::before {
+    content: attr(data-label);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    padding-top: 3px;
+  }
+  .spec-table td[data-label=""] {
+    grid-template-columns: 1fr;
+  }
+  .spec-table td[data-label=""]::before {
+    display: none;
+  }
+
+  .trust-table-wrap {
+    overflow: visible;
+  }
+  .trust-table {
+    min-width: 0;
+  }
+  .trust-table,
+  .trust-table tbody,
+  .trust-table tr,
+  .trust-table th,
+  .trust-table td {
+    display: block;
+    width: 100%;
+  }
+  .trust-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .trust-table tr {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .trust-table th,
+  .trust-table td {
+    padding: 3px 0;
+    border: 0;
+  }
+  .trust-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-top: 8px;
+  }
+}
+
+/* The film's static caption stack is a grid item; without min-width: 0 it
+   grows to its 62ch max on a phone instead of shrinking to the screen. */
+.film-stack,
+.film-stack-item {
+  min-width: 0;
+  width: 100%;
+}
+.film-stack,
+.film-stack-beats,
+.film-stack-beats li {
+  grid-template-columns: minmax(0, 1fr);
+}
+.film-stack-beats li {
+  min-width: 0;
+}
+@media (max-width: 639px) {
+  .spec-table {
+    min-width: 0;
+  }
+}

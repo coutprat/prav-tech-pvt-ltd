@@ -85,7 +85,9 @@ export function SpecTable({
             <tr key={r.head}>
               <th scope="row">{r.head}</th>
               {r.cells.map((cell, i) => (
-                <td key={columns[i]?.key ?? i}>{cell}</td>
+                <td key={columns[i]?.key ?? i} data-label={columns[i]?.head ?? ""}>
+                  {cell}
+                </td>
               ))}
             </tr>
           ))}
