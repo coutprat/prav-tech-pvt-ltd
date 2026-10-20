@@ -10,45 +10,42 @@
 
 :root {
   /* --- surface ------------------------------------------------------- */
-  /* One theme: a soft studio grey, mid-way between white and night. It is
-     the same grey as the rendered hero studio (#acacac–#d3d3d3), so the
-     sequences sit in the page instead of on it. Raised surfaces go lighter
-     rather than to white, so cards lift without glaring. */
-  --paper: #cfd2d6;
-  --paper-2: #c4c7cc;
-  --paper-3: #dcdee2; /* raised: cards that need to read above --paper */
-  --line: #b5b9c0; /* decorative hairline */
-  --line-strong: #5f646e; /* 3.5:1 — inputs, focus, meaningful borders */
+  /* Graphite, not black and not navy: a warm-neutral dark grey with enough
+     body that glows and hairlines have something to sit on. Each step up is
+     a lift, so sections and cards separate by light rather than by borders. */
+  --paper: #1c2028;
+  --paper-2: #22272f;
+  --paper-3: #2a303a; /* raised: cards that need to read above --paper */
+  --line: #333a46; /* decorative hairline */
+  --line-strong: #737b8a; /* 3.4:1 on --paper-2 — inputs, focus, meaningful borders */
 
   /* --- ink ----------------------------------------------------------- */
-  --ink: #0b1020;
-  --ink-2: #3a4152; /* 6.0:1 on --paper-2 */
+  --ink: #eef0f4;
+  --ink-2: #a9b0bc; /* 6.1:1 on --paper-3 */
 
   /* --- brand --------------------------------------------------------- */
-  --navy: #12172a;
+  --navy: #13161c; /* CTA and footer go deeper than the page */
   --teal: #4bd6c4; /* light — on dark, or as glow */
-  --teal-ink: #055249; /* 5.4:1 on --paper-2 — text and links */
+  --teal-ink: #5fd9c9; /* 7.8:1 on --paper-3 — text and links */
   --amber: #e8a23a; /* Photonics only */
-  --amber-ink: #6b4400; /* 5.0:1 on --paper-2 — Photonics links */
+  --amber-ink: #f3b24a; /* 7.1:1 on --paper-3 — Photonics links */
 
   /* --- business-line accents ----------------------------------------
      Two values per line. `-glow` is light: gradients, seams, rim light,
      chart marks. `-ink` is the only one allowed to carry text, and every
-     one is >= 5.0:1 on --paper, --paper-2 and --paper-3.
+     one is >= 5.6:1 on --paper, --paper-2 and --paper-3.
      Body copy stays --ink regardless. */
-  /* On permanently dark panels (.cta, .footer, .cp-ledger) the light-mode
-     glow is only 4.09:1. This stays bright in both themes: 6.09:1 on navy. */
-  --acc-ent-bright: #9b85ff;
-  --acc-ent: #7c5cff; /* violet */
-  --acc-ent-ink: #4a2fc0; /* 5.04:1 on --paper-2 */
+  --acc-ent-bright: #ab9bff;
+  --acc-ent: #8b6dff; /* violet */
+  --acc-ent-ink: #ab9bff; /* 5.6:1 */
   --acc-pha: #10b981; /* emerald */
-  --acc-pha-ink: #04573b; /* 5.09:1 */
+  --acc-pha-ink: #3fdc9a; /* 7.5:1 */
   --acc-men: #38bdf8; /* sky */
-  --acc-men-ink: #024b75; /* 5.47:1 */
+  --acc-men-ink: #7dd3fc; /* 8.0:1 */
   --acc-pho: #f59e0b; /* amber */
-  --acc-pho-ink: #6b3e03; /* 5.35:1 */
+  --acc-pho-ink: #fbbf24; /* 8.0:1 */
   --acc-pho-2: #4bd6c4; /* teal, the optical half of Photonics */
-  --acc-pho-2-ink: #055249; /* 5.36:1 */
+  --acc-pho-2-ink: #5fd9c9; /* 7.8:1 */
 
   /* The accent the current page is "in". Pages override it on <main>. */
   --acc: var(--teal);
@@ -59,11 +56,16 @@
   --on-navy-2: #a6acbc;
 
   /* --- material ------------------------------------------------------ */
-  --glass: rgba(220, 222, 226, 0.62);
-  --glass-line: rgba(255, 255, 255, 0.45);
-  --shadow-1: 0 1px 2px rgba(14, 18, 32, 0.04), 0 2px 8px rgba(14, 18, 32, 0.04);
-  --shadow-2: 0 1px 2px rgba(14, 18, 32, 0.05), 0 8px 24px rgba(14, 18, 32, 0.07);
-  --shadow-3: 0 2px 6px rgba(14, 18, 32, 0.06), 0 20px 56px rgba(14, 18, 32, 0.1);
+  --glass: rgba(34, 39, 47, 0.62);
+  --glass-line: rgba(255, 255, 255, 0.08);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 2px 6px rgba(0, 0, 0, 0.35), 0 20px 56px rgba(0, 0, 0, 0.45);
+
+  /* --- motion -------------------------------------------------------- */
+  /* Expo-out: fast to leave, long to settle. Everything that enters the
+     screen uses it, so the whole site decelerates the same way. */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* --- geometry ------------------------------------------------------ */
   --r-sm: 8px;
@@ -76,7 +78,7 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 @media (min-width: 900px) {
@@ -380,11 +382,12 @@ textarea {
 }
 
 .btn-primary {
-  background: var(--navy);
-  color: var(--on-navy);
+  background: var(--teal);
+  color: #06201d;
 }
 .btn-primary:hover {
-  background: var(--ink);
+  background: #6fe3d3;
+  box-shadow: 0 0 0 1px rgba(75, 214, 196, 0.4), 0 10px 36px -8px rgba(75, 214, 196, 0.55);
 }
 
 .btn-ghost {
@@ -1170,7 +1173,9 @@ textarea {
 
 .sequence {
   position: relative;
-  background: var(--paper);
+  /* The renders' own studio black: what shows past the edge of a frame. */
+  --stage: #05090f;
+  background: var(--stage);
 }
 .sequence-pin {
   position: relative;
@@ -1182,14 +1187,14 @@ textarea {
 .sequence-canvas {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 .sequence-poster {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .chapters {
@@ -1207,6 +1212,24 @@ textarea {
 .chapter {
   opacity: 0;
   transition: opacity 0.5s ease;
+}
+/* All chapters share one cell, so the one showing sits on the same baseline
+   (desktop) or directly under the frame (phone) instead of at its own depth
+   in a stack of invisible siblings. Reduced motion shows every chapter at
+   once, so there they keep flowing one under another. */
+@media (prefers-reduced-motion: no-preference) {
+  .chapters {
+    display: grid;
+    align-items: end;
+  }
+  .chapters > .chapter {
+    grid-area: 1 / 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
+  .chapters {
+    align-items: start;
+  }
 }
 .chapter[data-active="true"] {
   opacity: 1;
@@ -2775,7 +2798,7 @@ textarea {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   transition: opacity 0.3s ease;
 }
 .sequence-poster[data-hidden="true"] {
@@ -2918,7 +2941,7 @@ textarea {
   /* A radial gradient, not filter: blur(). Four ~500px blurred layers
      drifting forever kept the GPU re-filtering the hero on every frame; the
      gradient is the same soft wash, painted once. */
-  opacity: 0.13;
+  opacity: 0.22;
   will-change: transform;
   /* cursor reactivity: --mx/--my are set on the parent by Aurora.tsx */
   transform: translate3d(
@@ -3752,7 +3775,7 @@ body::before {
   white-space: nowrap;
 }
 .form-error {
-  color: #b3261e;
+  color: #ffb4ab;
 }
 .form-sent {
   margin-top: 36px;
@@ -5383,7 +5406,7 @@ body::before {
   /* One curve for everything that moves on interaction, so the whole
      interface decelerates the same way. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --shadow-3: 0 2px 4px rgba(14, 18, 32, 0.05), 0 14px 40px rgba(14, 18, 32, 0.1);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 40px rgba(0, 0, 0, 0.45);
 }
 
 /* -------------------------------------------------------------- buttons */
@@ -6062,7 +6085,7 @@ body::before {
        to the viewport, which is where the empty space came from. A floor so
        short chapters still get a stage, and room to breathe under the nav. */
     height: auto;
-    min-height: 54svh;
+    min-height: 0;
     padding: 18px 0 34px;
     grid-template-rows: auto auto;
     align-content: center;
@@ -6108,4 +6131,248 @@ body::before {
   font-size: 15px;
   font-weight: 500;
   color: var(--ink);
+}
+
+/* ==========================================================================
+   PREMIUM LAYER — light, glass and motion on graphite
+   --------------------------------------------------------------------------
+   Everything here is decoration on top of finished content: remove the block
+   and the site still reads. Motion respects prefers-reduced-motion.
+   ========================================================================== */
+
+/* ---- ambient light: two soft fields fixed behind the page ------------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vw 50vh at 8% 0%, rgba(75, 214, 196, 0.07), transparent 70%),
+    radial-gradient(55vw 55vh at 100% 100%, rgba(245, 158, 11, 0.05), transparent 70%),
+    radial-gradient(40vw 40vh at 90% 10%, rgba(139, 109, 255, 0.045), transparent 70%);
+}
+
+/* Sections let the ambient light through; alt sections lift a step and
+   carry a lit seam along their top edge, which draws in on arrival. */
+.section-alt {
+  position: relative;
+  background: color-mix(in srgb, var(--paper-2) 88%, transparent);
+}
+.section-alt::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--acc) 70%, transparent) 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    color-mix(in srgb, var(--acc) 70%, transparent) 70%,
+    transparent
+  );
+  transform: scaleX(var(--seam, 1));
+  transition: transform 1.6s var(--ease-expo);
+}
+html.motion .section-alt:not(.is-in)::before {
+  --seam: 0;
+}
+
+/* ---- headings: lit from above ----------------------------------------- */
+.display,
+.h2 {
+  text-wrap: balance;
+}
+/* SplitText wraps each line in a mask block, so the gradient is set on the
+   lines themselves too — `inherit` would pick up the mask's empty
+   background and leave the text invisible. */
+.section .display,
+.page-head .display,
+.section .display .line-inner,
+.page-head .display .line-inner {
+  background-image: linear-gradient(180deg, #ffffff 0%, #e6e9ef 55%, #b9c0cc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---- cards: glass, a gradient hairline, and a spotlight that follows --- */
+.card,
+.why-list > li,
+.sov-story,
+.steps > li {
+  position: relative;
+  isolation: isolate;
+}
+.card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+    var(--paper-3);
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 18px 40px -24px rgba(0, 0, 0, 0.6);
+}
+.card::after,
+.why-list > li::after,
+.sov-story::after,
+.steps > li::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--sx, 50%) var(--sy, 50%),
+    color-mix(in srgb, var(--acc) 16%, transparent),
+    transparent 60%
+  );
+  transition: opacity 0.4s ease;
+}
+.card:hover::after,
+.why-list > li:hover::after,
+.sov-story:hover::after,
+.steps > li:hover::after {
+  opacity: 1;
+}
+.card:hover {
+  border-color: color-mix(in srgb, var(--acc) 38%, rgba(255, 255, 255, 0.08));
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px color-mix(in srgb, var(--acc) 14%, transparent),
+    0 28px 60px -28px color-mix(in srgb, var(--acc) 45%, rgba(0, 0, 0, 0.7));
+}
+
+/* ---- nav: graphite glass, and a reading-progress line ---------------- */
+.nav {
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+}
+.nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--teal), #38bdf8 50%, var(--acc-pho));
+  opacity: 0.85;
+}
+@supports (animation-timeline: scroll()) {
+  .nav::after {
+    animation: read-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes read-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- the hero sinks into the page instead of ending on a hard edge ---- */
+.sequence-pin::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(transparent, var(--paper));
+}
+.sequence-pin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 45%, transparent 60%, rgba(10, 12, 16, 0.55));
+}
+.chapters,
+.sequence-overlay {
+  z-index: 3;
+}
+@media (max-width: 899px) {
+  .sequence-pin::before,
+  .sequence-pin::after {
+    display: none;
+  }
+}
+
+/* ---- page arrival ------------------------------------------------------ */
+/* Opacity only: a transform here would become the containing block for
+   every pinned ScrollTrigger on the page and unpin them. */
+/* Only after an in-site navigation: on first load the hero frame is the
+   LCP element, and fading it in from zero would only delay it. */
+html.navigated .page-enter {
+  animation: page-enter 0.9s var(--ease-expo) both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---- motion: initial states, set only once JS has opted in ------------ */
+html.motion [data-m]:not([data-m-done]) {
+  opacity: 0;
+}
+
+/* ---- buttons: a sheen passes on hover --------------------------------- */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.8s var(--ease-expo);
+  pointer-events: none;
+}
+.btn-primary:hover::after {
+  transform: translateX(120%);
+}
+
+/* ---- selection --------------------------------------------------------- */
+::selection {
+  background: rgba(75, 214, 196, 0.32);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .nav::after {
+    animation: none;
+  }
+  .section-alt::before {
+    transition: none;
+  }
+  html.motion [data-m]:not([data-m-done]) {
+    opacity: 1;
+  }
+  .card:hover {
+    transform: none;
+  }
+}
+
+/* Glow fields feather out at their section's edges, so one section's light
+   never stops on a hard line where the next begins. */
+.aurora {
+  -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
 }

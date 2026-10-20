@@ -4,6 +4,7 @@ import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
 import { useReducedMotion } from "@/lib/useMediaQuery";
+import { stageScale } from "@/lib/fit";
 
 /**
  * Must stay plain data: this crosses the server → client boundary, and a
@@ -112,7 +113,7 @@ export function ScrollSequence({
       // to call getComputedStyle on every scrub tick, which forces a style
       // recalc of the page sixty times a second while scrolling.
       const paper =
-        getComputedStyle(document.body).getPropertyValue("--paper").trim() ||
+        getComputedStyle(root).getPropertyValue("--stage").trim() ||
         "#eeedea";
       const fillPaper = () => {
         ctx.fillStyle = paper;
@@ -228,10 +229,9 @@ export function ScrollSequence({
 
         const cw = canvas.width;
         const ch = canvas.height;
-        // contain
         const iw = frameWidth(img);
         const ih = frameHeight(img);
-        const scale = Math.min(cw / iw, ch / ih);
+        const scale = stageScale(cw, ch, iw, ih);
         const w = iw * scale;
         const h = ih * scale;
         // Same image at the same size is already on the canvas.

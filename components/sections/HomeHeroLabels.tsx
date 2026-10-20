@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
+import { stageScale } from "@/lib/fit";
 import Link from "next/link";
 import { gsap, observeVisible } from "@/lib/gsap";
 import type { Tracks } from "@/components/motion/SequenceOverlay";
@@ -131,8 +132,8 @@ export function HomeHeroLabels({
       if (current === lastFrame) return;
       lastFrame = current;
       const [rw, rh] = resRef.current;
-      // Match the sequence canvas's contain-fit box.
-      const scale = Math.min(rect.width / rw, rect.height / rh);
+      // Match the sequence canvas's cover-fit box.
+      const scale = stageScale(rect.width, rect.height, rw, rh);
       const dw = rw * scale;
       const dh = rh * scale;
       const ox = (rect.width - dw) / 2;

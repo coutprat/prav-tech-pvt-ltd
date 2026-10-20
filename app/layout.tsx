@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { ScrollMotion } from "@/components/layout/ScrollMotion";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { Welcome, welcomeScript } from "@/components/layout/Welcome";
 import { company } from "@/content/company";
@@ -49,7 +50,13 @@ export default function RootLayout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    // The pre-paint scripts below set attributes on <html> before React
+    // hydrates; that difference is intended, not a mismatch.
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Decides before paint whether the opening curtain is shown at all. */}
         <script dangerouslySetInnerHTML={{ __html: welcomeScript }} />
@@ -65,6 +72,7 @@ export default function RootLayout({
         <Footer />
         <WhatsAppButton />
         <SmoothScroll />
+        <ScrollMotion />
         {/*
           Cookieless Core Web Vitals from real visitors. Sets no cookies and
           builds no cross-site profile, so it needs no consent banner — the

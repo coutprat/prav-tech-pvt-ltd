@@ -32,6 +32,13 @@ const client = await context.newCDPSession(page);
 await page.goto(BASE + route, { waitUntil: "domcontentloaded", timeout: 90000 });
 await page.waitForTimeout(3500);
 
+// A/B a suspect: PERF_CSS="selector { prop: value }" is added to the page
+// before measuring, e.g. to switch one effect off and compare.
+if (process.env.PERF_CSS) {
+  await page.addStyleTag({ content: process.env.PERF_CSS });
+  await page.waitForTimeout(300);
+}
+
 if (throttle > 1) {
   await client.send("Emulation.setCPUThrottlingRate", { rate: throttle });
 }

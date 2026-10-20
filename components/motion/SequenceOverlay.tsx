@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
+import { stageScale } from "@/lib/fit";
 import { gsap, observeVisible } from "@/lib/gsap";
 import { fetchTracks } from "@/lib/tracks";
 
@@ -292,9 +293,9 @@ export function SequenceOverlay({
       if (!data) return;
 
       const [rw, rh] = data.resolution;
-      // Match the sequence canvas's contain-fit box so overlay coordinates
+      // Match the sequence canvas's cover-fit box so overlay coordinates
       // land on the same pixels as the rendered frame.
-      const scale = Math.min(canvas.width / rw, canvas.height / rh);
+      const scale = stageScale(canvas.width, canvas.height, rw, rh);
       dw = rw * scale;
       dh = rh * scale;
       ox = (canvas.width - dw) / 2;

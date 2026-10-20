@@ -56,7 +56,7 @@ export function Reveal({
   }>;
 
   return (
-    <Comp ref={ref} className={className}>
+    <Comp ref={ref} className={className ? `reveal ${className}` : "reveal"}>
       {children}
     </Comp>
   );
