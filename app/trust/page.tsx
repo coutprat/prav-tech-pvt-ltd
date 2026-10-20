@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
 import { SectionLabel, Disclaimer } from "@/components/ui/primitives";
@@ -14,7 +15,7 @@ export const metadata: Metadata = pageMeta({
   description:
     "Where your data goes, who processes it, and what this website does and does not collect. Written for the security review, not for marketing.",
   path: "/trust",
-  og: "company"
+  og: "trust"
 });
 
 /**
@@ -55,6 +56,7 @@ export default function TrustPage() {
 
   return (
     <>
+      <PageJsonLd path="/trust" />
       <section className="page-head" style={{ position: "relative" }}>
         <Aurora
           blobs={[
@@ -123,9 +125,9 @@ export default function TrustPage() {
                 {subProcessors.map((sp) => (
                   <tr key={sp.name}>
                     <th scope="row">{sp.name}</th>
-                    <td>{sp.purpose}</td>
-                    <td>{sp.region}</td>
-                    <td>{sp.data}</td>
+                    <td data-label="Why">{sp.purpose}</td>
+                    <td data-label="Where">{sp.region}</td>
+                    <td data-label="What reaches them">{sp.data}</td>
                   </tr>
                 ))}
               </tbody>

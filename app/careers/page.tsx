@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
 import { SectionLabel } from "@/components/ui/primitives";
@@ -72,6 +73,7 @@ function jobLd() {
 export default function CareersPage() {
   return (
     <>
+      <PageJsonLd path="/careers" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jobLd()) }}

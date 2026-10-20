@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
 import { Verify } from "@/components/ui/Verify";
@@ -14,6 +15,7 @@ export const metadata: Metadata = pageMeta({
 export default function TermsPage() {
   return (
     <section className="page-head">
+      <PageJsonLd path="/terms" />
       <div className="wrap-narrow" style={{ paddingInline: 0 }}>
         <SectionLabel>Legal</SectionLabel>
         <Headline as="h1" className="h2">

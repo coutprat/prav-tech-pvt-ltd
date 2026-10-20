@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { MennieFilm } from "@/components/sections/MennieFilm";
 import { Aurora } from "@/components/ui/Aurora";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
@@ -22,6 +23,7 @@ export const metadata: Metadata = pageMeta({
 export default function MenniePage() {
   return (
     <div data-acc="mennie">
+      <PageJsonLd path="/mennie" />
       <MennieFilm />
 
       <section className="section" style={{ position: "relative" }}>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
@@ -17,6 +18,7 @@ export const metadata: Metadata = pageMeta({
 export default function ContactPage() {
   return (
     <section className="page-head" style={{ position: "relative" }}>
+      <PageJsonLd path="/contact" />
       <Aurora
         blobs={[
           { color: "var(--acc-ent)", x: 14, y: 26, size: 460 },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
 
@@ -77,6 +78,7 @@ export const metadata: Metadata = pageMeta({
 export default function PharmaPage() {
   return (
     <div data-acc="pharma">
+      <PageJsonLd path="/pharma" />
       <FilmSection
         id="ph-film"
         video={signatureVideo.pharma}

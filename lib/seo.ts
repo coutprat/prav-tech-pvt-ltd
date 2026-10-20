@@ -6,7 +6,9 @@ import { company } from "@/content/company";
  *
  * Titles are kept to ~60 characters and descriptions to ~155, which is what
  * Google actually renders before truncating. Each page gets its own OG card
- * built from that page's hero, so a shared link previews the page it opens.
+ * (scripts/media/og.py builds them all in the graphite theme); a page without
+ * one of its own falls back to the home card rather than to no image, so every
+ * link unfurls as a large card.
  */
 export function pageMeta({
   title,
@@ -18,11 +20,11 @@ export function pageMeta({
   title: string;
   description: string;
   path: string;
-  /** Basename in /public/og, without extension. */
+  /** Basename in /public/og, without extension. Defaults to the home card. */
   og?: string;
 }): Metadata {
   const url = `${company.url}${path}`;
-  const image = og ? `${company.url}/og/${og}.jpg` : undefined;
+  const image = `${company.url}/og/${og ?? "home"}.jpg`;
 
   return {
     title,
@@ -34,13 +36,14 @@ export function pageMeta({
       siteName: company.name,
       title,
       description,
-      ...(image ? { images: [{ url: image, width: 1200, height: 630 }] } : {})
+      images: [{ url: image, width: 1200, height: 630, alt: title }]
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      // The cards are 1200x630, which is exactly what the large card is for.
+      card: "summary_large_image",
       title,
       description,
-      ...(image ? { images: [image] } : {})
+      images: [image]
     }
   };
 }

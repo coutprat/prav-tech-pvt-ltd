@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
 
@@ -66,6 +67,7 @@ export const metadata: Metadata = pageMeta({
 export default function EnterpriseAIPage() {
   return (
     <div data-acc="enterprise">
+      <PageJsonLd path="/enterprise-ai" />
       <FilmSection
         id="ea-film"
         video={signatureVideo.enterpriseAi}

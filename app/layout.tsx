@@ -37,12 +37,14 @@ export const metadata: Metadata = {
     url: company.url,
     siteName: company.name,
     title: "Praverse Tech — Intelligence, engineered for industry.",
-    description: company.oneLiner
+    description: company.oneLiner,
+    images: [{ url: "/og/home.jpg", width: 1200, height: 630, alt: "Praverse Tech" }]
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Praverse Tech — Intelligence, engineered for industry.",
-    description: company.oneLiner
+    description: company.oneLiner,
+    images: ["/og/home.jpg"]
   }
 };
 

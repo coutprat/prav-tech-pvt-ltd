@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import Link from "next/link";
 import Image from "next/image";
 import { Headline } from "@/components/ui/Headline";
@@ -23,6 +24,7 @@ export const metadata: Metadata = pageMeta({
 export default function CompanyPage() {
   return (
     <>
+      <PageJsonLd path="/company" />
       <section className="page-head">
         <div className="wrap">
           <SectionLabel accent="teal">Company</SectionLabel>

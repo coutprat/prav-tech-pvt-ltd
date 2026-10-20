@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Headline } from "@/components/ui/Headline";
 import { Aurora } from "@/components/ui/Aurora";
 import { SectionLabel, CTASection, Disclaimer, SpecTable } from "@/components/ui/primitives";
@@ -66,6 +67,7 @@ export const metadata: Metadata = pageMeta({
 export default function SovereignPage() {
   return (
     <>
+      <PageJsonLd path="/sovereign-ai-data-centres" />
       <section className="page-head" style={{ position: "relative" }}>
         <Aurora
           blobs={[

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Headline } from "@/components/ui/Headline";
 import { SectionLabel } from "@/components/ui/primitives";
@@ -8,12 +9,14 @@ import { company, howWeWork } from "@/content/company";
 export const metadata: Metadata = pageMeta({
   title: "Start a project",
   description: "Tell us the problem. You get a written plan within two business days — no pitch deck, no discovery retainer.",
-  path: '/start-a-project'
+  path: '/start-a-project',
+  og: 'start-a-project'
 });
 
 export default function StartAProjectPage() {
   return (
     <>
+      <PageJsonLd path="/start-a-project" />
       <section className="page-head">
         <div className="wrap-narrow" style={{ paddingInline: 0 }}>
           <SectionLabel accent="teal">Start a project</SectionLabel>
