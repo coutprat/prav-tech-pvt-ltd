@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { site } from "@/content/site";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { site, whatsappLink } from "@/content/site";
 
 export type Field = {
   name: string;
@@ -14,6 +14,64 @@ export type Field = {
 };
 
 type Status = "idle" | "sending" | "sent" | "error";
+
+type Sent = {
+  reference: string | null;
+  confirmationSent: boolean;
+  name: string;
+  email: string;
+};
+
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"] as const;
+
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "");
+
+/**
+ * Prefill from ?topic=<slug>&note=<text>, e.g. links from the Photonics
+ * reach-finder to /start-a-project. Read from window.location in an effect so
+ * the page stays statically rendered. The topic selects the first option of
+ * the first select field that starts with it ("photonics" → "Photonics",
+ * "pharma" → "Pharma AI"); unknown topics are ignored. The note goes into the
+ * first textarea, and only if the visitor has not typed there already.
+ */
+function prefillFromQuery(form: HTMLFormElement, fields: Field[]) {
+  let q: URLSearchParams;
+  try {
+    q = new URLSearchParams(window.location.search);
+  } catch {
+    return;
+  }
+
+  const topic = norm(q.get("topic") ?? "");
+  const select = fields.find((f) => f.type === "select" && f.options?.length);
+  if (topic && select?.options) {
+    const match = select.options.find((o) => norm(o).startsWith(topic));
+    const el = form.elements.namedItem(select.name);
+    if (match && el instanceof HTMLSelectElement && !el.value) el.value = match;
+  }
+
+  const note = (q.get("note") ?? "").trim().slice(0, 4000);
+  const area = fields.find((f) => f.type === "textarea");
+  if (note && area) {
+    const el = form.elements.namedItem(area.name);
+    if (el instanceof HTMLTextAreaElement && !el.value) el.value = note;
+  }
+}
+
+/** UTM tags on the page the form is on, so the CRM knows where a lead came from. */
+function readUtm(): Record<string, string> {
+  const out: Record<string, string> = {};
+  try {
+    const q = new URLSearchParams(window.location.search);
+    for (const k of UTM_KEYS) {
+      const v = q.get(k);
+      if (v) out[k] = v.slice(0, 200);
+    }
+  } catch {
+    // no window.location in some embedded contexts; UTM is a nice-to-have
+  }
+  return out;
+}
 
 /**
  * Posts to /api/enquiry, which mails the enquiry over Zoho SMTP.
@@ -30,15 +88,30 @@ export function EnquiryForm({
   fields,
   subject,
   submitLabel = "Send",
-  note
+  note,
+  kind = "enquiry",
+  nextStep = "You will get a written plan within two business days."
 }: {
   fields: Field[];
   subject: string;
   submitLabel?: string;
   note?: string;
+  /** Picks the wording of the confirmation email. */
+  kind?: "enquiry" | "waitlist";
+  /** The promise restated in the success panel. */
+  nextStep?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
+  const [sent, setSent] = useState<Sent | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Once, on mount: fields are uncontrolled, so this writes to the DOM and
+  // the visitor can edit or clear whatever was prefilled.
+  useEffect(() => {
+    if (formRef.current) prefillFromQuery(formRef.current, fields);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -54,9 +127,21 @@ export function EnquiryForm({
       const res = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, subject })
+        body: JSON.stringify({
+          ...data,
+          subject,
+          kind,
+          page: window.location.pathname,
+          referrer: document.referrer.slice(0, 500),
+          utm: readUtm()
+        })
       });
-      const json = (await res.json()) as { ok: boolean; error?: string };
+      const json = (await res.json()) as {
+        ok: boolean;
+        error?: string;
+        reference?: string;
+        confirmationSent?: boolean;
+      };
 
       if (!res.ok || !json.ok) {
         setStatus("error");
@@ -64,34 +149,71 @@ export function EnquiryForm({
         return;
       }
 
+      setSent({
+        reference: json.reference ?? null,
+        confirmationSent: json.confirmationSent ?? false,
+        name: String(data.name ?? ""),
+        email: String(data.email ?? "")
+      });
       setStatus("sent");
       form.reset();
     } catch {
       setStatus("error");
-      setError(
-        `We could not reach the server. Please email ${site.enquiryEmail} directly.`
-      );
+      setError(`We could not reach the server. Please email ${site.enquiryEmail} directly.`);
     }
   }
 
   if (status === "sent") {
+    const ref = sent?.reference ?? null;
+    const waText = ref
+      ? `Hello Praverse Tech, this is ${sent?.name || "me"}. I just sent an enquiry from your website (ref ${ref}).`
+      : site.whatsappMessage;
+
     return (
       <div className="form-sent" role="status">
         <p className="h3">Thank you — that reached us.</p>
+        {ref ? (
+          <p className="body-2" style={{ marginTop: 12 }}>
+            Your reference is{" "}
+            <strong className="mono" style={{ whiteSpace: "nowrap" }}>
+              {ref}
+            </strong>
+            .
+          </p>
+        ) : null}
         <p className="body-2" style={{ marginTop: 12 }}>
-          You will get a written plan within two business days. If it is urgent,
-          write to{" "}
-          <a className="link" href={`mailto:${site.enquiryEmail}`}>
-            {site.enquiryEmail}
-          </a>
-          .
+          {sent?.confirmationSent ? (
+            <>
+              Check your inbox — we&rsquo;ve sent a confirmation
+              {sent.email ? <> to {sent.email}</> : null}.{" "}
+            </>
+          ) : ref ? (
+            <>Keep this reference: the confirmation email is running late. </>
+          ) : null}
+          {nextStep}
         </p>
+        <div className="form-actions" style={{ marginTop: 20 }}>
+          <a
+            className="btn btn-primary"
+            href={whatsappLink(waText)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Continue on WhatsApp
+          </a>
+          <a
+            className="btn btn-ghost"
+            href={`mailto:${site.enquiryEmail}${ref ? `?subject=${encodeURIComponent(ref)}` : ""}`}
+          >
+            Email {site.enquiryEmail}
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate={false}>
+    <form ref={formRef} className="form" onSubmit={onSubmit} noValidate={false}>
       {fields.map((f) => (
         <div className="field" key={f.name} data-wide={f.type === "textarea"}>
           <label htmlFor={f.name}>
@@ -150,7 +272,7 @@ export function EnquiryForm({
           {status === "error" ? (
             <span className="form-error">{error}</span>
           ) : (
-            note ?? "We reply within two business days."
+            (note ?? "We reply within two business days.")
           )}
         </p>
       </div>

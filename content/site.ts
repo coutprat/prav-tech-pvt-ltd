@@ -62,7 +62,10 @@ export type TeamMember = {
 export const team: TeamMember[] = [];
 
 
+/** A wa.me deep link to the business number with `text` prefilled. */
+export function whatsappLink(text: string): string {
+  return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(text)}`;
+}
+
 /** Ready-to-use wa.me link with the prefilled message. */
-export const whatsappHref = `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(
-  site.whatsappMessage
-)}`;
+export const whatsappHref = whatsappLink(site.whatsappMessage);
