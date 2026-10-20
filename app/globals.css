@@ -5786,9 +5786,12 @@ body::before {
   margin-top: auto;
   padding: 18px 20px;
   min-height: 158px;
-  border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid var(--line);
+  /* Sits on the card itself: the marks use their on-dark versions
+     (public/partners/*-on-dark.webp), so no white plate is needed and the
+     logo belongs to the card instead of being stuck onto it. */
+  background: transparent;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
 }
 /*
  * The mark fills the tile rather than sitting small in one corner: a logo wall
@@ -5804,16 +5807,15 @@ body::before {
 }
 
 /*
- * Our own lockup. Explicitly dark, because the tile is white in both themes
- * and the mark's orbits are stroked in currentColor — left to inherit, they
- * would take the card's pale dark-theme ink and vanish into the panel.
+ * Our own lockup, on the card's graphite. The mark's orbits are stroked in
+ * currentColor, so they take the page ink like the partner marks do.
  */
 .eco-lockup {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 9px;
-  color: #11203a;
+  color: var(--ink);
 }
 .eco-lockup-name {
   display: flex;
@@ -5827,7 +5829,7 @@ body::before {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1;
-  color: #11203a;
+  color: var(--ink);
 }
 .eco-lockup-sub {
   font-size: 10px;
@@ -5835,7 +5837,7 @@ body::before {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   line-height: 1;
-  color: #5b6b85;
+  color: var(--ink-2);
 }
 
 /* ==========================================================================

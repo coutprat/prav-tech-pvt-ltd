@@ -508,13 +508,13 @@ export const ecosystem = [
   },
   {
     name: "Nexgen Pharma Solutions",
-    logo: "/partners/nexgen.webp",
+    logo: "/partners/nexgen-on-dark.webp",
     role: "Pharma quality and regulatory consulting",
     body: "QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). Led by Ashwani Shrivastav."
   },
   {
     name: "SWATI Spentose",
-    logo: "/partners/swati.webp",
+    logo: "/partners/swati-on-dark.webp",
     role: "Pharma advisory",
     body: "V-Group, established 1952. USFDA, EU-GMP, PMDA Japan and WHO-GMP approvals; three units in Vapi, Gujarat."
   },

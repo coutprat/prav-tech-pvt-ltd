@@ -102,10 +102,10 @@ export default function CompanyPage() {
                 {/*
                   At the foot, not the head: only two of the four have a logo,
                   and placing it above the title pushed those two names down
-                  while the others stayed put. Titles align now, and the logos
-                  sit on a fixed light tile in both themes — both marks are
-                  black-on-white artwork, and inverting or recolouring someone
-                  else's logo to suit our dark mode is not ours to do.
+                  while the others stayed put. Titles align now. The partner
+                  marks use reversed versions made by
+                  scripts/media/reverse_logo.py — white ground removed, black
+                  ink lightened, brand colours untouched.
                 */}
                 {"lockup" in e && e.lockup ? (
                   <span className="eco-logo">

@@ -15,10 +15,10 @@ import { useId } from "react";
  * the small mark drops them, thickens what is left, and crops the empty lower
  * half of the ring so it sits level with the text beside it.
  *
- * With `tile` the mark sits on the navy plate of the company artwork, so it
- * reads the same in the light theme as in the dark one: the pale half of the
- * ring is fixed to the artwork's near-white, and the dotted lower orbit comes
- * back, drawn heavier so it survives header size.
+ * With `tile` the mark sits on a plate in the card colours, with the same
+ * faint hairline edge as the cards: the pale half of the ring is fixed to a
+ * near-white, and the dotted lower orbit comes back, drawn heavier so it
+ * survives header size.
  */
 
 const P =
@@ -64,14 +64,27 @@ export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolea
           <stop offset="1" stopColor="#4A8FD0" />
         </linearGradient>
         {tile && (
+          // The card surface, read from the theme tokens so the tile always
+          // matches the cards around it rather than a fixed navy.
           <linearGradient id={b} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#141A30" />
-            <stop offset="1" stopColor="#262E48" />
+            <stop offset="0" style={{ stopColor: "var(--paper-3)" }} />
+            <stop offset="1" style={{ stopColor: "var(--paper-2)" }} />
           </linearGradient>
         )}
       </defs>
 
-      {tile && <rect x="-120" y="-120" width="1240" height="1240" rx="260" fill={`url(#${b})`} />}
+      {tile && (
+        <rect
+          x="-105"
+          y="-105"
+          width="1210"
+          height="1210"
+          rx="250"
+          fill={`url(#${b})`}
+          stroke="rgba(255, 255, 255, 0.1)"
+          strokeWidth="30"
+        />
+      )}
 
       <g fill="none" strokeLinecap="round">
         <path stroke={`url(#${l})`} strokeWidth={ring} d="M62.4,454 A440,440 0 0 1 454,62.4" />
