@@ -10,25 +10,26 @@
 
 :root {
   /* --- surface ------------------------------------------------------- */
-  /* Light is art-directed as a bright, high-key studio: a premium cool white
-     rather than a warm grey, with the raised surface going to pure white so
-     cards lift off the page instead of sinking into it. */
-  --paper: #f6f7f9;
-  --paper-2: #eceef2;
-  --paper-3: #ffffff; /* raised: cards that need to read above --paper */
-  --line: #dadde3; /* decorative hairline */
-  --line-strong: #7f7d77; /* 3.5:1 — inputs, focus, meaningful borders */
+  /* One theme: a soft studio grey, mid-way between white and night. It is
+     the same grey as the rendered hero studio (#acacac–#d3d3d3), so the
+     sequences sit in the page instead of on it. Raised surfaces go lighter
+     rather than to white, so cards lift without glaring. */
+  --paper: #cfd2d6;
+  --paper-2: #c4c7cc;
+  --paper-3: #dcdee2; /* raised: cards that need to read above --paper */
+  --line: #b5b9c0; /* decorative hairline */
+  --line-strong: #5f646e; /* 3.5:1 — inputs, focus, meaningful borders */
 
   /* --- ink ----------------------------------------------------------- */
   --ink: #0b1020;
-  --ink-2: #4a5266;
+  --ink-2: #3a4152; /* 6.0:1 on --paper-2 */
 
   /* --- brand --------------------------------------------------------- */
   --navy: #12172a;
   --teal: #4bd6c4; /* light — on dark, or as glow */
-  --teal-ink: #0a6a60; /* 5.5:1 on paper — text and links */
+  --teal-ink: #055249; /* 5.4:1 on --paper-2 — text and links */
   --amber: #e8a23a; /* Photonics only */
-  --amber-ink: #8a5a00; /* 5.1:1 on paper — Photonics links */
+  --amber-ink: #6b4400; /* 5.0:1 on --paper-2 — Photonics links */
 
   /* --- business-line accents ----------------------------------------
      Two values per line. `-glow` is light: gradients, seams, rim light,
@@ -39,15 +40,15 @@
      glow is only 4.09:1. This stays bright in both themes: 6.09:1 on navy. */
   --acc-ent-bright: #9b85ff;
   --acc-ent: #7c5cff; /* violet */
-  --acc-ent-ink: #5b3fd6; /* 5.74:1 on paper */
+  --acc-ent-ink: #4a2fc0; /* 5.04:1 on --paper-2 */
   --acc-pha: #10b981; /* emerald */
-  --acc-pha-ink: #066b49; /* 5.59:1 */
+  --acc-pha-ink: #04573b; /* 5.09:1 */
   --acc-men: #38bdf8; /* sky */
-  --acc-men-ink: #035f92; /* 5.87:1 */
+  --acc-men-ink: #024b75; /* 5.47:1 */
   --acc-pho: #f59e0b; /* amber */
-  --acc-pho-ink: #8a5005; /* 5.55:1 */
+  --acc-pho-ink: #6b3e03; /* 5.35:1 */
   --acc-pho-2: #4bd6c4; /* teal, the optical half of Photonics */
-  --acc-pho-2-ink: #0a6a60; /* 5.53:1 */
+  --acc-pho-2-ink: #055249; /* 5.36:1 */
 
   /* The accent the current page is "in". Pages override it on <main>. */
   --acc: var(--teal);
@@ -58,8 +59,8 @@
   --on-navy-2: #a6acbc;
 
   /* --- material ------------------------------------------------------ */
-  --glass: rgba(255, 255, 255, 0.55);
-  --glass-line: rgba(255, 255, 255, 0.8);
+  --glass: rgba(220, 222, 226, 0.62);
+  --glass-line: rgba(255, 255, 255, 0.45);
   --shadow-1: 0 1px 2px rgba(14, 18, 32, 0.04), 0 2px 8px rgba(14, 18, 32, 0.04);
   --shadow-2: 0 1px 2px rgba(14, 18, 32, 0.05), 0 8px 24px rgba(14, 18, 32, 0.07);
   --shadow-3: 0 2px 6px rgba(14, 18, 32, 0.06), 0 20px 56px rgba(14, 18, 32, 0.1);
@@ -82,54 +83,6 @@
   :root {
     --gutter: 48px;
   }
-}
-
-/* --------------------------------------------------------------------------
-   DARK — the same ceramic studio with the lights down.
-   Not a second brand: same teal, same amber, inverted ground.
-   All pairs verified ≥ 4.5:1.
-   -------------------------------------------------------------------------- */
-[data-theme="dark"] {
-  /* Dark is designed on its own terms, not as inverted light: a deep navy-ink
-     ground rather than black, so emissive accents have somewhere to glow. */
-  --paper: #070b16;
-  --paper-2: #0e1424;
-  --paper-3: #141b2e;
-  --line: #1e2638;
-  --line-strong: #646c80; /* 3.6:1 on dark paper */
-
-  --ink: #eef1f7;
-  --ink-2: #a3abbd;
-
-  --navy: #080b14; /* CTA/footer go deeper than the page */
-  --teal: #4bd6c4;
-  --teal-ink: #6fe3d3; /* 12:1 on dark paper */
-  --amber: #e8a23a;
-  --amber-ink: #f0b458; /* 10:1 on dark paper */
-
-  /* Dark keeps the same hues; the ink values lighten, because the light-mode
-     inks sit at ~2.8:1 on dark paper. All >= 5.4:1 on every dark surface. */
-  --acc-ent: #9b85ff;
-  --acc-ent-ink: #9b85ff; /* 6.39:1 */
-  --acc-pha: #34d399;
-  --acc-pha-ink: #34d399; /* 9.70:1 */
-  --acc-men: #7dd3fc;
-  --acc-men-ink: #7dd3fc; /* 11.19:1 */
-  --acc-pho: #fbbf24;
-  --acc-pho-ink: #fbbf24; /* 11.17:1 */
-  --acc-pho-2: #4bd6c4;
-  --acc-pho-2-ink: #6fe3d3; /* 12.08:1 */
-
-  --on-navy: #ecebe7;
-  --on-navy-2: #a6acbc;
-
-  --glass: rgba(23, 28, 46, 0.6);
-  --glass-line: rgba(255, 255, 255, 0.08);
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-3: 0 2px 6px rgba(0, 0, 0, 0.35), 0 20px 56px rgba(0, 0, 0, 0.45);
-
-  color-scheme: dark;
 }
 
 /* ==========================================================================
@@ -433,13 +386,6 @@ textarea {
 .btn-primary:hover {
   background: var(--ink);
 }
-[data-theme="dark"] .btn-primary {
-  background: var(--teal);
-  color: #06201d;
-}
-[data-theme="dark"] .btn-primary:hover {
-  background: #6fe3d3;
-}
 
 .btn-ghost {
   border-color: var(--line-strong);
@@ -451,9 +397,9 @@ textarea {
   background: var(--paper-3);
 }
 
-/* Sits on .cta / .footer, which are dark in BOTH themes. It must therefore
-   use the on-dark tokens: --paper flips dark in dark mode, which made this a
-   dark button on a dark panel (1.05:1). */
+/* Sits on .cta / .footer, which are dark panels. It must therefore
+   use the on-dark tokens, not --paper, or it becomes a pale button that
+   loses its edge against the page. */
 .btn-on-dark {
   background: var(--on-navy);
   color: var(--navy);
@@ -2982,9 +2928,6 @@ textarea {
   );
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
-[data-theme="dark"] .aurora span {
-  opacity: 0.2;
-}
 
 .aurora-drift span {
   animation: aurora-drift 26s ease-in-out infinite alternate;
@@ -3810,9 +3753,6 @@ body::before {
 }
 .form-error {
   color: #b3261e;
-}
-[data-theme="dark"] .form-error {
-  color: #ffb4ab;
 }
 .form-sent {
   margin-top: 36px;
@@ -5399,7 +5339,7 @@ body::before {
    FOOTER WORDMARK
    ========================================================================== */
 /*
- * The footer sits on a dark plate in both themes, so the wordmark's own
+ * The footer sits on a dark plate, so the wordmark's own
  * tokens are fixed rather than swapped — but they are tokens, so the whole
  * thing re-skins from one place if the footer ever goes light.
  */
@@ -5424,15 +5364,6 @@ body::before {
   stroke: rgba(109, 196, 255, 0.5);
 }
 
-/*
- * The footer is dark in both themes today. If that ever changes, these two
- * lines are the whole adaptation.
- */
-:root[data-theme="light"] .wm {
-  --wm-sweep-a: #3ca2fa;
-  --wm-sweep-b: #ffffff;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .wm animateTransform {
     display: none;
@@ -5453,9 +5384,6 @@ body::before {
      interface decelerates the same way. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --shadow-3: 0 2px 4px rgba(14, 18, 32, 0.05), 0 14px 40px rgba(14, 18, 32, 0.1);
-}
-[data-theme="dark"] {
-  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 40px rgba(0, 0, 0, 0.45);
 }
 
 /* -------------------------------------------------------------- buttons */
@@ -6159,4 +6087,25 @@ body::before {
     padding: 0 var(--gutter);
     max-width: none;
   }
+}
+
+/* ==========================================================================
+   INTERCONNECT DETAIL (photonics, sovereign AI)
+   ========================================================================== */
+.proof-stats {
+  margin-top: 40px;
+  row-gap: 32px;
+}
+.fabric-media {
+  margin-top: 18px;
+  color: var(--acc-pho-ink);
+}
+.workload-points {
+  margin-top: 16px;
+}
+.workload-foot {
+  margin-top: 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
 }

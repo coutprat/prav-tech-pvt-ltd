@@ -160,7 +160,7 @@ async function main() {
     const browser = await launcher.launch();
     for (const [name, url] of PAGES) {
       for (const [vpName, viewport] of VIEWPORTS) {
-        for (const theme of ["light", "dark"]) {
+        for (const theme of ["light"]) {
           for (const reduced of [false, true]) {
             await visit(browser, engine, name, url, vpName, viewport, reduced, theme);
           }
@@ -237,7 +237,7 @@ async function main() {
     ""
   ];
 
-  for (const theme of ["light", "dark"]) {
+  for (const theme of ["light"]) {
     md.push(`### ${theme}`, "");
     for (const p of byTheme(theme)) {
       if (!p.violations.length) md.push(`- **${p.page}** — none`);

@@ -11,10 +11,7 @@ export function PhotonicsHero({
   frames: {
     desktop: FrameSet;
     mobile: FrameSet;
-    desktopDark: FrameSet;
-    mobileDark: FrameSet;
     poster: string;
-    posterDark: string;
   };
 }) {
   const frameRef = useRef(0);
@@ -24,10 +21,7 @@ export function PhotonicsHero({
     <ScrollSequence
       desktop={frames.desktop}
       mobile={frames.mobile}
-      desktopDark={frames.desktopDark}
-      mobileDark={frames.mobileDark}
       poster={frames.poster}
-      posterDark={frames.posterDark}
       alt="An empty data-hall floor. Rows of racks rise, amber copper links light inside each rack, teal optical fibres race across the rows to the spine switches, and the camera lifts to a top view of the hall."
       scrollLength={420}
       frameRef={frameRef}

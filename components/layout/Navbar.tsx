@@ -5,7 +5,6 @@ import { List, X } from "@phosphor-icons/react";
 import { Mark } from "@/components/ui/Mark";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/layout/theme";
 import { useScrolled } from "@/lib/useMediaQuery";
 import { navigation } from "@/data/navigation";
 
@@ -64,7 +63,6 @@ export function Navbar() {
         </ul>
 
         <div className="nav-actions">
-          <ThemeToggle />
           <Link className="btn btn-primary nav-cta" href="/start-a-project">
             Start a project
           </Link>

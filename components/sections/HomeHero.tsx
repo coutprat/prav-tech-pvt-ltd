@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { ScrollSequence, type FrameSet } from "@/components/motion/ScrollSequence";
 import { HomeRingOverlay } from "@/components/sections/HomeRingOverlay";
 import { HomeHeroLabels } from "@/components/sections/HomeHeroLabels";
-import { useHydrated, useMediaQuery, useTheme } from "@/lib/useMediaQuery";
+import { useHydrated, useMediaQuery } from "@/lib/useMediaQuery";
 import { HeroFinalCaption } from "@/components/sections/HeroFinalCaption";
 import { useReducedMotion } from "@/lib/useMediaQuery";
 
@@ -21,20 +21,16 @@ export function HomeHero({
   frames: {
     desktop: FrameSet;
     mobile: FrameSet;
-    desktopDark: FrameSet;
-    mobileDark: FrameSet;
     poster: string;
-    posterDark: string;
   };
 }) {
   const frameRef = useRef(0);
   const reduced = useReducedMotion();
-  const theme = useTheme();
   // Matched to the frames actually being drawn. The mobile track files are
   // half the size of the desktop ones and were sitting unused while every
   // phone downloaded 144 KB of desktop coordinates for a 900px-wide render.
   const wide = useMediaQuery("(min-width: 900px)");
-  const dir = `${wide ? "desktop" : "mobile"}${theme === "dark" ? "-dark" : ""}`;
+  const dir = wide ? "desktop" : "mobile";
 
   // The labels wait one tick before mounting. useSyncExternalStore has to
   // render the server's answer first to match the markup, so `wide` is false
@@ -48,10 +44,7 @@ export function HomeHero({
     <ScrollSequence
       desktop={frames.desktop}
       mobile={frames.mobile}
-      desktopDark={frames.desktopDark}
-      mobileDark={frames.mobileDark}
       poster={frames.poster}
-      posterDark={frames.posterDark}
       alt="A white ceramic core on a plinth. An orbital ring draws around it and four modules dock onto the ring in turn, each lighting its own colour: violet Enterprise AI, emerald Pharma AI, sky Healthcare AI, amber Photonics."
       scrollLength={420}
       frameRef={frameRef}

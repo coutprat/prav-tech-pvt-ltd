@@ -3,7 +3,7 @@
 import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion, afterPaint } from "@/lib/gsap";
-import { useReducedMotion, useTheme } from "@/lib/useMediaQuery";
+import { useReducedMotion } from "@/lib/useMediaQuery";
 
 /**
  * Must stay plain data: this crosses the server → client boundary, and a
@@ -54,11 +54,8 @@ export type Chapter = {
 export function ScrollSequence({
   desktop,
   mobile,
-  desktopDark,
-  mobileDark,
   chapters = [],
   poster,
-  posterDark,
   alt,
   scrollLength = 400,
   frameRef,
@@ -67,12 +64,8 @@ export function ScrollSequence({
 }: {
   desktop: FrameSet;
   mobile: FrameSet;
-  /** Dark-theme renders of the same scene. Same geometry, dark studio. */
-  desktopDark?: FrameSet;
-  mobileDark?: FrameSet;
   chapters?: Chapter[];
   poster: string;
-  posterDark?: string;
   /** Describes the whole sequence for assistive tech. */
   alt: string;
   /** Scroll distance of the pinned section, in % of viewport height. */
@@ -95,19 +88,10 @@ export function ScrollSequence({
   const [active, setActive] = useState(0);
   const [painted, setPainted] = useState(false);
   const reduced = useReducedMotion();
-  const theme = useTheme();
-  const isDark = theme === "dark" && Boolean(desktopDark);
-
-  // The light render is a bright studio plate; against dark chrome it reads as
-  // a glowing block. The dark set is the same geometry and camera lit for a
-  // dark page, so switching themes does not change what the hero says.
-  const desktopSet = isDark && desktopDark ? desktopDark : desktop;
-  const mobileSet = isDark && mobileDark ? mobileDark : mobile;
-  const posterSrc = isDark && posterDark ? posterDark : poster;
 
   // Rendered into the HTML so it is not discovered late. Mobile gets its own
   // smaller frame via the CSS below; this is the desktop one.
-  const firstFrame = frameUrl(desktopSet, 1);
+  const firstFrame = frameUrl(desktop, 1);
 
   useGSAP(
     () => {
@@ -124,7 +108,7 @@ export function ScrollSequence({
       // invisible on a warm cache, a hard black flash on a forced reload over
       // a slow connection. Fill it with paper immediately, and again whenever
       // the backing store is resized, which clears it right back to black.
-      // Read once per mount (the effect re-runs on theme change). draw() used
+      // Read once per mount. draw() used
       // to call getComputedStyle on every scrub tick, which forces a style
       // recalc of the page sixty times a second while scrolling.
       const paper =
@@ -137,7 +121,7 @@ export function ScrollSequence({
       fillPaper();
 
       const isMobile = window.matchMedia("(max-width: 899px)").matches;
-      const set = isMobile ? mobileSet : desktopSet;
+      const set = isMobile ? mobile : desktop;
 
       paintedRef.current = false;
       setPainted(false);
@@ -538,7 +522,7 @@ export function ScrollSequence({
         tween?.kill();
       };
     },
-    { scope: rootRef, dependencies: [isDark], revertOnUpdate: true }
+    { scope: rootRef }
   );
 
   return (
@@ -559,10 +543,10 @@ export function ScrollSequence({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="sequence-poster"
-          src={reduced ? posterSrc : firstFrame}
+          src={reduced ? poster : firstFrame}
           alt={alt}
-          width={desktopSet.width}
-          height={desktopSet.height}
+          width={desktop.width}
+          height={desktop.height}
           fetchPriority="high"
           decoding="async"
           data-hidden={painted && !reduced}
