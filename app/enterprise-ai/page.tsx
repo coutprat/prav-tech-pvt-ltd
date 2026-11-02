@@ -56,6 +56,7 @@ import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
 import { thesis } from "@/content/thesis";
 import { industries } from "@/content/industries";
+import { offers } from "@/content/offers";
 import Link from "next/link";
 
 export const metadata: Metadata = pageMeta({
@@ -130,6 +131,36 @@ export default function EnterpriseAIPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------- start small */}
+      <section className="section section-alt">
+        <div className="wrap">
+          <SectionLabel>Start small</SectionLabel>
+          <Headline onScroll>Begin with one pilot on your own data.</Headline>
+          <div className="grid-4">
+            {offers.map((o, i) => (
+              <article className="card" key={o.title}>
+                <p className="line-card-n">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="h3" style={{ fontSize: 20, marginTop: 12 }}>
+                  {o.title}
+                </h3>
+                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
+                  {o.body}
+                </p>
+                <p className="card-means">{o.gets}</p>
+              </article>
+            ))}
+          </div>
+          <p className="body-2" style={{ marginTop: 32, maxWidth: 640 }}>
+            Tell us the problem and you get a written plan within two business days.
+          </p>
+          <p style={{ marginTop: 20 }}>
+            <Link className="btn btn-ghost" href="/start-a-project">
+              Start a project
+            </Link>
+          </p>
         </div>
       </section>
 

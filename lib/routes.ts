@@ -20,7 +20,7 @@ export type Route = {
 
 export const ROUTES: readonly Route[] = [
   { path: "/", name: "Home", priority: 1, freq: "monthly", updated: "2026-10-20" },
-  { path: "/enterprise-ai", name: "Enterprise AI & Agents", priority: 0.9, freq: "monthly", updated: "2026-10-16" },
+  { path: "/enterprise-ai", name: "Enterprise AI & Agents", priority: 0.9, freq: "monthly", updated: "2026-11-03" },
   { path: "/pharma", name: "Pharma & Regulatory AI", priority: 0.9, freq: "monthly", updated: "2026-10-14" },
   { path: "/mennie", name: "MENNIE", priority: 0.9, freq: "monthly", updated: "2026-10-14" },
   { path: "/photonics", name: "Photonics & AI Data Centres", priority: 0.9, freq: "monthly", updated: "2026-10-20" },
