@@ -8,7 +8,7 @@
 export const company = {
   name: "Praverse Tech",
   legalName: "Praverse Tech Pvt Ltd",
-  url: "https://praversetech.com",
+  url: "https://www.praversetech.com",
   /**
    * Two dates, and they are not the same thing. The work began in 2023; the
    * private limited company was registered in 2026, which is what the CIN in

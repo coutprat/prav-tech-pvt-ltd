@@ -8,7 +8,7 @@ import { ScrollMotion } from "@/components/layout/ScrollMotion";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { Welcome, welcomeScript } from "@/components/layout/Welcome";
 import { company } from "@/content/company";
-import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { OrganizationJsonLd, SiteJsonLd } from "@/components/seo/JsonLd";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -31,6 +31,23 @@ export const metadata: Metadata = {
     template: "%s · Praverse Tech"
   },
   description: company.oneLiner,
+  applicationName: company.name,
+  authors: [{ name: company.name, url: company.url }],
+  keywords: [
+    "Praverse Tech",
+    "enterprise AI India",
+    "AI agents",
+    "pharma AI",
+    "FDA 483 response AI",
+    "CAPA",
+    "healthcare AI",
+    "MENNIE",
+    "AI data centre interconnect",
+    "800G transceivers India",
+    "sovereign AI data centre India",
+    "Vadodara AI company"
+  ],
+  category: "technology",
   icons: { icon: "/favicon.svg" },
   openGraph: {
     type: "website",
@@ -63,6 +80,7 @@ export default function RootLayout({
         {/* Decides before paint whether the opening curtain is shown at all. */}
         <script dangerouslySetInnerHTML={{ __html: welcomeScript }} />
         <OrganizationJsonLd />
+        <SiteJsonLd />
       </head>
       <body>
         <Welcome />

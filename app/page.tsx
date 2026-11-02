@@ -8,6 +8,8 @@ import { Headline } from "@/components/ui/Headline";
 import { ProofBar } from "@/components/ui/ProofBar";
 import { BusinessLineCard } from "@/components/ui/BusinessLineCard";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
+import { FaqJsonLd } from "@/components/seo/JsonLd";
+import { faqs } from "@/content/faq";
 import { Verify } from "@/components/ui/Verify";
 import { homeFrames } from "@/content/media";
 import { businessLines, company, howWeWork, pillars } from "@/content/company";
@@ -16,12 +18,18 @@ import { businessLines, company, howWeWork, pillars } from "@/content/company";
 const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
 const LINE_GLOWS = ["#7C5CFF", "#10B981", "#38BDF8", "#F59E0B"];
 
-export const metadata: Metadata = pageMeta({
-  title: "Praverse Tech — Intelligence, engineered for industry.",
-  description: "Enterprise AI for healthcare, pharma and regulated industries, and the high-speed interconnect for India's sovereign AI data centres.",
-  path: '/',
-  og: 'home'
-});
+const HOME_TITLE = "Praverse Tech | Enterprise AI, Pharma AI & AI Data-Centre Interconnect, India";
+
+export const metadata: Metadata = {
+  ...pageMeta({
+    title: HOME_TITLE,
+    description: "Praverse Tech builds enterprise AI agents, FDA 483 and pharma regulatory AI, the MENNIE healthcare assistant, and 800G/1.6T interconnect for India's sovereign AI data centres.",
+    path: '/',
+    og: 'home'
+  }),
+  // Absolute: the layout's "· Praverse Tech" suffix would repeat the name.
+  title: { absolute: HOME_TITLE }
+};
 
 export default function HomePage() {
   return (
@@ -131,6 +139,25 @@ export default function HomePage() {
               </Reveal>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------------- faq */}
+      <FaqJsonLd />
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel>Questions</SectionLabel>
+          <Headline onScroll>Straight answers.</Headline>
+          <div style={{ marginTop: 32, display: "grid", gap: 20, maxWidth: 820 }}>
+            {faqs.map((f) => (
+              <div key={f.q}>
+                <h3 className="h3">{f.q}</h3>
+                <p className="body-2" style={{ marginTop: 8 }}>
+                  {f.a}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

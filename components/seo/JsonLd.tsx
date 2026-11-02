@@ -1,4 +1,5 @@
-import { businessLines, company, portfolio } from "@/content/company";
+import { businessLines, company, people, portfolio } from "@/content/company";
+import { faqs } from "@/content/faq";
 import { reachLadder, testTools, transceiverFacts } from "@/content/interconnect";
 import { site } from "@/content/site";
 import { getVerifyItem } from "@/content/verify";
@@ -61,7 +62,24 @@ export function OrganizationJsonLd() {
         // 2023 start of the work is a story, not an incorporation.
         foundingDate: String(company.founded),
         email: site.enquiryEmail,
+        slogan: company.tagline,
         sameAs: [company.linkedIn],
+        founder: { "@id": `${company.url}/#founder` },
+        areaServed: ["IN", "US", "EU"],
+        knowsAbout: [
+          "Enterprise AI",
+          "AI agents",
+          "Retrieval-augmented generation",
+          "Pharmaceutical regulatory AI",
+          "FDA 483 response",
+          "CAPA",
+          "Data integrity",
+          "Healthcare AI",
+          "Medical imaging AI",
+          "AI data-centre interconnect",
+          "800G and 1.6T optical transceivers",
+          "Sovereign AI data centres in India"
+        ],
         contactPoint: [
           {
             "@type": "ContactPoint",
@@ -85,6 +103,50 @@ export function OrganizationJsonLd() {
           // Only emitted once the full registered address is confirmed.
           ...(address.confirmed ? { streetAddress: address.claim } : {})
         }
+      }}
+    />
+  );
+}
+
+/** WebSite and the founder, rendered once in the root layout. */
+export function SiteJsonLd() {
+  const f = people[0];
+  return (
+    <Ld
+      data={[
+        {
+          "@type": "WebSite",
+          "@id": `${company.url}/#website`,
+          url: company.url,
+          name: company.name,
+          description: company.oneLiner,
+          inLanguage: "en-IN",
+          publisher: org
+        },
+        {
+          "@type": "Person",
+          "@id": `${company.url}/#founder`,
+          name: f.name,
+          jobTitle: "Founder & CEO",
+          worksFor: org,
+          sameAs: [company.linkedIn]
+        }
+      ]}
+    />
+  );
+}
+
+/** FAQPage: the questions are rendered on the home page from the same list. */
+export function FaqJsonLd() {
+  return (
+    <Ld
+      data={{
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a }
+        }))
       }}
     />
   );
