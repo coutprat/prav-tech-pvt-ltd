@@ -55,11 +55,12 @@ import { Headline } from "@/components/ui/Headline";
 import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { agentFlow, agentTypes, capabilities } from "@/content/company";
 import { thesis } from "@/content/thesis";
+import { industries } from "@/content/industries";
 import Link from "next/link";
 
 export const metadata: Metadata = pageMeta({
-  title: "Enterprise AI & Agents",
-  description: "Agents, copilots, RAG search and production ML inside real workflows — with a human gate and an audit trail in the architecture.",
+  title: "Enterprise AI & Agents for Any Industry",
+  description: "Custom AI agents, copilots, RAG search and production ML for manufacturing, finance, retail, healthcare, logistics and more — with a human gate and audit trail.",
   path: '/enterprise-ai',
   og: 'enterprise-ai'
 });
@@ -106,6 +107,26 @@ export default function EnterpriseAIPage() {
                   {c.body}
                 </p>
                 <p className="card-means">{c.means}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ industries */}
+      <section className="section">
+        <div className="wrap">
+          <SectionLabel>Industries</SectionLabel>
+          <Headline onScroll>Any industry that runs on documents and decisions.</Headline>
+          <div className="grid-3">
+            {industries.map((i) => (
+              <article className="card" key={i.name}>
+                <h3 className="h3" style={{ fontSize: 20 }}>
+                  {i.name}
+                </h3>
+                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
+                  {i.use}
+                </p>
               </article>
             ))}
           </div>

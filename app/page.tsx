@@ -18,12 +18,12 @@ import { businessLines, company, howWeWork, pillars } from "@/content/company";
 const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
 const LINE_GLOWS = ["#7C5CFF", "#10B981", "#38BDF8", "#F59E0B"];
 
-const HOME_TITLE = "Praverse Tech | Enterprise AI, Pharma AI & AI Data-Centre Interconnect, India";
+const HOME_TITLE = "Praverse Tech | Custom AI & Agents for Any Industry, India";
 
 export const metadata: Metadata = {
   ...pageMeta({
     title: HOME_TITLE,
-    description: "Praverse Tech builds enterprise AI agents, FDA 483 and pharma regulatory AI, the MENNIE healthcare assistant, and 800G/1.6T interconnect for India's sovereign AI data centres.",
+    description: "Custom enterprise AI, agents and copilots for any industry — manufacturing, finance, retail, healthcare, pharma — plus 800G/1.6T interconnect for India's AI data centres.",
     path: '/',
     og: 'home'
   }),

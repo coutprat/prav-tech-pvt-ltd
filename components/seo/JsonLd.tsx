@@ -1,5 +1,6 @@
 import { businessLines, company, people, portfolio } from "@/content/company";
 import { faqs } from "@/content/faq";
+import { industries } from "@/content/industries";
 import { reachLadder, testTools, transceiverFacts } from "@/content/interconnect";
 import { site } from "@/content/site";
 import { getVerifyItem } from "@/content/verify";
@@ -68,7 +69,14 @@ export function OrganizationJsonLd() {
         areaServed: ["IN", "US", "EU"],
         knowsAbout: [
           "Enterprise AI",
+          "Custom AI solutions for any industry",
           "AI agents",
+          "AI copilots",
+          "Document intelligence",
+          "Manufacturing AI",
+          "Banking and insurance AI",
+          "Retail AI",
+          "Logistics AI",
           "Retrieval-augmented generation",
           "Pharmaceutical regulatory AI",
           "FDA 483 response",
@@ -269,7 +277,7 @@ function pageNodes(path: string): Node[] {
           path,
           line("enterprise-ai").title,
           "Enterprise AI agents, copilots, RAG search and production ML",
-          "Agents, copilots, RAG search and production ML inside real workflows — with a human gate and an audit trail in the architecture.",
+          `Custom AI agents, copilots, RAG search and production ML for ${industries.map((i) => i.name.toLowerCase()).join(", ")} — with a human gate and an audit trail in the architecture.`,
           ["IN", "US", "EU"]
         )
       ];

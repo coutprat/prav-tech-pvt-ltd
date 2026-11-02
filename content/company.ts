@@ -25,7 +25,7 @@ export const company = {
   linkedIn: "https://www.linkedin.com/company/praverse-tech",
   tagline: "Engineering human-centred intelligence.",
   oneLiner:
-    "Enterprise AI for healthcare, pharma and regulated industries — and the high-speed interconnect layer for India's sovereign AI data centres.",
+    "Enterprise AI and agents for any industry — healthcare, pharma, manufacturing, finance, retail and more — and the high-speed interconnect layer for India's sovereign AI data centres.",
   principle:
     "AI should not replace experts. It should amplify them. The system drafts. Your team decides.",
   promise: "Tell us the problem. You get a written plan within two business days."

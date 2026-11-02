@@ -1,5 +1,6 @@
 import { businessLines, company, mennie, people, trackRecord } from "@/content/company";
 import { faqs } from "@/content/faq";
+import { industries } from "@/content/industries";
 import { site, locations } from "@/content/site";
 import { ROUTES } from "@/lib/routes";
 
@@ -52,6 +53,10 @@ export function llmsFull(): string {
     "## What we do",
     "",
     ...businessLines.flatMap((l) => [`### ${l.title}`, `${l.blurb} Page: ${abs(l.href)}`, ""]),
+    "## Industries we serve",
+    "",
+    ...industries.map((i) => `- ${i.name}: ${i.use}`),
+    "",
     `### About MENNIE`,
     `MENNIE stands for ${mennie.expansion}. ${mennie.summary} It is in research and development.`,
     "",

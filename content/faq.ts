@@ -10,7 +10,15 @@
 export const faqs = [
   {
     q: "What does Praverse Tech do?",
-    a: "Praverse Tech is an Indian AI company headquartered in Vadodara, Gujarat. It builds enterprise AI and agents, pharma and regulatory AI, the MENNIE healthcare assistant, and supplies high-speed copper and optical interconnect for India's sovereign AI data centres."
+    a: "Praverse Tech is an Indian AI company headquartered in Vadodara, Gujarat. It builds custom enterprise AI, agents and copilots for any industry, with specialist depth in pharma and healthcare, and supplies high-speed copper and optical interconnect for India's sovereign AI data centres."
+  },
+  {
+    q: "Which industries does Praverse Tech serve?",
+    a: "Praverse Tech builds AI for any industry where work runs on documents, data and decisions, including healthcare and pharma, manufacturing, banking and insurance, retail and e-commerce, logistics, energy, education, government and legal services."
+  },
+  {
+    q: "Is Praverse Tech only a pharma or healthcare AI company?",
+    a: "No. Pharma and healthcare are areas of specialist depth, but Praverse Tech's enterprise AI, agents and document-intelligence work applies to any industry, and its interconnect business serves AI data centres."
   },
   {
     q: "Where is Praverse Tech based?",
@@ -22,7 +30,7 @@ export const faqs = [
   },
   {
     q: "Does Praverse Tech build AI for pharma and FDA 483 responses?",
-    a: "Yes. Praverse Tech builds AI for FDA 483 response drafting, CAPA reasoning, data integrity review (ALCOA+), OOS/OOT analysis and inspection readiness. The AI drafts, and a qualified expert reviews and signs off every output, with an audit trail."
+    a: "Yes, as one of its specialities. Praverse Tech builds AI for FDA 483 response drafting, CAPA reasoning, data integrity review (ALCOA+), OOS/OOT analysis and inspection readiness. The AI drafts, and a qualified expert reviews and signs off every output, with an audit trail."
   },
   {
     q: "What is MENNIE?",
