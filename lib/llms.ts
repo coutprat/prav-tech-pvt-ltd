@@ -4,6 +4,9 @@ import { industries } from "@/content/industries";
 import { offers } from "@/content/offers";
 import { site, locations } from "@/content/site";
 import { ROUTES } from "@/lib/routes";
+import { sectors } from "@/content/sectors";
+import { govOffers } from "@/content/government";
+import { weDo } from "@/content/wedo";
 
 /**
  * Plain-text summaries for AI assistants (https://llmstxt.org). Built from the
@@ -58,9 +61,26 @@ export function llmsFull(): string {
     "",
     ...offers.map((o) => `- ${o.title}: ${o.body}`),
     "",
+    "## What we build",
+    "",
+    ...Object.values(weDo)
+      .flat()
+      .map((w) => `- We build ${w.title}: ${w.body}`),
+    "",
     "## Industries we serve",
     "",
     ...industries.map((i) => `- ${i.name}: ${i.use}`),
+    "",
+    ...sectors.flatMap((x) => [
+      `### AI for ${x.name}`,
+      `${x.lede} Page: ${abs(`/industries/${x.slug}`)}`,
+      ...x.services.map((v) => `- ${v.title}: ${v.body}`),
+      ""
+    ]),
+    "## Government and public sector",
+    "",
+    `Page: ${abs("/government")}. No department, regulator or PSU is named as a client, and no empanelment or certification is claimed.`,
+    ...govOffers.map((g) => `- ${g.title}: ${g.body}`),
     "",
     `### About MENNIE`,
     `MENNIE stands for ${mennie.expansion}. ${mennie.summary} It is in research and development.`,

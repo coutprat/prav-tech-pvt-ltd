@@ -3,9 +3,12 @@ import { pageMeta } from "@/lib/seo";
 import { PrismHero } from "@/components/hero/PrismHero";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { faqs } from "@/content/faq";
-import { industries } from "@/content/industries";
 import { company, howWeWork, pillars } from "@/content/company";
-import { locations } from "@/content/site";
+import { locations, site } from "@/content/site";
+import Link from "next/link";
+import { weDo } from "@/content/wedo";
+import { WeDoList } from "@/components/pv/WeDoList";
+import { SectorGrid } from "@/components/pv/SectorGrid";
 import {
   Card,
   CtaBand,
@@ -15,9 +18,21 @@ import {
   LogoRow,
   Section,
   SectionHead,
-  Stats
+  Stats,
 } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
+
+/** A cross-section of real work, one or two per line. */
+const HOME_WEDO = [
+  weDo.ent[0],
+  weDo.pha[0],
+  weDo.pha[3],
+  weDo.men[0],
+  weDo.ent[2],
+  weDo.ent[3],
+  weDo.sov[0],
+  weDo.pho[0],
+];
 
 const HOME_TITLE = "Praverse Tech | Custom AI & Agents for Any Industry, India";
 
@@ -25,12 +40,12 @@ export const metadata: Metadata = {
   ...pageMeta({
     title: HOME_TITLE,
     description:
-      "Custom enterprise AI, agents and copilots for any industry — manufacturing, finance, retail, healthcare, pharma — plus 800G/1.6T interconnect for India's AI data centres.",
+      "AI development company in Vadodara, Gujarat: custom AI agents and copilots for any industry and government, plus 800G/1.6T interconnect for India's AI data centres.",
     path: "/",
-    og: "home"
+    og: "home",
   }),
   // Absolute: the layout's "· Praverse Tech" suffix would repeat the name.
-  title: { absolute: HOME_TITLE }
+  title: { absolute: HOME_TITLE },
 };
 
 /** Same order and colours as the prism in the hero, so the beams land here. */
@@ -41,7 +56,7 @@ const LINES = [
     href: "/enterprise-ai",
     title: "Enterprise AI & Agents",
     body: "Agents, copilots, document intelligence and production ML that work inside the systems your teams already use — and stop for a named reviewer before anything is sent, filed or changed.",
-    tags: ["Agents", "RAG", "Vision", "MLOps"]
+    tags: ["Agents", "RAG", "Vision", "MLOps"],
   },
   {
     n: "02",
@@ -49,7 +64,7 @@ const LINES = [
     href: "/pharma",
     title: "Pharma & Regulatory AI",
     body: "FDA 483 responses, CAPA reasoning, data-integrity review and inspection readiness, built alongside people who stand in front of inspectors for a living. Every output is a draft a qualified person signs.",
-    tags: ["21 CFR 211", "ICH Q9 / Q10", "ALCOA+"]
+    tags: ["21 CFR 211", "ICH Q9 / Q10", "ALCOA+"],
   },
   {
     n: "03",
@@ -57,7 +72,7 @@ const LINES = [
     href: "/mennie",
     title: "Healthcare AI · MENNIE",
     body: "MENNIE, a voice-first patient assistant that meets people at the door, the kiosk or on their phone and hands the clinician a structured picture — plus imaging and screening support at the edge.",
-    tags: ["Voice-first", "Imaging", "Edge AI"]
+    tags: ["Voice-first", "Imaging", "Edge AI"],
   },
   {
     n: "04",
@@ -65,8 +80,8 @@ const LINES = [
     href: "/photonics",
     title: "Photonics & AI Data Centres",
     body: "The copper and optical interconnect that AI clusters are built on — DAC, ACC, AEC, AOC and pluggable optics at 800G and 1.6T — designed in and qualified in India with our US technology partner.",
-    tags: ["800G", "1.6T", "Copper + optics"]
-  }
+    tags: ["800G", "1.6T", "Copper + optics"],
+  },
 ];
 
 export default function HomePage() {
@@ -78,10 +93,26 @@ export default function HomePage() {
       <Section tight>
         <Stats
           items={[
-            { label: "Founded", value: company.ideaFrom, note: `Incorporated ${company.founded}` },
-            { label: "Headquarters", value: "Vadodara", note: "Gujarat, India" },
-            { label: "Team in", value: "4 cities", note: locations.cities.join(" · ") },
-            { label: "Markets", value: "3", note: "India · United States · Europe" }
+            {
+              label: "Founded",
+              value: company.ideaFrom,
+              note: `Incorporated ${company.founded}`,
+            },
+            {
+              label: "Headquarters",
+              value: "Vadodara",
+              note: "Gujarat, India",
+            },
+            {
+              label: "Team in",
+              value: "4 cities",
+              note: locations.cities.join(" · "),
+            },
+            {
+              label: "Markets",
+              value: "3",
+              note: "India · United States · Europe",
+            },
           ]}
         />
       </Section>
@@ -126,8 +157,13 @@ export default function HomePage() {
               The system drafts. <em>Your experts</em> decide.
             </>
           }
-          lede={company.principle.replace(" The system drafts. Your team decides.", "") +
-            " So the review gate is part of the architecture, not a setting — and every step is recorded while it happens, not reconstructed afterwards."}
+          lede={
+            company.principle.replace(
+              " The system drafts. Your team decides.",
+              "",
+            ) +
+            " So the review gate is part of the architecture, not a setting — and every step is recorded while it happens, not reconstructed afterwards."
+          }
         />
         <Figure
           n="02"
@@ -141,12 +177,12 @@ export default function HomePage() {
                 k: "Input",
                 title: "Your documents & data",
                 body: "SOPs, records, tickets, images — where they already live.",
-                tags: ["SOP", "Records", "Email"]
+                tags: ["SOP", "Records", "Email"],
               },
               {
                 k: "Agent",
                 title: "Reads, checks, drafts",
-                body: "Every claim carries the source it came from."
+                body: "Every claim carries the source it came from.",
               },
               {
                 k: "Gate",
@@ -154,18 +190,30 @@ export default function HomePage() {
                 body: "Approves, edits or rejects the draft.",
                 gate: true,
                 wait: "Awaiting review",
-                ok: "Approved"
+                ok: "Approved",
               },
               {
                 k: "Action",
                 title: "Sent, filed, actioned",
-                body: "Only now does anything change in your systems."
-              }
+                body: "Only now does anything change in your systems.",
+              },
             ]}
             ledger={[
-              { t: "09:41", k: "Asked by", v: "Quality lead, via the team inbox" },
-              { t: "09:42", k: "Surfaced", v: "Three SOP sections and four batch records, each linked" },
-              { t: "10:05", k: "Decided by", v: "Named reviewer — draft edited, then approved" }
+              {
+                t: "09:41",
+                k: "Asked by",
+                v: "Quality lead, via the team inbox",
+              },
+              {
+                t: "09:42",
+                k: "Surfaced",
+                v: "Three SOP sections and four batch records, each linked",
+              },
+              {
+                t: "10:05",
+                k: "Decided by",
+                v: "Named reviewer — draft edited, then approved",
+              },
             ]}
           />
         </Figure>
@@ -180,32 +228,80 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* ------------------------------------------------------ industries */}
+      {/* ---------------------------------------------------- what we build */}
       <Section>
         <SectionHead
           index="03"
+          eyebrow="What we build"
+          title={
+            <>
+              Specific systems, <em>not slideware</em>.
+            </>
+          }
+          lede="A selection of what our engineers have built or are building now — described without client names, because most of it is client work. Each line page lists the rest."
+        />
+        <WeDoList items={HOME_WEDO} />
+        <p style={{ marginTop: 28 }}>
+          <Link className="pv-link" href="/enterprise-ai">
+            See every capability by line <span aria-hidden="true">→</span>
+          </Link>
+        </p>
+      </Section>
+
+      {/* ------------------------------------------------------ industries */}
+      <Section tone="raised">
+        <SectionHead
+          index="04"
           eyebrow="Industries"
           title={
             <>
-              Built for any work that runs on <em>documents, data</em> and decisions.
+              Built for any work that runs on <em>documents, data</em> and
+              decisions.
             </>
           }
-          lede="Pharma and healthcare are where we go deepest. The same engineering applies wherever a qualified person has to read a lot, decide well and show their working."
+          lede="Pharma, healthcare and government are where we go deepest. The same engineering applies wherever a qualified person has to read a lot, decide well and show their working."
         />
-        <ul className="pv-index">
-          {industries.map((ind) => (
-            <li key={ind.name} className="pv-rise">
-              <h3>{ind.name}</h3>
-              <p>{ind.use}</p>
-            </li>
-          ))}
-        </ul>
+        <SectorGrid />
+        <p style={{ marginTop: 28 }}>
+          <Link className="pv-link" href="/industries">
+            All industries <span aria-hidden="true">→</span>
+          </Link>
+        </p>
+      </Section>
+
+      {/* ------------------------------------------------------ government */}
+      <Section>
+        <div className="home-gov">
+          <SectionHead
+            index="05"
+            eyebrow="Government & public sector"
+            title={
+              <>
+                Sovereign AI for the <em>public sector</em>.
+              </>
+            }
+            lede="Air-gapped and on-premise deployments, inspection and audit intelligence for regulators, public-health platforms and e-governance document automation — with a named officer deciding and the record written as the work happens."
+            aside={
+              <div className="pv-actions" style={{ marginTop: 28 }}>
+                <Link className="btn-p" href="/government">
+                  Government & public sector <span aria-hidden="true">→</span>
+                </Link>
+                <a
+                  className="btn-g"
+                  href={`mailto:${site.enquiryEmail}?subject=${encodeURIComponent("Capability statement request")}`}
+                >
+                  Request a capability statement
+                </a>
+              </div>
+            }
+          />
+        </div>
       </Section>
 
       {/* ---------------------------------------------------- engagement */}
       <Section tone="raised">
         <SectionHead
-          index="04"
+          index="06"
           eyebrow="How an engagement runs"
           title={
             <>
@@ -229,8 +325,8 @@ export default function HomePage() {
                 ["Workflow map"],
                 ["Written plan", "Scope"],
                 ["Working system", "Review gates"],
-                ["Live", "Measured"]
-              ][i]
+                ["Live", "Measured"],
+              ][i],
             }))}
           />
         </Figure>
@@ -239,7 +335,7 @@ export default function HomePage() {
       {/* ------------------------------------------------------- the group */}
       <Section>
         <SectionHead
-          index="05"
+          index="07"
           eyebrow="Who we build with"
           title={
             <>
@@ -250,10 +346,27 @@ export default function HomePage() {
         />
         <LogoRow
           items={[
-            { name: "Nexgen Pharma Solutions", src: "/partners/nexgen-on-dark.webp", role: "Quality & regulatory", w: 734, h: 72 },
-            { name: "SWATI Spentose", src: "/partners/swati-on-dark.webp", role: "Pharma advisory · est. 1952", w: 143 },
-            { name: "Our USA technology partner", role: "Interconnect technology" },
-            { name: "Praverse Tech Pvt Ltd", role: "AI & photonics · Vadodara" }
+            {
+              name: "Nexgen Pharma Solutions",
+              src: "/partners/nexgen-on-dark.webp",
+              role: "Quality & regulatory",
+              w: 734,
+              h: 72,
+            },
+            {
+              name: "SWATI Spentose",
+              src: "/partners/swati-on-dark.webp",
+              role: "Pharma advisory · est. 1952",
+              w: 143,
+            },
+            {
+              name: "Our USA technology partner",
+              role: "Interconnect technology",
+            },
+            {
+              name: "Praverse Tech Pvt Ltd",
+              role: "AI & photonics · Vadodara",
+            },
           ]}
         />
       </Section>
@@ -264,7 +377,7 @@ export default function HomePage() {
         <div className="pv-split">
           <div className="pv-sticky">
             <SectionHead
-              index="06"
+              index="08"
               eyebrow="Questions"
               title={
                 <>

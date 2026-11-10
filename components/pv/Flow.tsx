@@ -29,7 +29,7 @@ export function Flow({
   nodes,
   ledger,
   accent = "rgba(255,255,255,0.92)",
-  cycle = 7
+  cycle = 7,
 }: {
   nodes: FlowNode[];
   ledger?: { t: string; k: string; v: string }[];
@@ -70,7 +70,9 @@ export function Flow({
               {n.body ? <span className="pv-flow-b">{n.body}</span> : null}
               {n.gate ? (
                 <span className="pv-flow-gate" aria-hidden="true">
-                  <span className="pv-flow-wait">{n.wait ?? "Waiting for approval"}</span>
+                  <span className="pv-flow-wait">
+                    {n.wait ?? "Waiting for approval"}
+                  </span>
                   <span className="pv-flow-ok">{n.ok ?? "Approved"}</span>
                 </span>
               ) : null}

@@ -182,6 +182,62 @@ export const verifyItems = [
     claim: "Company LinkedIn page",
     fallback: "",
     needs: "Confirm the company LinkedIn URL.",
+    confirmed: false  },
+  {
+    id: "gstin",
+    where: "Government — credentials",
+    claim: "GSTIN 24AAQCP8627B1ZA",
+    fallback: "",
+    needs: "Check against the GST registration certificate before launch. Public-sector vendor forms ask for it first.",
+    confirmed: true,
+    source: "Founder's project record (Praverse Brain vault, praverse-tech context), November 2026"
+  },
+  {
+    id: "gem-seller",
+    where: "Government — credentials",
+    claim: "Registered seller on the Government e-Marketplace (GeM)",
+    fallback: "",
+    needs: "Only if Praverse Tech is registered on GeM: the seller ID and the categories listed. Never claimed until confirmed.",
+    confirmed: false
+  },
+  {
+    id: "dpiit-startup",
+    where: "Government — credentials",
+    claim: "DPIIT-recognised startup (Startup India)",
+    fallback: "",
+    needs: "DPIIT recognition certificate number, if held. Relevant to procurement relaxations for startups.",
+    confirmed: false
+  },
+  {
+    id: "udyam-msme",
+    where: "Government — credentials",
+    claim: "Udyam-registered MSME",
+    fallback: "",
+    needs: "Udyam registration number, if held. MSME status affects public-procurement preferences.",
+    confirmed: false
+  },
+  {
+    id: "iso-27001",
+    where: "Government — credentials",
+    claim: "ISO/IEC 27001 certified",
+    fallback: "",
+    needs: "Certificate and scope, if certified. Do not claim 'aligned' or 'in progress' without a dated plan.",
+    confirmed: false
+  },
+  {
+    id: "cert-in-audit",
+    where: "Government — credentials",
+    claim: "Applications security-audited by a CERT-In empanelled auditor",
+    fallback: "",
+    needs: "Audit report and auditor name, if any application has been audited. Many government deployments require this before go-live.",
+    confirmed: false
+  },
+  {
+    id: "public-sector-references",
+    where: "Government — references",
+    claim: "Public-sector references",
+    fallback: "",
+    needs: "Any department, PSU or regulator that can be named as a client or reference, with their written consent. None is named until then.",
     confirmed: false
   }
 ] as const satisfies readonly VerifyItem[];

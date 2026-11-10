@@ -4,6 +4,7 @@ export const navigation = [
   { label: "MENNIE", href: "/mennie" },
   { label: "Photonics", href: "/photonics" },
   { label: "Sovereign AI", href: "/sovereign-ai-data-centres" },
+  { label: "Industries", href: "/industries" },
   { label: "Company", href: "/company" }
 ] as const;
 
@@ -14,7 +15,9 @@ export const footerNav = {
     { label: "Pharma AI", href: "/pharma" },
     { label: "MENNIE", href: "/mennie" },
     { label: "Photonics", href: "/photonics" },
-    { label: "Sovereign AI data centres", href: "/sovereign-ai-data-centres" }
+    { label: "Sovereign AI data centres", href: "/sovereign-ai-data-centres" },
+    { label: "Industries", href: "/industries" },
+    { label: "Government & public sector", href: "/government" }
   ],
   company: [
     { label: "Company", href: "/company" },

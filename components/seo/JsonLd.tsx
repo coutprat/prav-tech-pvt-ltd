@@ -5,6 +5,8 @@ import { reachLadder, testTools, transceiverFacts } from "@/content/interconnect
 import { site } from "@/content/site";
 import { getVerifyItem } from "@/content/verify";
 import { getRoute } from "@/lib/routes";
+import { getSector, sectors } from "@/content/sectors";
+import { govOffers, govFaq } from "@/content/government";
 
 /**
  * Structured data.
@@ -48,11 +50,12 @@ function Ld({ data }: { data: Node | Node[] }) {
  */
 export function OrganizationJsonLd() {
   const address = getVerifyItem("registered-address");
+  const cin = getVerifyItem("cin");
 
   return (
     <Ld
       data={{
-        "@type": "Organization",
+        "@type": ["Organization", "ProfessionalService"],
         "@id": ORG_ID,
         name: company.legalName,
         alternateName: company.name,
@@ -62,6 +65,10 @@ export function OrganizationJsonLd() {
         // The legal entity's date, which is what schema.org means by this. The
         // 2023 start of the work is a story, not an incorporation.
         foundingDate: String(company.founded),
+        ...(cin.confirmed
+          ? { identifier: { "@type": "PropertyValue", propertyID: "CIN", value: cin.claim.replace(/^CIN\s*/, "") } }
+          : {}),
+        image: `${company.url}/og/home.jpg`,
         email: site.enquiryEmail,
         slogan: company.tagline,
         sameAs: [company.linkedIn],
@@ -86,7 +93,9 @@ export function OrganizationJsonLd() {
           "Medical imaging AI",
           "AI data-centre interconnect",
           "800G and 1.6T optical transceivers",
-          "Sovereign AI data centres in India"
+          "Sovereign AI data centres in India",
+          "AI for government and the public sector",
+          ...sectors.map((x) => `AI for ${x.name.toLowerCase()}`)
         ],
         contactPoint: [
           {
@@ -163,14 +172,58 @@ export function FaqJsonLd() {
 /* ----------------------------------------------------------- breadcrumbs */
 
 function breadcrumb(path: string): Node {
-  const page = getRoute(path);
+  // Every ancestor that is itself a canonical route, then the page.
+  const parts = path.split("/").filter(Boolean);
+  const trail = ["/", ...parts.map((_, i) => `/${parts.slice(0, i + 1).join("/")}`)].map(getRoute);
   return {
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: getRoute("/").name, item: `${company.url}/` },
-      { "@type": "ListItem", position: 2, name: page.name, item: `${company.url}${page.path}` }
-    ]
+    itemListElement: trail.map((r, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: r.name,
+      item: `${company.url}${r.path === "/" ? "/" : r.path}`
+    }))
   };
+}
+
+function faqPage(path: string, items: readonly { q: string; a: string }[]): Node {
+  return {
+    "@type": "FAQPage",
+    "@id": `${company.url}${path}#faq`,
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a }
+    }))
+  };
+}
+
+/** A sector page: one Service per offer, grouped, plus the page's FAQ. */
+function sectorNodes(path: string): Node[] {
+  const s = getSector(path.replace("/industries/", ""));
+  if (!s) return [];
+  return [
+    {
+      "@type": "Service",
+      "@id": `${company.url}${path}#service`,
+      name: `AI solutions for ${s.name.toLowerCase()}`,
+      serviceType: `${s.name} AI development and consulting`,
+      description: s.seo.description,
+      url: `${company.url}${path}`,
+      provider: org,
+      areaServed: [{ "@type": "Country", name: "India" }, "Worldwide"],
+      audience: { "@type": "BusinessAudience", name: s.name },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: `${s.name} AI services`,
+        itemListElement: s.services.map((x) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: x.title, description: x.body, provider: org }
+        }))
+      }
+    },
+    faqPage(path, s.faq)
+  ];
 }
 
 /* -------------------------------------------------------------- services */
@@ -270,7 +323,46 @@ function interconnectProducts(): Node {
 
 /** Page-specific nodes, keyed by canonical path. */
 function pageNodes(path: string): Node[] {
+  if (path.startsWith("/industries/")) return sectorNodes(path);
   switch (path) {
+    case "/industries":
+      return [
+        {
+          "@type": "ItemList",
+          "@id": `${company.url}/industries#sectors`,
+          name: `Industries ${company.name} builds AI for`,
+          itemListElement: sectors.map((s, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: s.name,
+            url: `${company.url}/industries/${s.slug}`
+          }))
+        }
+      ];
+    case "/government":
+      return [
+        {
+          "@type": "Service",
+          "@id": `${company.url}/government#service`,
+          name: "AI and digital infrastructure for government and the public sector",
+          serviceType: "Sovereign AI, e-governance automation and public-sector AI systems",
+          description:
+            "Sovereign and air-gapped AI deployments, inspection and audit intelligence, public-health platforms, e-governance document automation and data-centre interconnect for national compute.",
+          url: `${company.url}/government`,
+          provider: org,
+          areaServed: [{ "@type": "Country", name: "India" }],
+          audience: { "@type": "GovernmentOrganization", name: "Government departments, regulators and public-sector undertakings" },
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Public-sector services",
+            itemListElement: govOffers.map((x) => ({
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: x.title, description: x.body, provider: org }
+            }))
+          }
+        },
+        faqPage("/government", govFaq)
+      ];
     case "/enterprise-ai":
       return [
         service(

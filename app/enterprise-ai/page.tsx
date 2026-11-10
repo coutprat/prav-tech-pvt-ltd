@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
+import { weDo } from "@/content/wedo";
+import { WeDoList } from "@/components/pv/WeDoList";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
@@ -306,6 +308,21 @@ export default function EnterpriseAIPage() {
             </li>
           ))}
         </ul>
+      </Section>
+
+      {/* ------------------------------------------------------- we build */}
+      <Section accent="ent">
+        <SectionHead
+          index="07"
+          eyebrow="What we build"
+          title={
+            <>
+              Six systems we <em>ship</em>.
+            </>
+          }
+          lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
+        />
+        <WeDoList items={weDo.ent} />
       </Section>
 
       <CtaBand

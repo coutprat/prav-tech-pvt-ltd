@@ -1,0 +1,38 @@
+/* /company — page-specific pieces only. Kit styles live in premium-kit.css. */
+
+.co-people {
+  margin-top: 0;
+}
+
+/* The origin film sits behind the story; the copy stays above it. */
+.co-origin {
+  overflow: hidden;
+}
+.co-origin .origin-body {
+  position: relative;
+  z-index: 1;
+}
+.co-p + .co-p {
+  margin-top: 24px;
+}
+
+/* Partner marks at the foot of each group card, so titles stay aligned. */
+.co-eco .pv-card-meta {
+  display: block;
+}
+.co-logo {
+  min-height: 120px;
+  padding: 18px 0 0;
+}
+.co-logo img {
+  max-height: 96px;
+}
+/* The kit styles meta spans as chips; a logo is not a chip. */
+.co-eco .pv-card-meta > .co-logo {
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 22px 0 4px;
+  letter-spacing: normal;
+  color: var(--ink);
+}

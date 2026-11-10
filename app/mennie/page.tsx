@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { weDo } from "@/content/wedo";
+import { WeDoList } from "@/components/pv/WeDoList";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { MennieFilm } from "@/components/sections/MennieFilm";
-import { Aurora } from "@/components/ui/Aurora";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
-import { Headline } from "@/components/ui/Headline";
-import {
-  SectionLabel,
-  MilestoneTracker,
-  Disclaimer,
-  CTASection
-} from "@/components/ui/primitives";
 import { mennie } from "@/content/company";
+import { thesis } from "@/content/thesis";
+import {
+  Card,
+  CtaBand,
+  Figure,
+  Grid,
+  Note,
+  Rows,
+  Section,
+  SectionHead,
+} from "@/components/pv/kit";
+import { Flow } from "@/components/pv/Flow";
+import "./mennie.css";
 
 export const metadata: Metadata = pageMeta({
   title: "MENNIE — voice-first patient assistant",
-  description: "MENNIE meets patients at the door, the kiosk or on their phone, and hands clinicians a structured picture. In research and development.",
-  path: '/mennie',
-  og: 'mennie'
+  description:
+    "MENNIE meets patients at the door, the kiosk or on their phone, and hands clinicians a structured picture. In research and development.",
+  path: "/mennie",
+  og: "mennie",
 });
+
+const A = "var(--acc-men-ink)";
+const nn = (i: number) => String(i + 1).padStart(2, "0");
+const [intake, matching, reminders, summaries] = mennie.features;
+const [kiosk, phone, clinicianCard] = mennie.surfaces;
 
 export default function MenniePage() {
   return (
@@ -26,140 +39,217 @@ export default function MenniePage() {
       <PageJsonLd path="/mennie" />
       <MennieFilm />
 
-      <section className="section" style={{ position: "relative" }}>
-        <Aurora
-          blobs={[
-            { color: "var(--acc-men)", x: 16, y: 34, size: 520 },
-            { color: "var(--acc-ent)", x: 82, y: 64, size: 420 }
-          ]}
+      {/* ------------------------------------------------------ one visit */}
+      <Section accent="men">
+        <SectionHead
+          as="h1"
+          index="01"
+          eyebrow="Healthcare AI"
+          title={
+            <>
+              She meets patients <em>at the door</em>.
+            </>
+          }
+          lede={mennie.summary}
+          aside={
+            <p className="men-expansion">
+              MENNIE stands for <strong>{mennie.expansion}</strong>.{" "}
+              <span className="pv-serif">{thesis.closing.note}</span>
+            </p>
+          }
         />
-        <div className="wrap">
-          <SectionLabel accent="line">Healthcare AI</SectionLabel>
-          <Headline as="h1" className="display">
-            She meets patients at the door.
-          </Headline>
-          <p className="lede" style={{ marginTop: 32 }}>
-            {mennie.summary}
-          </p>
-          <p className="body-2" style={{ marginTop: 24 }}>
-            MENNIE stands for <strong>{mennie.expansion}</strong>.
-          </p>
-        </div>
-      </section>
+        <Figure
+          n="01"
+          title="One visit, as MENNIE is designed to handle it"
+          caption="How the design works, not a report from a deployment: MENNIE is in private beta. She prepares the picture; the clinician reads it and decides. She does not diagnose, treat or replace medical professionals."
+        >
+          <Flow
+            accent={A}
+            nodes={[
+              {
+                k: "Intake",
+                title: intake.title,
+                body: intake.body,
+                tags: [kiosk.title],
+              },
+              {
+                k: "Route",
+                title: matching.title,
+                body: matching.body,
+              },
+              {
+                k: "Summary",
+                title: summaries.title,
+                body: summaries.body,
+                tags: [clinicianCard.title],
+              },
+              {
+                k: "Clinician",
+                title: "Reads it and decides",
+                body: "Care stays under clinical oversight.",
+                gate: true,
+                wait: "With the clinician",
+                ok: "Reviewed",
+              },
+              {
+                k: "Follow-up",
+                title: reminders.title,
+                body: reminders.body,
+                tags: [phone.title],
+              },
+            ]}
+          />
+        </Figure>
+      </Section>
 
-      {/* --------------------------------------------------------- features */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel>What she does</SectionLabel>
-          <Headline onScroll>Four jobs, done well.</Headline>
-          <div className="grid-4">
-            {mennie.features.map((f) => (
-              <article className="card" key={f.title}>
-                <h3 className="h3" style={{ fontSize: 20 }}>
-                  {f.title}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {f.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ---------------------------------------------------------- features */}
+      <Section tone="raised" accent="men">
+        <SectionHead
+          index="02"
+          eyebrow="What she does"
+          title={
+            <>
+              Four jobs, <em>done well</em>.
+            </>
+          }
+        />
+        <Grid cols={4}>
+          {mennie.features.map((f, i) => (
+            <Card key={f.title} n={nn(i)} title={f.title} accent="men">
+              <p>{f.body}</p>
+            </Card>
+          ))}
+        </Grid>
+      </Section>
 
-      {/* --------------------------------------------------------- surfaces */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Three surfaces</SectionLabel>
-          <Headline onScroll>One conversation, wherever it happens.</Headline>
-          <div className="grid-3">
-            {mennie.surfaces.map((s) => (
-              <article className="card" key={s.title}>
-                <h3 className="h3" style={{ fontSize: 20 }}>
-                  {s.title}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {s.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ---------------------------------------------------------- surfaces */}
+      <Section accent="men">
+        <SectionHead
+          index="03"
+          eyebrow="Three surfaces"
+          title={
+            <>
+              One conversation, <em>wherever it happens</em>.
+            </>
+          }
+        />
+        <Grid cols={3}>
+          {mennie.surfaces.map((s, i) => (
+            <Card key={s.title} n={nn(i)} title={s.title} accent="men">
+              <p>{s.body}</p>
+            </Card>
+          ))}
+        </Grid>
+      </Section>
 
-      {/* ------------------------------------------------------- deployment */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel>Deployment</SectionLabel>
-          <Headline onScroll>Staged, not switched on.</Headline>
-          <div style={{ marginTop: 48 }}>
-            <MilestoneTracker
-              items={mennie.deployment.map((d) => ({
-                stage: d.status.toUpperCase(),
-                title: d.title,
-                body: `${d.phase} — ${d.title.toLowerCase()}.`
-              }))}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ----------------------------------------------- how it's built */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel accent="line">How it is built</SectionLabel>
-          <Headline onScroll>Privacy by architecture.</Headline>
-
-          <div className="grid-3">
-            <article className="card">
-              <h3 className="h3" style={{ fontSize: 20 }}>
-                Kiosk workflows
-              </h3>
-              <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                Intake runs on the kiosk in the lobby, where the queue actually forms.
+      {/* -------------------------------------------------------- deployment */}
+      <Section tone="raised" accent="men">
+        <SectionHead
+          index="04"
+          eyebrow="Deployment"
+          title={
+            <>
+              Staged, <em>not switched on</em>.
+            </>
+          }
+          lede="MENNIE is launching soon, and opens in three stages rather than all at once."
+        />
+        <Rows
+          items={mennie.deployment.map((d, i) => ({
+            k: nn(i),
+            title: d.title,
+            body: (
+              <p className="men-phase">
+                <span>{d.phase}</span>
+                <span
+                  className="men-status"
+                  data-now={d.status === "Now" || undefined}
+                >
+                  {d.status}
+                </span>
               </p>
-            </article>
-            <article className="card">
-              <h3 className="h3" style={{ fontSize: 20 }}>
-                Privacy by architecture
-              </h3>
-              <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                Federated learning and edge inference, designed around the DPDP Act
-                2023 — patient data does not have to leave the building to be useful.
-              </p>
-            </article>
-            <article className="card">
-              <h3 className="h3" style={{ fontSize: 20 }}>
-                Assistive robot — R&amp;D
-              </h3>
-              <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                The physical assistive robot is research and development only,
-                tested in digital-twin simulation. It is not a product.
-              </p>
-            </article>
-          </div>
+            ),
+          }))}
+        />
+      </Section>
 
-          <div style={{ marginTop: 40 }}>
-            <Disclaimer>{mennie.disclaimer}</Disclaimer>
-          </div>
-        </div>
-      </section>
+      {/* ----------------------------------------------------- how it's built */}
+      <Section accent="men">
+        <SectionHead
+          index="05"
+          eyebrow="How it is built"
+          title={
+            <>
+              Privacy by <em>architecture</em>.
+            </>
+          }
+        />
+        <Grid cols={3}>
+          <Card n="01" title="Kiosk workflows" accent="men">
+            <p>
+              Intake runs on the kiosk in the lobby, where the queue actually
+              forms.
+            </p>
+          </Card>
+          <Card n="02" title="Federated & edge" accent="men">
+            <p>
+              Federated learning and edge inference, designed around the DPDP
+              Act 2023 — patient data does not have to leave the building to be
+              useful.
+            </p>
+          </Card>
+          <Card n="03" title="Assistive robot — R&D" accent="men">
+            <p>
+              The physical assistive robot is research and development only,
+              tested in digital-twin simulation. It is not a product.
+            </p>
+          </Card>
+        </Grid>
+        <Note>{mennie.disclaimer}</Note>
+      </Section>
 
       {/* ---------------------------------------------------------- waitlist */}
-      <section className="section section-alt">
-        <div className="wrap-narrow">
-          <SectionLabel>Private beta</SectionLabel>
-          <Headline onScroll>Join the waitlist.</Headline>
-          <p className="body-2" style={{ marginTop: 18 }}>
-            Tell us where you work and what the queue looks like. We are selecting
-            pilot sites now.
-          </p>
-          <WaitlistForm />
+      <Section tone="raised" accent="men" id="waitlist">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="06"
+              eyebrow="Private beta"
+              title={
+                <>
+                  Join the <em>waitlist</em>.
+                </>
+              }
+              lede="Tell us where you work and what the queue looks like. We will write to you personally before MENNIE opens to new hospitals."
+            />
+          </div>
+          <div className="men-form">
+            <WaitlistForm />
+          </div>
         </div>
-      </section>
+      </Section>
 
-      <CTASection
-        title="Want MENNIE in your lobby?"
+      {/* ------------------------------------------------------- we build */}
+      <Section accent="men">
+        <SectionHead
+          index="07"
+          eyebrow="What we build"
+          title={
+            <>
+              Healthcare AI that <em>hands the clinician</em> a clear picture.
+            </>
+          }
+          lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
+        />
+        <WeDoList items={weDo.men} />
+      </Section>
+
+      <CtaBand
+        title={
+          <>
+            Want MENNIE <em>in your lobby</em>?
+          </>
+        }
         body="Tell us the workflow. You get a written plan within two business days."
       />
     </div>

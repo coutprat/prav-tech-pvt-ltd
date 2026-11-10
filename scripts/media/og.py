@@ -443,9 +443,52 @@ def build(slug, eyebrow, title, line, colors, src, out: Path):
     print(f"{path}  {path.stat().st_size // 1024} KB")
 
 
+# Sector pages: generated from content/sectors.ts via og-sectors.json, which
+# is refreshed with:
+#   node --experimental-strip-types -e "import('./content/sectors.ts').then(...)"
+# (see the comment in content/sectors.ts). Each card uses the page's own h1.
+SECTORS_JSON = Path(__file__).with_name("og-sectors.json")
+
+
+def sector_cards():
+    import json
+
+    if not SECTORS_JSON.exists():
+        return []
+    return [
+        (f"industries-{s['slug']}", f"Industries · {s['name']}", s["title"], s["line"], (TEAL, TEAL_INK), None)
+        for s in json.loads(SECTORS_JSON.read_text(encoding="utf-8"))
+    ]
+
+
+EXTRA_CARDS = [
+    (
+        "industries",
+        "Industries",
+        "One engineering practice, fifteen sectors.",
+        "AI for banking, manufacturing, retail, logistics, energy, agritech, education, legal and more.",
+        (TEAL, TEAL_INK),
+        None,
+    ),
+    (
+        "government",
+        "Government & public sector",
+        "AI that a public office can answer for.",
+        "Sovereign, air-gapped AI, inspection intelligence and e-governance automation. Built in India.",
+        (AMBER, AMBER_INK),
+        None,
+    ),
+]
+
+
 def main():
+    import sys
+
     out = Path("public/og")
-    for slug, eyebrow, title, line, colors, src in CARDS:
+    only = set(sys.argv[1:])
+    for slug, eyebrow, title, line, colors, src in CARDS + EXTRA_CARDS + sector_cards():
+        if only and not any(slug.startswith(o) for o in only):
+            continue
         build(slug, eyebrow, title, line, colors, src, out)
 
 

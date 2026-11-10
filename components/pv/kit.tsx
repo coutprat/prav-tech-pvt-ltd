@@ -17,7 +17,7 @@ export function Section({
   tone,
   tight,
   className = "",
-  accent
+  accent,
 }: {
   id?: string;
   children: ReactNode;
@@ -32,7 +32,9 @@ export function Section({
       className={`pv-section ${className}`}
       data-tone={tone}
       data-tight={tight || undefined}
-      style={accent ? ({ "--a": accentVar(accent) } as CSSProperties) : undefined}
+      style={
+        accent ? ({ "--a": accentVar(accent) } as CSSProperties) : undefined
+      }
     >
       <div className="wrap">{children}</div>
     </section>
@@ -46,7 +48,7 @@ export function SectionHead({
   title,
   lede,
   as: H = "h2",
-  aside
+  aside,
 }: {
   index?: string;
   eyebrow: string;
@@ -80,7 +82,7 @@ export function PageHero({
   actions,
   accent,
   children,
-  meta
+  meta,
 }: {
   eyebrow: string;
   title: ReactNode;
@@ -122,7 +124,7 @@ export function Figure({
   caption,
   children,
   className = "",
-  wide
+  wide,
 }: {
   n: string;
   title: string;
@@ -138,7 +140,9 @@ export function Figure({
         <span className="pv-fig-t">{title}</span>
       </div>
       <div className="pv-fig-body">{children}</div>
-      {caption ? <figcaption className="pv-fig-cap">{caption}</figcaption> : null}
+      {caption ? (
+        <figcaption className="pv-fig-cap">{caption}</figcaption>
+      ) : null}
     </figure>
   );
 }
@@ -150,7 +154,7 @@ export function Card({
   href,
   meta,
   accent,
-  cta = "Explore"
+  cta = "Explore",
 }: {
   n?: string;
   title: ReactNode;
@@ -174,7 +178,9 @@ export function Card({
       ) : null}
     </>
   );
-  const style = accent ? ({ "--a": accentVar(accent) } as CSSProperties) : undefined;
+  const style = accent
+    ? ({ "--a": accentVar(accent) } as CSSProperties)
+    : undefined;
   return href ? (
     <Link href={href} className="pv-card" data-link style={style}>
       {body}
@@ -189,7 +195,7 @@ export function Card({
 export function Grid({
   cols = 3,
   children,
-  className = ""
+  className = "",
 }: {
   cols?: 2 | 3 | 4;
   children: ReactNode;
@@ -202,7 +208,11 @@ export function Grid({
   );
 }
 
-export function Stats({ items }: { items: { value: ReactNode; label: string; note?: string }[] }) {
+export function Stats({
+  items,
+}: {
+  items: { value: ReactNode; label: string; note?: string }[];
+}) {
   return (
     <dl className="pv-stats">
       {items.map((s) => (
@@ -220,7 +230,7 @@ export function Stats({ items }: { items: { value: ReactNode; label: string; not
 
 /** Numbered list with a hairline between rows. */
 export function Rows({
-  items
+  items,
 }: {
   items: { k: string; title: ReactNode; body: ReactNode; aside?: ReactNode }[];
 }) {
@@ -262,7 +272,7 @@ export function CtaBand({
   title,
   body,
   primary = { href: "/start-a-project", label: "Start a project" },
-  secondary = { href: "/contact", label: "Talk to us" }
+  secondary = { href: "/contact", label: "Talk to us" },
 }: {
   title: ReactNode;
   body?: ReactNode;
@@ -292,7 +302,7 @@ export function CtaBand({
 
 /** Partner and group marks on the obsidian surface. */
 export function LogoRow({
-  items
+  items,
 }: {
   items: { name: string; src?: string; role: string; w?: number; h?: number }[];
 }) {
