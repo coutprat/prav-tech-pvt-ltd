@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Mark } from "@/components/ui/Mark";
 import { FooterWordmark } from "@/components/ui/FooterWordmark";
 import { company } from "@/content/company";
-import { site } from "@/content/site";
+import { site, locations } from "@/content/site";
 import { footerNav } from "@/data/navigation";
 import { Verify, isWithheld } from "@/components/ui/Verify";
 
@@ -10,37 +10,35 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer className="footer pf">
       <div className="wrap">
-        <div className="footer-grid">
-          <div className="footer-identity">
-            <h2>
-              <Mark size={44} tile />
-              <span>
-                Praverse<span style={{ color: "var(--teal)" }}>.</span>
-              </span>
-            </h2>
-            <p>
+        <div className="pf-top">
+          <p className="pf-statement">
+            Intelligence, <em>engineered</em> for industry.
+          </p>
+          <div className="pf-reach">
+            <a className="pf-mail" href={`mailto:${site.enquiryEmail}`}>
+              {site.enquiryEmail}
+              <span aria-hidden="true">↗</span>
+            </a>
+            <p className="pf-small">{company.promise}</p>
+          </div>
+        </div>
+
+        <div className="pf-grid">
+          <div className="pf-id">
+            <Link href="/" className="pf-logo" aria-label="Praverse Tech, home">
+              <Mark size={40} tile />
+              <span>Praverse</span>
+            </Link>
+            <p className="pf-small">
               {company.legalName} · Registered in India
               <br />
               <Verify id="registered-address" />
               <br />
               <Verify id="cin" />
             </p>
-            <dl className="footer-contact">
-              <div>
-                <dt>Enquiries</dt>
-                <dd>
-                  <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
-                </dd>
-              </div>
-              <div>
-                <dt>Careers</dt>
-                <dd>
-                  <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>
-                </dd>
-              </div>
-            </dl>
+            <p className="pf-small">{locations.line}</p>
           </div>
 
           <nav aria-label="Work">
@@ -62,6 +60,9 @@ export function Footer() {
                   <Link href={i.href}>{i.label}</Link>
                 </li>
               ))}
+              <li>
+                <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>
+              </li>
             </ul>
           </nav>
 
@@ -88,7 +89,7 @@ export function Footer() {
           <FooterWordmark />
         </div>
 
-        <div className="footer-legal">
+        <div className="footer-legal pf-legal">
           <span>
             © {year} {company.legalName}
           </span>

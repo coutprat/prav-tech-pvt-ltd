@@ -33,14 +33,17 @@ const RISE = [
   ".stat-note",
   ".lede",
   ".body-2",
-  ".section-label"
+  ".section-label",
+  ".pv-card",
+  ".pv-rise",
+  ".pv-stat"
 ].join(",");
 
 /** Elements that already animate themselves, or live in a pinned scene. */
 const SKIP =
   ".reveal, .sequence, .fs, .film, .mod-section, .mennie-hero, [data-no-motion], .footer, .cta";
 
-const SPOT = ".card, .why-list > li, .sov-story, .steps > li";
+const SPOT = ".card, .why-list > li, .sov-story, .steps > li, .pv-card";
 
 export function ScrollMotion() {
   const pathname = usePathname();
@@ -138,6 +141,12 @@ export function ScrollMotion() {
       );
 
       triggers.push(
+        // Diagrams play their own CSS sequence once they are on screen.
+        ...ScrollTrigger.batch(".pv-fig", {
+          start: "top 80%",
+          once: true,
+          onEnter: (batch) => batch.forEach((el) => el.classList.add("is-in"))
+        }),
         ...ScrollTrigger.batch(".section-alt", {
           start: "top 88%",
           once: true,
