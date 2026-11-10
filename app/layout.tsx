@@ -4,6 +4,7 @@ import "./globals.css";
 import "./premium.css";
 import "./premium-kit.css";
 import "./v3.css";
+import "./v3-pages.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";

@@ -7,31 +7,29 @@ import { company, howWeWork, pillars } from "@/content/company";
 import { locations, site } from "@/content/site";
 import Link from "next/link";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
 import { IndustriesBento, bentoItems } from "@/components/pv/IndustriesBento";
+import { BigSteps, CapWall, FeatureBand, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { GovVisual } from "@/components/pv/LineVisuals";
+import { SectorIcon } from "@/components/pv/SectorIcon";
+import { sectors } from "@/content/sectors";
 import { LineSpectrum } from "@/components/pv/LineSpectrum";
 import {
-  Card,
   CtaBand,
   Faq,
   Figure,
-  Grid,
   LogoRow,
   Section,
   SectionHead,
 } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 
-/** A cross-section of real work, one or two per line. */
-const HOME_WEDO = [
-  weDo.ent[0],
-  weDo.pha[0],
-  weDo.pha[3],
-  weDo.men[0],
-  weDo.ent[2],
-  weDo.ent[3],
-  weDo.sov[0],
-  weDo.pho[0],
+/** A cross-section of real work across the five lines, coloured by line. */
+const HOME_WALL = [
+  ...wallFromWeDo(weDo.ent.slice(0, 4), "var(--acc-ent)", "Enterprise AI"),
+  ...wallFromWeDo(weDo.pha.slice(0, 3), "var(--acc-pha)", "Pharma AI"),
+  ...wallFromWeDo(weDo.men.slice(0, 2), "var(--acc-men)", "Healthcare AI"),
+  ...wallFromWeDo(weDo.sov.slice(0, 1), "var(--acc-pho)", "Sovereign AI"),
+  ...wallFromWeDo(weDo.pho.slice(0, 2), "var(--acc-pho)", "Photonics"),
 ];
 
 const HOME_TITLE = "Praverse Tech | Custom AI & Agents for Any Industry, India";
@@ -134,103 +132,73 @@ export default function HomePage() {
 
       {/* ------------------------------------------- operating principle */}
       <Section tone="raised">
-        <SectionHead
-          index="02"
-          eyebrow="Operating principle"
-          title={
+        <Statement
+          eyebrow="02 · Operating principle"
+          lead={
             <>
               The system drafts. <em>Your experts</em> decide.
             </>
           }
-          lede={
-            company.principle.replace(
-              " The system drafts. Your team decides.",
-              "",
-            ) +
-            " So the review gate is part of the architecture, not a setting — and every step is recorded while it happens, not reconstructed afterwards."
-          }
+          rest="The review gate is part of the architecture, not a setting."
+          foot={pillars.map((p) => ({ title: p.title, body: p.body }))}
         />
-        <Figure
-          n="02"
-          title="Where a person sits in every system we ship"
-          caption="Illustrative run. The agent may read, check and draft as fast as it likes; nothing leaves the gate until a named reviewer approves it, and the ledger is written as it goes."
-        >
-          <Flow
-            accent="var(--acc-pha)"
-            nodes={[
-              {
-                k: "Input",
-                title: "Your documents & data",
-                body: "SOPs, records, tickets, images — where they already live.",
-                tags: ["SOP", "Records", "Email"],
-              },
-              {
-                k: "Agent",
-                title: "Reads, checks, drafts",
-                body: "Every claim carries the source it came from.",
-              },
-              {
-                k: "Gate",
-                title: "Named reviewer",
-                body: "Approves, edits or rejects the draft.",
-                gate: true,
-                wait: "Awaiting review",
-                ok: "Approved",
-              },
-              {
-                k: "Action",
-                title: "Sent, filed, actioned",
-                body: "Only now does anything change in your systems.",
-              },
-            ]}
-            ledger={[
-              {
-                t: "09:41",
-                k: "Asked by",
-                v: "Quality lead, via the team inbox",
-              },
-              {
-                t: "09:42",
-                k: "Surfaced",
-                v: "Three SOP sections and four batch records, each linked",
-              },
-              {
-                t: "10:05",
-                k: "Decided by",
-                v: "Named reviewer — draft edited, then approved",
-              },
-            ]}
-          />
-        </Figure>
-        <div style={{ marginTop: 24 }}>
-          <Grid cols={3}>
-            {pillars.map((p, i) => (
-              <Card key={p.title} n={`0${i + 1}`} title={p.title}>
-                <p>{p.body}</p>
-              </Card>
-            ))}
-          </Grid>
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }}>
+          <Figure
+            n="02"
+            title="Where a person sits in every system we ship"
+            caption="Illustrative run. The agent may read, check and draft as fast as it likes; nothing leaves the gate until a named reviewer approves it, and the ledger is written as it goes."
+          >
+            <Flow
+              accent="var(--acc-pha)"
+              nodes={[
+                {
+                  k: "Input",
+                  title: "Your documents & data",
+                  body: "SOPs, records, tickets, images — where they already live.",
+                  tags: ["SOP", "Records", "Email"],
+                },
+                {
+                  k: "Agent",
+                  title: "Reads, checks, drafts",
+                  body: "Every claim carries the source it came from.",
+                },
+                {
+                  k: "Gate",
+                  title: "Named reviewer",
+                  body: "Approves, edits or rejects the draft.",
+                  gate: true,
+                  wait: "Awaiting review",
+                  ok: "Approved",
+                },
+                {
+                  k: "Action",
+                  title: "Sent, filed, actioned",
+                  body: "Only now does anything change in your systems.",
+                },
+              ]}
+              ledger={[
+                { t: "09:41", k: "Asked by", v: "Quality lead, via the team inbox" },
+                { t: "09:42", k: "Surfaced", v: "Three SOP sections and four batch records, each linked" },
+                { t: "10:05", k: "Decided by", v: "Named reviewer — draft edited, then approved" },
+              ]}
+            />
+          </Figure>
         </div>
       </Section>
 
-      {/* ---------------------------------------------------- what we build */}
+      {/* ------------------------------------------------ capabilities wall */}
       <Section>
         <SectionHead
           index="03"
-          eyebrow="What we build"
+          eyebrow="Capabilities"
           title={
             <>
               Specific systems, <em>not slideware</em>.
             </>
           }
-          lede="A selection of what our engineers have built or are building now — described without client names, because most of it is client work. Each line page lists the rest."
+          lede="Built or being built by our engineers, across all five lines. Client work is described without names; the tag shows where each one stands."
         />
-        <WeDoList items={HOME_WEDO} />
-        <p style={{ marginTop: 28 }}>
-          <Link className="pv-link" href="/enterprise-ai">
-            See every capability by line <span aria-hidden="true">→</span>
-          </Link>
-        </p>
+        <CapWall items={HOME_WALL} />
       </Section>
 
       {/* ------------------------------------------------------ industries */}
@@ -240,47 +208,49 @@ export default function HomePage() {
           eyebrow="Industries"
           title={
             <>
-              Built for any work that runs on <em>documents, data</em> and
-              decisions.
+              Three lines in depth. <em>Every sector</em> in reach.
             </>
           }
-          lede="Pharma, healthcare and government are where we go deepest. The same engineering applies wherever a qualified person has to read a lot, decide well and show their working."
+          lede="Pharma, healthcare and government are where we go deepest. The same engineering carries wherever a qualified person has to read a lot, decide well and show their working."
         />
-        <IndustriesBento />
-        <p style={{ marginTop: 28 }}>
-          <Link className="pv-link" href="/industries">
-            All industries <span aria-hidden="true">→</span>
-          </Link>
-        </p>
+        <IndustriesBento flagshipOnly exclude="government" />
+        <ul className="sx" aria-label="Every sector we build for">
+          {sectors.map((x) => (
+            <li key={x.slug}>
+              <Link href={`/industries/${x.slug}`}>
+                <SectorIcon name={x.icon} size={16} />
+                {x.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       {/* ------------------------------------------------------ government */}
       <Section>
-        <div className="home-gov">
-          <SectionHead
-            index="05"
-            eyebrow="Government & public sector"
-            title={
-              <>
-                Sovereign AI for the <em>public sector</em>.
-              </>
-            }
-            lede="Air-gapped and on-premise deployments, inspection and audit intelligence for regulators, public-health platforms and e-governance document automation — with a named officer deciding and the record written as the work happens."
-            aside={
-              <div className="pv-actions" style={{ marginTop: 28 }}>
-                <Link className="btn-p" href="/government">
-                  Government & public sector <span aria-hidden="true">→</span>
-                </Link>
-                <a
-                  className="btn-g"
-                  href={`mailto:${site.enquiryEmail}?subject=${encodeURIComponent("Capability statement request")}`}
-                >
-                  Request a capability statement
-                </a>
-              </div>
-            }
-          />
-        </div>
+        <FeatureBand
+          eyebrow="05 · Government & public sector"
+          title={
+            <>
+              Sovereign AI for the <em>public sector</em>.
+            </>
+          }
+          lede="Air-gapped and on-premise deployments, inspection intelligence for regulators, public-health platforms and e-governance automation. One office pilots, a named officer signs off, and only then does it scale."
+          actions={
+            <>
+              <Link className="btn-p" href="/government">
+                Government & public sector <span aria-hidden="true">→</span>
+              </Link>
+              <a
+                className="btn-g"
+                href={`mailto:${site.enquiryEmail}?subject=${encodeURIComponent("Capability statement request")}`}
+              >
+                Request a capability statement
+              </a>
+            </>
+          }
+          visual={<GovVisual />}
+        />
       </Section>
 
       {/* ---------------------------------------------------- engagement */}
@@ -290,31 +260,18 @@ export default function HomePage() {
           eyebrow="How an engagement runs"
           title={
             <>
-              From the problem to <em>production</em>, in four steps.
+              Problem to <em>production</em>, in four steps.
             </>
           }
-          lede={`${company.promise} No mystery after that: each step ends in something you can read, test or run.`}
+          lede={`${company.promise} Each step ends in something you can read, test or run.`}
         />
-        <Figure
-          n="03"
-          title="An engagement, start to finish"
-          caption="Every step hands over a concrete artefact. The plan is written before a line of production code, and the review gates are designed into the build, not bolted on at the end."
-        >
-          <Flow
-            accent="rgba(255,255,255,0.9)"
-            nodes={howWeWork.map((s, i) => ({
-              k: `Step ${i + 1}`,
-              title: s.step,
-              body: s.body,
-              tags: [
-                ["Workflow map"],
-                ["Written plan", "Scope"],
-                ["Working system", "Review gates"],
-                ["Live", "Measured"],
-              ][i],
-            }))}
-          />
-        </Figure>
+        <BigSteps
+          items={howWeWork.map((h, i) => ({
+            title: h.step,
+            body: h.body,
+            tag: ["Workflow map", "Written plan", "Working system", "Live and measured"][i],
+          }))}
+        />
       </Section>
 
       {/* ------------------------------------------------------- the group */}

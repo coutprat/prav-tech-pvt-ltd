@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import Image from "next/image";
 import { PersonCard } from "@/components/ui/PersonCard";
@@ -37,6 +38,7 @@ export default function CompanyPage() {
       <PageJsonLd path="/company" />
       <PageHero
         accent="white"
+        visual={<PrismMark />}
         eyebrow="Company"
         title={
           <>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
+import Link from "next/link";
+import { CapWall, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { PharmaVisual } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
@@ -12,14 +14,13 @@ import {
   regulatedMarkets,
 } from "@/content/company";
 import {
-  Card,
   CtaBand,
   Figure,
-  Grid,
   LogoRow,
   Note,
   Section,
   SectionHead,
+  PageHero,
 } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./pharma.css";
@@ -97,6 +98,28 @@ export default function PharmaPage() {
   return (
     <div data-acc="pharma">
       <PageJsonLd path="/pharma" />
+      <PageHero
+        eyebrow="Pharma & regulatory AI"
+        accent="pha"
+        title={
+          <>
+            Every line traces back to <em>evidence</em>.
+          </>
+        }
+        lede="FDA 483 responses, CAPA reasoning, data-integrity review and inspection readiness — drafted by AI, cited to the record, and signed by a qualified person."
+        actions={
+          <>
+            <Link className="btn-p" href="/start-a-project">
+              Start with one observation <span aria-hidden="true">→</span>
+            </Link>
+            <a className="btn-g" href="#modules">
+              The eight modules
+            </a>
+          </>
+        }
+        meta={["Cited to the record", "QA signs every output", "Built with inspection-floor practice"]}
+        visual={<PharmaVisual />}
+      />
       <FilmSection
         id="ph-film"
         video={signatureVideo.pharma}
@@ -108,17 +131,12 @@ export default function PharmaPage() {
 
       {/* ------------------------------------------------------- the response */}
       <Section accent="pha">
-        <SectionHead
-          as="h1"
-          index="01"
-          eyebrow="Pharma & regulatory AI"
-          title={
-            <>
-              Every line traces back to <em>evidence</em>.
-            </>
-          }
-          lede="Quality teams do not need a model with opinions. They need a draft that shows its working, points at the record it came from, and waits for a qualified person to sign it."
+        <Statement
+          eyebrow="01 · The principle"
+          lead="In a GMP environment, a wrong answer is worse than no answer."
+          rest="So the system drafts, shows its working, and waits for a qualified person to sign."
         />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
         <Figure
           n="01"
           title="A 483 response, from observation to signature"
@@ -206,31 +224,20 @@ export default function PharmaPage() {
           }
           lede="Praverse builds the AI. Nexgen Pharma Solutions brings inspection-floor practice — QMS, QA and QC, DMF filings in eCTD format, audit readiness, and inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea). It is led by Ashwani Shrivastav, who also advises Praverse on quality systems."
         />
-        <Grid cols={3}>
-          <Card
-            n="01"
-            title="Drafted by people who know the finding"
-            accent="pha"
-          >
-            <p>
-              Not a general-purpose model guessing at what an investigator
-              wanted to see.
-            </p>
-          </Card>
-          <Card n="02" title="Reviewed by the same practice" accent="pha">
-            <p>
-              The consultants who would sit with you in an inspection also shape
-              what the system drafts.
-            </p>
-          </Card>
-          <Card n="03" title="One accountable engagement" accent="pha">
-            <p>
-              Audit readiness and the systems that keep you ready, from one
-              engagement — the software and the quality advice answer to each
-              other.
-            </p>
-          </Card>
-        </Grid>
+        <div className="pv-statement-foot">
+          <div>
+            <h3>Drafted by people who know the finding</h3>
+            <p>Not a general-purpose model guessing at what an investigator wanted to see.</p>
+          </div>
+          <div>
+            <h3>Reviewed by the same practice</h3>
+            <p>The consultants who would sit with you in an inspection also shape what the system drafts.</p>
+          </div>
+          <div>
+            <h3>One accountable engagement</h3>
+            <p>Audit readiness and the systems that keep you ready — the software and the quality advice answer to each other.</p>
+          </div>
+        </div>
         <div className="pha-logos">
           <LogoRow
             items={[
@@ -253,7 +260,7 @@ export default function PharmaPage() {
       </Section>
 
       {/* ----------------------------------------------------------- modules */}
-      <Section accent="pha">
+      <Section accent="pha" id="modules">
         <SectionHead
           index="03"
           eyebrow="The suite"
@@ -264,17 +271,15 @@ export default function PharmaPage() {
           }
           lede="Most teams start with 483 responses or inspection readiness, then add the rest as trust builds."
         />
-        <Grid cols={4}>
-          {pharmaModules.map((m, i) => (
-            <Card
-              key={m.title}
-              n={nn(i)}
-              title={m.title}
-              accent="pha"
-              meta={m.entry ? <span>Usual entry point</span> : undefined}
-            />
-          ))}
-        </Grid>
+        <CapWall
+          kicker="Module"
+          items={pharmaModules.map((m, i) => ({
+            title: m.title,
+            kicker: `Module ${nn(i)}`,
+            tag: m.entry ? "Usual entry point" : undefined,
+            colour: "var(--acc-pha)",
+          }))}
+        />
       </Section>
 
       {/* ------------------------------------------------- regulated markets */}
@@ -364,7 +369,7 @@ export default function PharmaPage() {
           }
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
-        <WeDoList items={weDo.pha} />
+        <CapWall items={wallFromWeDo(weDo.pha, "var(--acc-pha)")} />
       </Section>
 
       <CtaBand

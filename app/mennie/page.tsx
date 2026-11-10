@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
+import Link from "next/link";
+import { BigSteps, CapWall, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { MennieVisual } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { MennieFilm } from "@/components/sections/MennieFilm";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { mennie } from "@/content/company";
 import { thesis } from "@/content/thesis";
-import {
-  Card,
-  CtaBand,
-  Figure,
-  Grid,
-  Note,
-  Rows,
-  Section,
-  SectionHead,
-} from "@/components/pv/kit";
+import { CtaBand, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./mennie.css";
 
@@ -29,7 +22,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 const A = "var(--acc-men-ink)";
-const nn = (i: number) => String(i + 1).padStart(2, "0");
+const MEN = "var(--acc-men)";
 const [intake, matching, reminders, summaries] = mennie.features;
 const [kiosk, phone, clinicianCard] = mennie.surfaces;
 
@@ -37,27 +30,42 @@ export default function MenniePage() {
   return (
     <div data-acc="mennie">
       <PageJsonLd path="/mennie" />
+      <PageHero
+        eyebrow="Healthcare AI · Private beta"
+        accent="men"
+        title={
+          <>
+            She meets patients <em>at the door</em>.
+          </>
+        }
+        lede={mennie.summary}
+        actions={
+          <>
+            <a className="btn-p" href="#waitlist">
+              Join the waitlist <span aria-hidden="true">→</span>
+            </a>
+            <Link className="btn-g" href="/start-a-project">
+              Talk to the team
+            </Link>
+          </>
+        }
+        meta={["Voice-first intake", "Clinician decides", "Designed around DPDP 2023"]}
+        visual={<MennieVisual />}
+      />
       <MennieFilm />
 
       {/* ------------------------------------------------------ one visit */}
       <Section accent="men">
-        <SectionHead
-          as="h1"
-          index="01"
-          eyebrow="Healthcare AI"
-          title={
+        <Statement
+          eyebrow="01 · The principle"
+          lead="She prepares the picture. The clinician decides."
+          rest={
             <>
-              She meets patients <em>at the door</em>.
+              MENNIE stands for {mennie.expansion}. {thesis.closing.note}
             </>
           }
-          lede={mennie.summary}
-          aside={
-            <p className="men-expansion">
-              MENNIE stands for <strong>{mennie.expansion}</strong>.{" "}
-              <span className="pv-serif">{thesis.closing.note}</span>
-            </p>
-          }
         />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
         <Figure
           n="01"
           title="One visit, as MENNIE is designed to handle it"
@@ -109,43 +117,36 @@ export default function MenniePage() {
           eyebrow="What she does"
           title={
             <>
-              Four jobs, <em>done well</em>.
+              Four jobs, three surfaces, <em>one conversation</em>.
             </>
           }
+          lede="Privacy is built into the architecture rather than added as a policy."
         />
-        <Grid cols={4}>
-          {mennie.features.map((f, i) => (
-            <Card key={f.title} n={nn(i)} title={f.title} accent="men">
-              <p>{f.body}</p>
-            </Card>
-          ))}
-        </Grid>
-      </Section>
-
-      {/* ---------------------------------------------------------- surfaces */}
-      <Section accent="men">
-        <SectionHead
-          index="03"
-          eyebrow="Three surfaces"
-          title={
-            <>
-              One conversation, <em>wherever it happens</em>.
-            </>
-          }
+        <CapWall
+          items={[
+            ...mennie.features.map((f) => ({ title: f.title, body: f.body, kicker: "Job", colour: MEN })),
+            ...mennie.surfaces.map((x) => ({ title: x.title, body: x.body, kicker: "Surface", colour: MEN })),
+            {
+              title: "Federated & edge",
+              body: "Federated learning and edge inference, designed around the DPDP Act 2023 — patient data does not have to leave the building to be useful.",
+              kicker: "Architecture",
+              colour: MEN,
+            },
+            {
+              title: "Assistive robot — R&D",
+              body: "The physical assistive robot is research and development only, tested in digital-twin simulation. It is not a product.",
+              kicker: "Research",
+              colour: MEN,
+            },
+          ]}
         />
-        <Grid cols={3}>
-          {mennie.surfaces.map((s, i) => (
-            <Card key={s.title} n={nn(i)} title={s.title} accent="men">
-              <p>{s.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <Note>{mennie.disclaimer}</Note>
       </Section>
 
       {/* -------------------------------------------------------- deployment */}
-      <Section tone="raised" accent="men">
+      <Section accent="men">
         <SectionHead
-          index="04"
+          index="03"
           eyebrow="Deployment"
           title={
             <>
@@ -154,66 +155,15 @@ export default function MenniePage() {
           }
           lede="MENNIE is launching soon, and opens in three stages rather than all at once."
         />
-        <Rows
-          items={mennie.deployment.map((d, i) => ({
-            k: nn(i),
-            title: d.title,
-            body: (
-              <p className="men-phase">
-                <span>{d.phase}</span>
-                <span
-                  className="men-status"
-                  data-now={d.status === "Now" || undefined}
-                >
-                  {d.status}
-                </span>
-              </p>
-            ),
-          }))}
-        />
-      </Section>
-
-      {/* ----------------------------------------------------- how it's built */}
-      <Section accent="men">
-        <SectionHead
-          index="05"
-          eyebrow="How it is built"
-          title={
-            <>
-              Privacy by <em>architecture</em>.
-            </>
-          }
-        />
-        <Grid cols={3}>
-          <Card n="01" title="Kiosk workflows" accent="men">
-            <p>
-              Intake runs on the kiosk in the lobby, where the queue actually
-              forms.
-            </p>
-          </Card>
-          <Card n="02" title="Federated & edge" accent="men">
-            <p>
-              Federated learning and edge inference, designed around the DPDP
-              Act 2023 — patient data does not have to leave the building to be
-              useful.
-            </p>
-          </Card>
-          <Card n="03" title="Assistive robot — R&D" accent="men">
-            <p>
-              The physical assistive robot is research and development only,
-              tested in digital-twin simulation. It is not a product.
-            </p>
-          </Card>
-        </Grid>
-        <Note>{mennie.disclaimer}</Note>
+        <BigSteps items={mennie.deployment.map((d) => ({ title: d.title, body: d.phase, tag: d.status }))} />
       </Section>
 
       {/* ---------------------------------------------------------- waitlist */}
-      <Section tone="raised" accent="men" id="waitlist">
+      <Section accent="men" id="waitlist">
         <div className="pv-split">
           <div className="pv-sticky">
             <SectionHead
-              index="06"
+              index="04"
               eyebrow="Private beta"
               title={
                 <>
@@ -230,9 +180,9 @@ export default function MenniePage() {
       </Section>
 
       {/* ------------------------------------------------------- we build */}
-      <Section accent="men">
+      <Section tone="raised" accent="men">
         <SectionHead
-          index="07"
+          index="05"
           eyebrow="What we build"
           title={
             <>
@@ -241,7 +191,7 @@ export default function MenniePage() {
           }
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
-        <WeDoList items={weDo.men} />
+        <CapWall items={wallFromWeDo(weDo.men, MEN)} />
       </Section>
 
       <CtaBand

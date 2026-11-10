@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { Verify } from "@/components/ui/Verify";
@@ -22,6 +23,7 @@ export default function ContactPage() {
 
       <PageHero
         accent="white"
+        visual={<PrismMark />}
         eyebrow="Contact"
         title={
           <>

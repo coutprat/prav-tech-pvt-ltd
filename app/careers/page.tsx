@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
-import { Card, Grid, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { CapWall } from "@/components/pv/kit3";
 import { ApplyForm } from "@/components/sections/ApplyForm";
 import { company } from "@/content/company";
 import { site } from "@/content/site";
@@ -92,6 +94,7 @@ export default function CareersPage() {
 
       <PageHero
         accent="white"
+        visual={<PrismMark />}
         eyebrow="Careers"
         title={
           <>
@@ -213,23 +216,21 @@ export default function CareersPage() {
             </>
           }
         />
-        <Grid cols={3}>
-          <Card n="01" title="The work is real" accent="white">
-            <p>
-              Systems that live inside somebody&rsquo;s actual workflow, where being wrong has
-              consequences. Not demos.
-            </p>
-          </Card>
-          <Card n="02" title="Experts stay in the loop" accent="white">
-            <p>{company.principle}</p>
-          </Card>
-          <Card n="03" title="Wide surface" accent="white">
-            <p>
-              Incorporated {company.founded}. You will not be handed one narrow corner of one
-              service and left there.
-            </p>
-          </Card>
-        </Grid>
+        <CapWall
+          items={[
+            {
+              title: "The work is real",
+              body: "Systems that live inside somebody’s actual workflow, where being wrong has consequences. Not demos.",
+              kicker: "01",
+            },
+            { title: "Experts stay in the loop", body: company.principle, kicker: "02" },
+            {
+              title: "Wide surface",
+              body: `Incorporated ${company.founded}. You will not be handed one narrow corner of one service and left there.`,
+              kicker: "03",
+            },
+          ]}
+        />
       </Section>
 
       {/* ----------------------------------------------------------- apply */}

@@ -5,18 +5,11 @@ import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { howWeWork } from "@/content/company";
 import { getSector, sectors } from "@/content/sectors";
-import {
-  Card,
-  CtaBand,
-  Faq,
-  Figure,
-  Grid,
-  PageHero,
-  Section,
-  SectionHead,
-} from "@/components/pv/kit";
+import type { CSSProperties } from "react";
+import { CtaBand, Faq, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { BentoTile, bentoItems } from "@/components/pv/IndustriesBento";
+import { SectorMotif } from "@/components/pv/SectorMotif";
 import { Flow } from "@/components/pv/Flow";
-import { SectorIcon } from "@/components/pv/SectorIcon";
 
 export const dynamicParams = false;
 
@@ -49,7 +42,13 @@ export default async function SectorPage({
   const s = getSector(slug);
   if (!s) notFound();
   const path = `/industries/${s.slug}`;
-  const others = sectors.filter((x) => x.slug !== s.slug).slice(0, 6);
+  const me = bentoItems.find((b) => b.id === s.slug);
+  const colour = me?.colour ?? "var(--gold)";
+  // Nearest neighbours in the bento order, then Government to close the row.
+  const pool = bentoItems.filter((b) => !b.flagship && b.id !== s.slug);
+  const at = Math.max(0, bentoItems.filter((b) => !b.flagship).findIndex((b) => b.id === s.slug));
+  const near = [...pool.slice(at), ...pool.slice(0, at)].slice(0, 3);
+  const gov = bentoItems.find((b) => b.id === "government");
 
   return (
     <>
@@ -72,6 +71,12 @@ export default async function SectorPage({
             </Link>
           </>
         }
+        meta={s.lines.map((l) => l.label)}
+        visual={
+          <div className="sec-hero-art pv-glass" style={{ "--c": colour } as CSSProperties}>
+            <SectorMotif icon={s.icon} id={`hero-${s.slug}`} />
+          </div>
+        }
       />
 
       {/* -------------------------------------------------------- services */}
@@ -85,17 +90,17 @@ export default async function SectorPage({
             </>
           }
         />
-        <Grid cols={2}>
+        <ol className="sec-svc">
           {s.services.map((x, i) => (
-            <Card
-              key={x.title}
-              n={String(i + 1).padStart(2, "0")}
-              title={x.title}
-            >
+            <li key={x.title} className="pv-rise">
+              <span className="sec-svc-n" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3>{x.title}</h3>
               <p>{x.body}</p>
-            </Card>
+            </li>
           ))}
-        </Grid>
+        </ol>
       </Section>
 
       {/* ------------------------------------------------------- use cases */}
@@ -194,24 +199,12 @@ export default async function SectorPage({
       {/* ---------------------------------------------------------- others */}
       <Section tight>
         <SectionHead eyebrow="Other sectors" title="Also built for." />
-        <ul className="sec-others">
-          {others.map((o) => (
-            <li key={o.slug}>
-              <Link href={`/industries/${o.slug}`}>
-                <SectorIcon name={o.icon} size={18} />
-                <span>{o.name}</span>
-                <span aria-hidden="true">→</span>
-              </Link>
-            </li>
+        <div className="sec-near">
+          {near.map((b) => (
+            <BentoTile key={b.id} b={b} n={bentoItems.filter((x) => !x.flagship).indexOf(b) + 1} />
           ))}
-          <li>
-            <Link href="/government">
-              <SectorIcon name="pillar" size={18} />
-              <span>Government & public sector</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-          </li>
-        </ul>
+          {gov ? <BentoTile b={gov} /> : null}
+        </div>
       </Section>
 
       <CtaBand

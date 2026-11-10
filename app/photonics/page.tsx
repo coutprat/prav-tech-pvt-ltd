@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
+import Link from "next/link";
+import { BigNums, BigSteps, CapWall, wallFromWeDo } from "@/components/pv/kit3";
+import { PhotonicsVisual } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { PhotonicsHero } from "@/components/sections/PhotonicsHero";
 import { ModuleSection } from "@/components/sections/ModuleSection";
@@ -34,17 +36,7 @@ import {
   testTools,
   transceiverFacts,
 } from "@/content/interconnect";
-import {
-  Card,
-  CtaBand,
-  Figure,
-  Grid,
-  Note,
-  Rows,
-  Section,
-  SectionHead,
-  Stats,
-} from "@/components/pv/kit";
+import { CtaBand, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./photonics.css";
 
@@ -57,7 +49,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 const A = "var(--acc-pho-ink)";
-const nn = (i: number) => String(i + 1).padStart(2, "0");
+const PHO = "var(--acc-pho)";
 
 /** Short node titles for the delivery figure; the body is the content text. */
 const STEP_TITLE: Record<string, string> = {
@@ -149,43 +141,39 @@ export default function PhotonicsPage() {
   return (
     <div data-acc="photonics">
       <PageJsonLd path="/photonics" />
-      {/* The hero's first frame is the LCP element — preload it so it is not
-          queued behind the JS bundles. */}
-      <link
-        rel="preload"
-        as="image"
-        href={`${photonicsFrames.desktop.dir}/frame-0001.webp`}
-        fetchPriority="high"
+      <PageHero
+        eyebrow="Photonics & AI data centres"
+        accent="pho"
+        title={
+          <>
+            The layer every AI cluster <em>runs on</em>.
+          </>
+        }
+        lede="An AI cluster is only as fast as the links between its GPUs. We are India’s partner for the copper and optical interconnect that carries that traffic: supplied and designed in today with our US technology partner, with the capability to manufacture it here built in stages."
+        actions={
+          <>
+            <Link className="btn-p" href="/start-a-project">
+              Plan a cluster <span aria-hidden="true">→</span>
+            </Link>
+            <a className="btn-g" href="#reach">
+              Find your reach
+            </a>
+          </>
+        }
+        meta={["800G today · 1.6T next", "Copper and optics", "Ethernet and InfiniBand"]}
+        visual={<PhotonicsVisual />}
       />
-
       <PhotonicsHero frames={photonicsFrames} />
 
       {/* ----------------------------------------------------------- opener */}
-      <Section accent="pho">
-        <SectionHead
-          as="h1"
-          index="01"
-          eyebrow="Photonics & AI data centres"
-          title={
-            <>
-              The layer every AI cluster <em>runs on</em>.
-            </>
-          }
-          lede="An AI cluster is only as fast as the links between its GPUs. We are India’s partner for the copper and optical interconnect that carries that traffic: supplied and designed in today with our US technology partner, with the capability to manufacture it here built in stages."
-        />
-        <Stats
-          items={interconnectProof.map((p) => ({
-            value: p.value,
-            label: p.label,
-            note: p.note,
-          }))}
-        />
+      <Section tight accent="pho">
+        <BigNums items={interconnectProof.map((p) => ({ value: p.value, label: p.label, note: p.note }))} />
       </Section>
 
       {/* ------------------------------------------------------------ reach */}
-      <Section tone="raised" accent="pho">
+      <Section tone="raised" accent="pho" id="reach">
         <SectionHead
-          index="02"
+          index="01"
           eyebrow="Reach"
           title={
             <>
@@ -194,21 +182,15 @@ export default function PhotonicsPage() {
           }
           lede="Scale-up inside the rack, scale-out between racks, scale-across the fabric. Every link gets the medium its distance and power budget call for, and nothing it does not."
         />
-        <Grid cols={3}>
-          {fabricScales.map((f, i) => (
-            <Card
-              key={f.title}
-              n={`${nn(i)} · ${f.where}`}
-              title={f.title}
-              accent="pho"
-              meta={f.media.split(" · ").map((m) => (
-                <span key={m}>{m}</span>
-              ))}
-            >
-              <p>{f.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall
+          items={fabricScales.map((f) => ({
+            title: f.title,
+            body: f.body,
+            kicker: f.where,
+            tag: f.media,
+            colour: PHO,
+          }))}
+        />
 
         <div className="pho-figs">
           <Figure
@@ -254,7 +236,7 @@ export default function PhotonicsPage() {
       {/* -------------------------------------------------------- portfolio */}
       <Section accent="pho">
         <SectionHead
-          index="03"
+          index="02"
           eyebrow="Portfolio"
           title={
             <>
@@ -263,23 +245,15 @@ export default function PhotonicsPage() {
           }
           lede="Copper and optical interconnect from one source, supplied through our US technology partner, so the choice at each hop is made on reach and power rather than on who happens to stock it."
         />
-        <Grid cols={3}>
-          {portfolio.map((p, i) => (
-            <Card
-              key={p.title}
-              n={`${nn(i)} · ${p.sub}`}
-              title={p.title}
-              accent="pho"
-              meta={
-                <span>
-                  {p.title === "AEC" ? <Verify id="aec-reach" /> : p.speeds}
-                </span>
-              }
-            >
-              <p>{p.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall
+          items={portfolio.map((p) => ({
+            title: p.title,
+            body: p.body,
+            kicker: p.sub,
+            colour: PHO,
+            extra: p.title === "AEC" ? <Verify id="aec-reach" /> : p.speeds,
+          }))}
+        />
 
         <div className="pho-pair">
           <div>
@@ -311,7 +285,7 @@ export default function PhotonicsPage() {
       {/* -------------------------------------------------------------- LPO */}
       <Section tone="raised" accent="pho">
         <SectionHead
-          index="04"
+          index="03"
           eyebrow="Linear pluggable optics"
           title={
             <>
@@ -319,13 +293,7 @@ export default function PhotonicsPage() {
             </>
           }
         />
-        <Grid cols={3}>
-          {lpoPoints.map((p, i) => (
-            <Card key={p.title} n={nn(i)} title={p.title} accent="pho">
-              <p>{p.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall items={lpoPoints.map((p) => ({ title: p.title, body: p.body, kicker: "LPO", colour: PHO }))} />
 
         <div className="pho-table">
           <SpecTable
@@ -342,7 +310,7 @@ export default function PhotonicsPage() {
       {/* ---------------------------------------------------------- interop */}
       <Section accent="pho">
         <SectionHead
-          index="05"
+          index="04"
           eyebrow="Interoperability"
           title={
             <>
@@ -351,13 +319,7 @@ export default function PhotonicsPage() {
           }
           lede="A specification is only as good as the ecosystem around it. Every design is qualified on current test systems and for interoperability on production switches, by third parties as well as in the lab."
         />
-        <Grid cols={4}>
-          {interop.map((w, i) => (
-            <Card key={w.title} n={nn(i)} title={w.title} accent="pho">
-              <p>{w.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall items={interop.map((w) => ({ title: w.title, body: w.body, kicker: "Qualified", colour: PHO }))} />
 
         <div className="pho-pair">
           <div>
@@ -378,7 +340,7 @@ export default function PhotonicsPage() {
       {/* ------------------------------------------------- design to volume */}
       <Section tone="raised" accent="pho">
         <SectionHead
-          index="06"
+          index="05"
           eyebrow="Design to volume"
           title={
             <>
@@ -406,13 +368,7 @@ export default function PhotonicsPage() {
         </Figure>
 
         <div className="pho-gap">
-          <Grid cols={3}>
-            {manufacturing.map((m, i) => (
-              <Card key={m.title} n={nn(i)} title={m.title} accent="pho">
-                <p>{m.body}</p>
-              </Card>
-            ))}
-          </Grid>
+          <CapWall items={manufacturing.map((m) => ({ title: m.title, body: m.body, kicker: "Manufacturing", colour: PHO }))} />
         </div>
 
         <div className="pho-gap">
@@ -428,7 +384,7 @@ export default function PhotonicsPage() {
       {/* ---------------------------------------------------------- India */}
       <Section accent="pho">
         <SectionHead
-          index="07"
+          index="06"
           eyebrow="India"
           title={
             <>
@@ -458,7 +414,7 @@ export default function PhotonicsPage() {
       {/* ------------------------------------------------------- our model */}
       <Section tone="raised" accent="pho">
         <SectionHead
-          index="08"
+          index="07"
           eyebrow="Our model"
           title={
             <>
@@ -467,18 +423,7 @@ export default function PhotonicsPage() {
           }
           lede="Our US technology partner builds the interconnect. Praverse does the Indian architecture, design-in, integration, qualification and support for sovereign AI data centres. Each phase is unlocked by customer demand, so capacity arrives when India’s build-out needs it, not before."
         />
-        <Rows
-          items={photonicsPhases.map((p, i) => ({
-            k: nn(i),
-            title: p.title,
-            body: (
-              <>
-                <p className="pho-stage mono">{p.stage}</p>
-                <p>{p.body}</p>
-              </>
-            ),
-          }))}
-        />
+        <BigSteps items={photonicsPhases.map((p) => ({ title: p.title, body: p.body, tag: p.stage }))} />
         <Note>
           Phases 2 and 3 are plans, not facilities. We will not show you a
           factory we do not have, and we will not quote a location, a capacity
@@ -486,13 +431,7 @@ export default function PhotonicsPage() {
         </Note>
 
         <div className="pho-gap">
-          <Grid cols={3}>
-            {whySovereign.map((w, i) => (
-              <Card key={w.title} n={nn(i)} title={w.title} accent="pho">
-                <p>{w.body}</p>
-              </Card>
-            ))}
-          </Grid>
+          <CapWall items={whySovereign.map((w) => ({ title: w.title, body: w.body, kicker: "Why India", colour: PHO }))} />
           <p className="pho-small">
             Our team works from the cities that hold most of India’s data-centre
             capacity, close to where deployments happen. Vadodara to Mumbai is
@@ -504,7 +443,7 @@ export default function PhotonicsPage() {
       {/* ------------------------------------------------------- we build */}
       <Section accent="pho">
         <SectionHead
-          index="09"
+          index="08"
           eyebrow="What we build"
           title={
             <>
@@ -513,7 +452,7 @@ export default function PhotonicsPage() {
           }
           lede="What we deliver on this line today. Interconnect is supplied and designed in with our US technology partner; the software and planning work is ours."
         />
-        <WeDoList items={weDo.pho} />
+        <CapWall items={wallFromWeDo(weDo.pho, PHO)} />
       </Section>
 
       <CtaBand

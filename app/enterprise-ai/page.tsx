@@ -2,23 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
+import { BigSteps, CapWall, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { AgentVisual } from "@/components/pv/LineVisuals";
+import { IndustriesBento } from "@/components/pv/IndustriesBento";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
 import { agentTypes, capabilities } from "@/content/company";
 import { thesis } from "@/content/thesis";
-import { industries } from "@/content/industries";
 import { offers } from "@/content/offers";
-import {
-  Card,
-  CtaBand,
-  Figure,
-  Grid,
-  Rows,
-  Section,
-  SectionHead,
-} from "@/components/pv/kit";
+import { CtaBand, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 
 /**
@@ -86,12 +79,34 @@ export const metadata: Metadata = pageMeta({
 });
 
 const A = "var(--acc-ent-bright)";
-const nn = (i: number) => String(i + 1).padStart(2, "0");
+const ENT = "var(--acc-ent)";
 
 export default function EnterpriseAIPage() {
   return (
     <div data-acc="enterprise">
       <PageJsonLd path="/enterprise-ai" />
+      <PageHero
+        eyebrow="Enterprise AI & agents"
+        accent="ent"
+        title={
+          <>
+            The gate is the <em>architecture</em>.
+          </>
+        }
+        lede="Agents, copilots, search and production ML for any business that runs on documents and decisions. Ours read, check and draft — then stop at a named person, and write down who decided."
+        actions={
+          <>
+            <Link className="btn-p" href="/start-a-project">
+              Scope a pilot <span aria-hidden="true">→</span>
+            </Link>
+            <a className="btn-g" href="#build">
+              What we build
+            </a>
+          </>
+        }
+        meta={["Human gate by design", "Cited to the source", "Every decision logged"]}
+        visual={<AgentVisual />}
+      />
       <FilmSection
         id="ea-film"
         video={signatureVideo.enterpriseAi}
@@ -103,17 +118,12 @@ export default function EnterpriseAIPage() {
 
       {/* --------------------------------------------------- architecture */}
       <Section accent="ent">
-        <SectionHead
-          as="h1"
-          index="01"
-          eyebrow="Enterprise AI & agents"
-          title={
-            <>
-              The gate is the <em>architecture</em>.
-            </>
-          }
-          lede="An agent that can act without review is a liability in any regulated business. Ours stop at a person by design, and write down who asked, what was surfaced and who decided — so the answer to “how was this decided?” exists before anybody asks."
+        <Statement
+          eyebrow="01 · The principle"
+          lead="An agent that can act without review is a liability."
+          rest="Ours stop at a person, so the answer to “how was this decided?” exists before anybody asks."
         />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
         <Figure
           n="01"
           title="Anatomy of an agent we deploy"
@@ -174,25 +184,28 @@ export default function EnterpriseAIPage() {
       </Section>
 
       {/* ----------------------------------------------------- capabilities */}
-      <Section tone="raised" accent="ent">
+      <Section tone="raised" accent="ent" id="build">
         <SectionHead
           index="02"
           eyebrow="Capabilities"
           title={
             <>
-              Six things we build, <em>and what they change</em>.
+              What we build, <em>and what it changes</em>.
             </>
           }
-          lede="Each is described twice: what we build, and what it means for the people who live with it afterwards."
+          lede="Six capabilities and four agents. Each one says what it does and what it means for the people who live with it afterwards."
         />
-        <Grid cols={3}>
-          {capabilities.map((c, i) => (
-            <Card key={c.title} n={nn(i)} title={c.title} accent="ent">
-              <p>{c.body}</p>
-              <p className="pv-means">{c.means}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall
+          items={[
+            ...capabilities.map((c, i) => ({
+              title: c.title,
+              body: `${c.body} ${c.means}`,
+              kicker: `Capability ${String(i + 1).padStart(2, "0")}`,
+              colour: ENT,
+            })),
+            ...agentTypes.map((a) => ({ title: a.title, body: a.body, kicker: "Agent", colour: ENT })),
+          ]}
+        />
       </Section>
 
       {/* ------------------------------------------------------- our view */}
@@ -253,46 +266,15 @@ export default function EnterpriseAIPage() {
               Begin with <em>one pilot</em>, on your own data.
             </>
           }
-          lede="Four scoped ways in. Each runs on your documents or data rather than a demo set, and ends in something you can test — with an honest account of where it does not work yet."
+          lede="Four scoped ways in. Each runs on your documents or data, not a demo set, and ends in something you can test."
         />
-        <Rows
-          items={offers.map((o, i) => ({
-            k: nn(i),
-            title: o.title,
-            body: (
-              <>
-                <p>{o.body}</p>
-                <p className="pv-means">{o.gets}</p>
-              </>
-            ),
-          }))}
-        />
-      </Section>
-
-      {/* ------------------------------------------------------ agent types */}
-      <Section accent="ent">
-        <SectionHead
-          index="05"
-          eyebrow="Agents"
-          title={
-            <>
-              Four agents that <em>earn their keep</em>.
-            </>
-          }
-        />
-        <Grid cols={4}>
-          {agentTypes.map((a, i) => (
-            <Card key={a.title} n={nn(i)} title={a.title} accent="ent">
-              <p>{a.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <BigSteps items={offers.map((o) => ({ title: o.title, body: `${o.body} ${o.gets}` }))} />
       </Section>
 
       {/* ------------------------------------------------------ industries */}
-      <Section tone="raised" accent="ent">
+      <Section accent="ent">
         <SectionHead
-          index="06"
+          index="05"
           eyebrow="Industries"
           title={
             <>
@@ -300,29 +282,22 @@ export default function EnterpriseAIPage() {
             </>
           }
         />
-        <ul className="pv-index">
-          {industries.map((ind) => (
-            <li key={ind.name} className="pv-rise">
-              <h3>{ind.name}</h3>
-              <p>{ind.use}</p>
-            </li>
-          ))}
-        </ul>
+        <IndustriesBento />
       </Section>
 
       {/* ------------------------------------------------------- we build */}
-      <Section accent="ent">
+      <Section tone="raised" accent="ent">
         <SectionHead
-          index="07"
+          index="06"
           eyebrow="What we build"
           title={
             <>
-              Six systems we <em>ship</em>.
+              Systems we <em>ship</em>.
             </>
           }
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
-        <WeDoList items={weDo.ent} />
+        <CapWall items={wallFromWeDo(weDo.ent, ENT)} />
       </Section>
 
       <CtaBand

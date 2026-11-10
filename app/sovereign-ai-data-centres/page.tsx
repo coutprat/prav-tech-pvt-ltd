@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
-import { WeDoList } from "@/components/pv/WeDoList";
+import { BigSteps, CapWall, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { SovereignVisual } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Footprint } from "@/components/sections/Footprint";
 import { CapacityChart } from "@/components/sections/CapacityChart";
@@ -23,7 +24,7 @@ import {
   Figure,
   Grid,
   Note,
-  Rows,
+  PageHero,
   Section,
   SectionHead,
 } from "@/components/pv/kit";
@@ -81,6 +82,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 const nn = (i: number) => String(i + 1).padStart(2, "0");
+const PHO = "var(--acc-pho)";
 
 /* ------------------------------------------- 800G switch port to ConnectX-8 */
 
@@ -157,6 +159,28 @@ export default function SovereignPage() {
   return (
     <div data-acc="photonics">
       <PageJsonLd path="/sovereign-ai-data-centres" />
+      <PageHero
+        eyebrow="Sovereign AI data centres"
+        accent="pho"
+        title={
+          <>
+            Sovereignty is decided in the <em>cable plant</em>.
+          </>
+        }
+        lede="A sovereign AI cluster means the compute, the data and the operator sit under Indian jurisdiction. That is a procurement and engineering problem long before it is a legal one — and most of it lands on the links between the GPUs."
+        actions={
+          <>
+            <Link className="btn-p" href="/start-a-project">
+              Send us the topology <span aria-hidden="true">→</span>
+            </Link>
+            <a className="btn-g" href="#test">
+              The four questions
+            </a>
+          </>
+        }
+        meta={["Architecture and design-in", "Qualification on site", "Support on local time"]}
+        visual={<SovereignVisual />}
+      />
 
       <FilmSection
         id="sov-film"
@@ -168,39 +192,14 @@ export default function SovereignPage() {
       />
 
       {/* ----------------------------------------------------------- opener */}
-      <Section accent="pho">
-        <SectionHead
-          as="h1"
-          index="01"
-          eyebrow="Sovereign AI data centres"
-          title={
-            <>
-              Sovereignty is decided in the <em>cable plant</em>.
-            </>
-          }
-          lede="A sovereign AI cluster means the compute, the data and the operator sit under Indian jurisdiction, so a regulated Indian business can train and run models without its data leaving the country’s legal reach. That is a procurement and engineering problem long before it is a legal one, and most of it lands on the links between the GPUs."
+      <Section accent="pho" id="test">
+        <Statement
+          eyebrow="01 · The test"
+          lead="“Sovereign” is doing a lot of marketing work at the moment."
+          rest="Four questions separate the operators who mean it from the ones who have put an Indian flag on a slide."
         />
-
-        {/* the test */}
-        <div className="pv-offset">
-          <div>
-            <h2 className="pv-h3">
-              Four questions an operator should be able to answer.
-            </h2>
-            <p className="pv-body pho-intro">
-              &ldquo;Sovereign&rdquo; is doing a lot of marketing work at the
-              moment. These questions separate the operators who mean it from
-              the ones who have put an Indian flag on a slide.
-            </p>
-          </div>
-        </div>
-        <Rows
-          items={sovereignTests.map((t, i) => ({
-            k: nn(i),
-            title: t.head,
-            body: <p>{t.body}</p>,
-          }))}
-        />
+        <div style={{ marginTop: "clamp(40px, 5vw, 72px)" }} />
+        <BigSteps items={sovereignTests.map((t) => ({ title: t.head, body: t.body }))} />
       </Section>
 
       {/* ----------------------------------------------------------- fabric */}
@@ -215,29 +214,17 @@ export default function SovereignPage() {
           }
           lede="As clusters scale, the hardest decisions move to the links between everything: GPUs, NICs, switches, servers, the whole rack. Get them wrong and you rebuild, burn power, or watch a deployment window close. Get them right and everything downstream gets easier."
         />
-        <Grid cols={3}>
-          {fabricScales.map((f, i) => (
-            <Card
-              key={f.title}
-              n={`${nn(i)} · ${f.where}`}
-              title={f.title}
-              accent="pho"
-              meta={f.media.split(" · ").map((m) => (
-                <span key={m}>{m}</span>
-              ))}
-            >
-              <p>{f.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall
+          items={fabricScales.map((f) => ({
+            title: f.title,
+            body: f.body,
+            kicker: f.where,
+            tag: f.media,
+            colour: PHO,
+          }))}
+        />
         <div className="pho-gap">
-          <Rows
-            items={interconnectGap.map((g, i) => ({
-              k: nn(i),
-              title: g.title,
-              body: <p>{g.body}</p>,
-            }))}
-          />
+          <CapWall items={interconnectGap.map((g) => ({ title: g.title, body: g.body, kicker: "The gap", colour: PHO }))} />
         </div>
         <p className="pho-small">
           <Link className="pv-link" href="/photonics">
@@ -324,22 +311,15 @@ export default function SovereignPage() {
             </>
           }
         />
-        <Grid cols={3}>
-          {workloads.map((w, i) => (
-            <Card
-              key={w.title}
-              n={nn(i)}
-              title={w.title}
-              accent="pho"
-              meta={w.points.map((pt) => (
-                <span key={pt}>{pt}</span>
-              ))}
-            >
-              <p>{w.body}</p>
-              <p className="pv-means">{w.foot}</p>
-            </Card>
-          ))}
-        </Grid>
+        <CapWall
+          items={workloads.map((w) => ({
+            title: w.title,
+            body: `${w.body} ${w.foot}`,
+            kicker: "Workload",
+            extra: w.points.join(" · "),
+            colour: PHO,
+          }))}
+        />
       </Section>
 
       {/* -------------------------------------------------------- 800G NICs */}
@@ -379,18 +359,7 @@ export default function SovereignPage() {
           }
           lede="High-speed copper and optical interconnect for AI clusters. Our US technology partner builds the technology; Praverse does the Indian architecture, design-in, integration, qualification and support."
         />
-        <Rows
-          items={photonicsPhases.map((p, i) => ({
-            k: nn(i),
-            title: p.title,
-            body: (
-              <>
-                <p className="pho-stage mono">{p.stage}</p>
-                <p>{p.body}</p>
-              </>
-            ),
-          }))}
-        />
+        <BigSteps items={photonicsPhases.map((p) => ({ title: p.title, body: p.body, tag: p.stage }))} />
         <Note>
           <strong>We do not manufacture in India today.</strong> Local testing
           and qualification come first; assembly follows when volumes justify
@@ -415,7 +384,7 @@ export default function SovereignPage() {
           }
           lede="What we deliver on this line today. Interconnect is supplied and designed in with our US technology partner; the software and planning work is ours."
         />
-        <WeDoList items={weDo.sov} />
+        <CapWall items={wallFromWeDo(weDo.sov, PHO)} />
       </Section>
 
       <CtaBand

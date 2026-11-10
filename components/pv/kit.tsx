@@ -83,6 +83,7 @@ export function PageHero({
   accent,
   children,
   meta,
+  visual,
 }: {
   eyebrow: string;
   title: ReactNode;
@@ -92,14 +93,11 @@ export function PageHero({
   children?: ReactNode;
   /** Small facts under the lede, e.g. "Response in two business days". */
   meta?: string[];
+  /** The page's centrepiece, set to the right of the copy. */
+  visual?: ReactNode;
 }) {
-  return (
-    <section
-      className="pv-hero"
-      style={{ "--a": accentVar(accent) } as CSSProperties}
-    >
-      <div className="pv-hero-light" aria-hidden="true" />
-      <div className="wrap pv-hero-in">
+  const copy = (
+    <>
         <p className="pv-eyebrow">{eyebrow}</p>
         <h1 className="pv-h1">{title}</h1>
         {lede ? <p className="pv-lede pv-hero-lede">{lede}</p> : null}
@@ -112,6 +110,24 @@ export function PageHero({
           </ul>
         ) : null}
         {children}
+    </>
+  );
+  return (
+    <section
+      className="pv-hero"
+      data-vis={visual ? "" : undefined}
+      style={{ "--a": accentVar(accent) } as CSSProperties}
+    >
+      <div className="pv-hero-light" aria-hidden="true" />
+      <div className="wrap pv-hero-in">
+        {visual ? (
+          <>
+            <div>{copy}</div>
+            <div className="pv-hero-vis">{visual}</div>
+          </>
+        ) : (
+          copy
+        )}
       </div>
     </section>
   );

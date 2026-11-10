@@ -50,10 +50,20 @@ export const bentoItems: BentoItem[] = [
 /** Pharma leads; healthcare beside it; government spans the row beneath. */
 const FEATURE_SPAN: Record<string, string> = { pharma: "7", mennie: "5", government: "12" };
 
-export function IndustriesBento({ exclude }: { exclude?: string } = {}) {
+export { Tile as BentoTile };
+
+export function IndustriesBento({ exclude, flagshipOnly }: { exclude?: string; flagshipOnly?: boolean } = {}) {
   const flag = bentoItems.filter((b) => b.flagship);
-  const ordered = [flag[1], flag[0], flag[2]].filter(Boolean);
+  const ordered = [flag[1], flag[0], flag[2]].filter((b) => b && b.id !== exclude);
   const rest = bentoItems.filter((b) => !b.flagship && b.id !== exclude);
+  if (flagshipOnly)
+    return (
+      <div className="bento">
+        {ordered.map((b) => (
+          <Tile key={b.id} b={b} span={FEATURE_SPAN[b.id]} />
+        ))}
+      </div>
+    );
   return (
     <div className="bento">
       <p className="bento-label">

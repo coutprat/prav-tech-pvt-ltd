@@ -6,17 +6,9 @@ import { company } from "@/content/company";
 import { site } from "@/content/site";
 import { govFaq, govOffers, govPrinciples } from "@/content/government";
 import { Verify, isWithheld } from "@/components/ui/Verify";
-import {
-  Card,
-  CtaBand,
-  Faq,
-  Figure,
-  Grid,
-  PageHero,
-  Rows,
-  Section,
-  SectionHead,
-} from "@/components/pv/kit";
+import { CtaBand, Faq, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { BigSteps, CapWall, Statement } from "@/components/pv/kit3";
+import { GovVisual } from "@/components/pv/LineVisuals";
 import { Flow } from "@/components/pv/Flow";
 import type { VerifyId } from "@/content/verify";
 
@@ -73,6 +65,7 @@ export default function GovernmentPage() {
           "Human approval by design",
           `Built in ${company.hq}`,
         ]}
+        visual={<GovVisual />}
       />
 
       {/* ---------------------------------------------------------- offers */}
@@ -87,12 +80,13 @@ export default function GovernmentPage() {
           }
           lede="Government is not a separate product line. It is where every line we run — enterprise AI, regulatory AI, healthcare AI, interconnect and sovereign compute — meets the strictest requirements on accountability and data."
         />
-        <Rows
-          items={govOffers.map((o, i) => ({
-            k: String(i + 1).padStart(2, "0"),
+        <CapWall
+          items={govOffers.map((o) => ({
             title: o.title,
-            body: <p>{o.body}</p>,
-            aside: (
+            body: o.body,
+            kicker: "Programme",
+            colour: "var(--gold)",
+            extra: (
               <Link className="pv-link" href={o.line.href}>
                 {o.line.label} <span aria-hidden="true">→</span>
               </Link>
@@ -103,6 +97,12 @@ export default function GovernmentPage() {
 
       {/* ------------------------------------------------------- programme */}
       <Section tone="raised">
+        <Statement
+          eyebrow="The principle"
+          lead="Public money deserves evidence before rollout."
+          rest="One workflow, the department’s own data, and criteria agreed in writing — then scale."
+        />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
         <SectionHead
           index="02"
           eyebrow="How a programme runs"
@@ -166,17 +166,7 @@ export default function GovernmentPage() {
             </>
           }
         />
-        <Grid cols={2}>
-          {govPrinciples.map((p, i) => (
-            <Card
-              key={p.title}
-              n={String(i + 1).padStart(2, "0")}
-              title={p.title}
-            >
-              <p>{p.body}</p>
-            </Card>
-          ))}
-        </Grid>
+        <BigSteps items={govPrinciples.map((p) => ({ title: p.title, body: p.body }))} />
       </Section>
 
       {/* ------------------------------------------------------ credentials */}

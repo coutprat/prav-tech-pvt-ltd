@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
+import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { Verify, isWithheld } from "@/components/ui/Verify";
 import { CtaBand, Figure, Note, PageHero, Rows, Section, SectionHead } from "@/components/pv/kit";
@@ -63,6 +64,7 @@ export default function TrustPage() {
 
       <PageHero
         accent="white"
+        visual={<PrismMark />}
         eyebrow="Trust"
         title={
           <>
