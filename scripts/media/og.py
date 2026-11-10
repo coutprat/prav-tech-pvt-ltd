@@ -249,7 +249,7 @@ def stroke(mask, pts, width):
         d.ellipse([x - r, y - r, x + r, y + r], fill=255)
 
 
-def mark(size, pale="#EEEAE2", ss=4):
+def mark(size, pale="#E6EAF0", ss=4):
     """The Praverse mark, rasterised from the logo.svg geometry."""
     n = size * ss
     s = n / 1000
@@ -272,7 +272,7 @@ def mark(size, pale="#EEEAE2", ss=4):
     # outer orbit: gradient over the top-left, pale top-right, dotted below
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(circ(186, 264)), 10 * s)
-    paint(linear(n, s, (60, 500), (500, 60), [(0, "#A8A194"), (1, "#E4DFD4")]), m)
+    paint(linear(n, s, (60, 500), (500, 60), [(0, "#4A8FD0"), (1, "#4CC8B8")]), m)
 
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(circ(276, 354)), 10 * s)
@@ -287,12 +287,12 @@ def mark(size, pale="#EEEAE2", ss=4):
         a = a0 + (a1 - a0) * i / count
         x, y = (500 + 440 * math.cos(a)) * s, (500 + 440 * math.sin(a)) * s
         dm.ellipse([x - r, y - r, x + r, y + r], fill=255)
-    paint(linear(n, s, (940, 0), (60, 0), [(0, "#E4DFD4"), (1, "#A8A194")]), m, 0.8)
+    paint(linear(n, s, (940, 0), (60, 0), [(0, "#4CC8B8"), (1, "#4A8FD0")]), m, 0.8)
 
     # inner orbit, passing behind the P
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(svg_arc(720, 381.8, 361, 194, 1, 1, 350, 355)), 8 * s)
-    paint("#DCD6CA", m)
+    paint("#45C2B4", m)
 
     # the P (evenodd: the bowl is a hole)
     outer = (
@@ -307,7 +307,7 @@ def mark(size, pale="#EEEAE2", ss=4):
     dm = ImageDraw.Draw(m)
     dm.polygon(sc(outer), fill=255)
     dm.polygon(sc(hole), fill=0)
-    paint(linear(n, s, (700, 250), (350, 780), [(0, "#F4F1EA"), (0.5, "#D6D0C4"), (1, "#9E978A")]), m)
+    paint(linear(n, s, (700, 250), (350, 780), [(0, "#5FE0C8"), (0.5, "#47B4C2"), (1, "#3A80CF")]), m)
     ys = np.arange(n, dtype=np.float32) / s
     ramp = np.clip((ys - 430) / 350, 0, 1) * 0.22 * 255
     shade = Image.fromarray(np.repeat(ramp[:, None], n, axis=1).astype(np.uint8), "L")
@@ -316,12 +316,12 @@ def mark(size, pale="#EEEAE2", ss=4):
 
     # nodes and satellites
     for cx, cy, rr, col in (
-        (500, 60, 32, "#EDE8DD"),
-        (60, 500, 28, "#A8A194"),
-        (940, 500, 28, "#EDE8DD"),
-        (500, 168, 8, "#EDE8DD"),
-        (493, 440, 8, "#EDE8DD"),
-        (770, 478, 8, "#EDE8DD"),
+        (500, 60, 32, "#4FD2BE"),
+        (60, 500, 28, "#4A8FD0"),
+        (940, 500, 28, "#4FD2BE"),
+        (500, 168, 8, "#4FD2BE"),
+        (493, 440, 8, "#4FD2BE"),
+        (770, 478, 8, "#4FD2BE"),
         (290, 480, 8, pale),
         (205, 566, 7, pale),
         (500, 840, 8, pale),

@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="Praverse">
   <defs>
     <linearGradient id="pv-p" gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
-      <stop offset="0" stop-color="#F4F1EA"/>
-      <stop offset=".5" stop-color="#D6D0C4"/>
-      <stop offset="1" stop-color="#9E978A"/>
+      <stop offset="0" stop-color="#5FE0C8"/>
+      <stop offset=".5" stop-color="#47B4C2"/>
+      <stop offset="1" stop-color="#3A80CF"/>
     </linearGradient>
     <linearGradient id="pv-l" gradientUnits="userSpaceOnUse" x1="60" y1="500" x2="500" y2="60">
-      <stop offset="0" stop-color="#A8A194"/>
-      <stop offset="1" stop-color="#E4DFD4"/>
+      <stop offset="0" stop-color="#4A8FD0"/>
+      <stop offset="1" stop-color="#4CC8B8"/>
     </linearGradient>
     <linearGradient id="pv-d" gradientUnits="userSpaceOnUse" x1="940" y1="0" x2="60" y2="0">
-      <stop offset="0" stop-color="#E4DFD4"/>
-      <stop offset="1" stop-color="#A8A194"/>
+      <stop offset="0" stop-color="#4CC8B8"/>
+      <stop offset="1" stop-color="#4A8FD0"/>
     </linearGradient>
     <linearGradient id="pv-f" gradientUnits="userSpaceOnUse" x1="0" y1="430" x2="0" y2="780">
       <stop offset="0" stop-color="#0B0A08" stop-opacity="0"/>
@@ -22,13 +22,13 @@
   <!-- outer orbit: solid over the top, broken where the nodes sit, dotted below -->
   <g fill="none" stroke-linecap="round">
     <path stroke="url(#pv-l)" stroke-width="10" d="M62.4,454 A440,440 0 0 1 454,62.4"/>
-    <path stroke="#EEEAE2" stroke-width="10" d="M546,62.4 A440,440 0 0 1 937.6,454"/>
+    <path stroke="#E6EAF0" stroke-width="10" d="M546,62.4 A440,440 0 0 1 937.6,454"/>
     <path stroke="url(#pv-d)" stroke-width="11" stroke-dasharray="0 34" opacity=".8"
           d="M937.6,546 A440,440 0 0 1 62.4,546"/>
   </g>
 
   <!-- inner orbit, passing behind the P -->
-  <path fill="none" stroke="#DCD6CA" stroke-width="8" stroke-linecap="round"
+  <path fill="none" stroke="#45C2B4" stroke-width="8" stroke-linecap="round"
         d="M720,381.8 A361,194 0 1 1 350,355"/>
 
   <!-- the P -->
@@ -40,15 +40,15 @@
            M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z"/>
 
   <!-- nodes on the outer orbit -->
-  <circle cx="500" cy="60" r="32" fill="#EDE8DD"/>
-  <circle cx="60" cy="500" r="28" fill="#A8A194"/>
-  <circle cx="940" cy="500" r="28" fill="#EDE8DD"/>
+  <circle cx="500" cy="60" r="32" fill="#4FD2BE"/>
+  <circle cx="60" cy="500" r="28" fill="#4A8FD0"/>
+  <circle cx="940" cy="500" r="28" fill="#4FD2BE"/>
 
   <!-- satellites -->
-  <circle cx="500" cy="168" r="8" fill="#EDE8DD"/>
-  <circle cx="493" cy="440" r="8" fill="#EDE8DD"/>
-  <circle cx="770" cy="478" r="8" fill="#EDE8DD"/>
-  <circle cx="290" cy="480" r="8" fill="#EEEAE2"/>
-  <circle cx="205" cy="566" r="7" fill="#EEEAE2"/>
-  <circle cx="500" cy="840" r="8" fill="#EEEAE2"/>
+  <circle cx="500" cy="168" r="8" fill="#4FD2BE"/>
+  <circle cx="493" cy="440" r="8" fill="#4FD2BE"/>
+  <circle cx="770" cy="478" r="8" fill="#4FD2BE"/>
+  <circle cx="290" cy="480" r="8" fill="#E6EAF0"/>
+  <circle cx="205" cy="566" r="7" fill="#E6EAF0"/>
+  <circle cx="500" cy="840" r="8" fill="#E6EAF0"/>
 </svg>

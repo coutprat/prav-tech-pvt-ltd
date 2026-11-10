@@ -160,9 +160,9 @@ export function FooterWordmark() {
 
         {/* brand gradient, shown through the cursor mask */}
         <linearGradient id="wm-brand" gradientUnits="userSpaceOnUse" x1="60" y1="20" x2="400" y2="130">
-          <stop offset="0" stopColor="#F3E6C6" />
-          <stop offset="0.55" stopColor="#D9C08E" />
-          <stop offset="1" stopColor="#9C8152" />
+          <stop offset="0" stopColor="#4ACBB4" />
+          <stop offset="0.55" stopColor="#43AABC" />
+          <stop offset="1" stopColor="#3B7FC2" />
         </linearGradient>
 
         <radialGradient id="wm-reveal" gradientUnits="userSpaceOnUse" r="78" cx={MID_X} cy={MID_Y}>
