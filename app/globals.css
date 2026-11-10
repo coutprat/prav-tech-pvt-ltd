@@ -5377,14 +5377,14 @@ body::before {
   cursor: default;
   user-select: none;
   font-family: var(--font-sans);
-  --wm-sweep-a: #43aabc;
-  --wm-sweep-b: #d7f4ef;
+  --wm-sweep-a: #d9c08e;
+  --wm-sweep-b: #f6ecd2;
 }
 .wm-rest {
   stroke: rgba(248, 240, 226, 0.17);
 }
 .wm-draw {
-  stroke: rgba(67, 170, 188, 0.55);
+  stroke: rgba(217, 192, 142, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {
