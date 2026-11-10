@@ -1,0 +1,378 @@
+/* /photonics and /sovereign-ai-data-centres — page-only pieces. Prefix: pho- */
+
+.pho-figs {
+  display: grid;
+  gap: clamp(28px, 3vw, 40px);
+  margin-top: clamp(40px, 5vw, 64px);
+}
+@media (min-width: 1100px) {
+  .pho-figs[data-pair] {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.pho-table {
+  margin-top: clamp(40px, 5vw, 56px);
+}
+.pho-gap {
+  margin-top: clamp(40px, 5vw, 56px);
+}
+
+.pho-k {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 16px;
+}
+.pho-small {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+.pho-stage {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--acc-pho-ink);
+  margin-bottom: 8px;
+}
+
+.pho-pair {
+  display: grid;
+  gap: 40px;
+  margin-top: clamp(48px, 5vw, 72px);
+  padding-top: clamp(32px, 4vw, 44px);
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 900px) {
+  .pho-pair {
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+  }
+}
+
+.pho-speeds {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line-2);
+}
+.pho-speeds li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 10px 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pho-speeds b {
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.pho-speeds span {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------ Fig: reach at 800G / 1.6T */
+
+.pho-lr {
+  --c8: var(--acc-pho);
+  --c16: var(--teal);
+  --name: 168px;
+  --val: 150px;
+}
+.pho-lr-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-bottom: 22px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+}
+.pho-lr-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pho-lr-key span::before {
+  content: "";
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--c8);
+}
+.pho-lr-key span[data-s="1600"]::before {
+  background: var(--c16);
+}
+
+.pho-lr-rows {
+  list-style: none;
+}
+.pho-lr-rows li,
+.pho-lr-axis {
+  display: grid;
+  grid-template-columns: var(--name) 1fr var(--val);
+  gap: 18px;
+  align-items: center;
+}
+.pho-lr-rows li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pho-lr-rows li[data-copper] .pho-lr-name {
+  color: var(--ink);
+}
+.pho-lr-name {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pho-lr-name small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.pho-lr-track {
+  position: relative;
+  height: 26px;
+}
+.pho-lr-track i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+.pho-lr-bar {
+  position: absolute;
+  left: 0;
+  height: 6px;
+  border-radius: 3px;
+  width: var(--w);
+  background: var(--c8);
+  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--c8) 70%, transparent);
+  top: 4px;
+  transform-origin: left center;
+}
+.pho-lr-bar[data-s="1600"] {
+  top: 15px;
+  background: var(--c16);
+  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--c16) 70%, transparent);
+}
+.pho-lr-v {
+  font-size: 13.5px;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+.pho-lr-v em {
+  font-style: normal;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.pho-lr-axis {
+  margin-top: 8px;
+}
+.pho-lr-axis-t {
+  position: relative;
+  height: 16px;
+}
+.pho-lr-axis-t b {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* grow the bars when the figure scrolls in */
+@media (prefers-reduced-motion: no-preference) {
+  .pv-fig .pho-lr-bar {
+    transform: scaleX(0);
+    transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  .pv-fig .pho-lr-bar[data-s="1600"] {
+    transition-delay: 0.35s;
+  }
+  .pv-fig.is-in .pho-lr-bar {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .pho-lr-rows li,
+  .pho-lr-axis {
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+  }
+  .pho-lr-track,
+  .pho-lr-axis-t {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .pho-lr-axis > span:not(.pho-lr-axis-t) {
+    display: none;
+  }
+  .pho-lr-axis-t {
+    grid-row: 1;
+  }
+  .pho-speeds {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ------------------------------------- Fig: switch port to ConnectX-8 NICs */
+
+.pho-nic {
+  list-style: none;
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .pho-nic {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.pho-nic > li {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.015);
+}
+.pho-nic-h {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+}
+.pho-nic-d {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0;
+}
+.pho-nic-box {
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--ink);
+  background: var(--paper-3);
+  white-space: nowrap;
+}
+.pho-nic-box small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.pho-nic-box[data-sw] {
+  border-color: color-mix(in srgb, var(--acc-pho) 55%, transparent);
+}
+.pho-nic-ends {
+  display: grid;
+  gap: 10px;
+}
+.pho-nic-wires {
+  position: relative;
+  align-self: stretch;
+  min-width: 36px;
+}
+.pho-nic-wires svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.pho-nic-wires path {
+  fill: none;
+  stroke: var(--acc-pho);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.85;
+}
+.pho-nic-r {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.pho-nic-r b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------- sovereign stories */
+
+.pho-story-k {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pho-qa {
+  margin-top: 18px;
+  display: grid;
+  gap: 4px;
+}
+.pho-qa dt {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--acc-pho-ink);
+}
+.pho-qa dd {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.pho-setting {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.pho-foot {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.pho-intro {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  max-width: 64ch;
+}
+
+@media (max-width: 520px) {
+  .pho-nic > li {
+    padding: 16px 14px;
+    min-width: 0;
+  }
+  .pho-nic-box {
+    white-space: normal;
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+  .pho-nic-wires {
+    min-width: 24px;
+  }
+}

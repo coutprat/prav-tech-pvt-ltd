@@ -130,15 +130,15 @@ export function confirmationEmail(r: EnquiryRecord): {
   const rowHtml = rows
     .map(
       ([k, v]) =>
-        `<tr><td style="padding:6px 16px 6px 0;color:#5b6470;vertical-align:top;white-space:nowrap">${escapeHtml(
+        `<tr><td style="padding:6px 16px 6px 0;color:#66635d;vertical-align:top;white-space:nowrap">${escapeHtml(
           k
-        )}</td><td style="padding:6px 0;color:#14181f">${escapeHtml(v)}</td></tr>`
+        )}</td><td style="padding:6px 0;color:#181816">${escapeHtml(v)}</td></tr>`
     )
     .join("");
 
   const html = `<!doctype html>
 <html><body style="margin:0;padding:0;background:#f4f4f2">
-<div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#14181f">
+<div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#181816">
   <p style="margin:0 0 24px;font-weight:600;letter-spacing:-0.01em">Praverse Tech</p>
   <p style="margin:0 0 16px">Hi ${escapeHtml(firstName)},</p>
   <p style="margin:0 0 20px">Thank you for writing to Praverse Tech. This is a quick note to confirm it reached us.</p>
@@ -150,10 +150,10 @@ export function confirmationEmail(r: EnquiryRecord): {
   )}</strong>.</p>
   <p style="margin:0 0 32px"><a href="${escapeHtml(
     wa
-  )}" style="display:inline-block;padding:12px 22px;border-radius:100px;background:#4bd6c4;color:#06201d;text-decoration:none;font-weight:500">Continue on WhatsApp</a></p>
+  )}" style="display:inline-block;padding:12px 22px;border-radius:100px;background:#ece7dc;color:#0b0a08;text-decoration:none;font-weight:500">Continue on WhatsApp</a></p>
   <p style="margin:0 0 4px">— Praverse Tech</p>
-  <p style="margin:0 0 32px"><a href="https://praversetech.com" style="color:#0f7d70">praversetech.com</a></p>
-  <p style="margin:0;font-size:12px;color:#7a828c">You are receiving this because this address was entered in the form on praversetech.com. If that was not you, ignore this email and nothing further will be sent.</p>
+  <p style="margin:0 0 32px"><a href="https://praversetech.com" style="color:#68645e">praversetech.com</a></p>
+  <p style="margin:0;font-size:12px;color:#858179">You are receiving this because this address was entered in the form on praversetech.com. If that was not you, ignore this email and nothing further will be sent.</p>
 </div>
 </body></html>`;
 

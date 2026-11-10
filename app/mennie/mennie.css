@@ -1,0 +1,43 @@
+/* /mennie — page-specific pieces only. Kit styles live in premium-kit.css. */
+
+.men-expansion {
+  text-align: left;
+  margin-top: 22px;
+  max-width: 64ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.men-expansion strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+.men-expansion .pv-serif {
+  color: var(--acc-men-ink);
+}
+
+.men-phase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.men-status {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+}
+.men-status[data-now] {
+  border-color: color-mix(in srgb, var(--acc-men) 55%, transparent);
+  color: var(--acc-men-ink);
+}
+
+.men-form {
+  min-width: 0;
+}

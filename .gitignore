@@ -32,3 +32,4 @@ qa/perf/*.json
 
 # Decks built for selective distribution, not for publishing on the site.
 /deliverables/
+qa/shots-wip/

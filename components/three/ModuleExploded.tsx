@@ -20,7 +20,7 @@ export { PARTS, type Part };
  */
 
 const AMBER = "#F59E0B";
-const TEAL = "#4BD6C4";
+const TEAL = "#ECE7DC";
 
 
 
@@ -28,12 +28,12 @@ function useMaterials() {
   return useMemo(
     () => ({
       metal: new THREE.MeshStandardMaterial({
-        color: "#b9bcc2",
+        color: "#c2bbb0",
         metalness: 1,
         roughness: 0.32
       }),
       darkMetal: new THREE.MeshStandardMaterial({
-        color: "#8a8f98",
+        color: "#938e86",
         metalness: 1,
         roughness: 0.45
       }),
@@ -43,7 +43,7 @@ function useMaterials() {
         roughness: 0.6
       }),
       chip: new THREE.MeshStandardMaterial({
-        color: "#1b1f2a",
+        color: "#201f1d",
         metalness: 0.4,
         roughness: 0.45
       }),
@@ -280,7 +280,7 @@ export function ModuleExploded({
       camera={{ position: [4.6, 2.4, 5.4], fov: 38 }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
     >
-      <color attach="background" args={["#0b0e18"]} />
+      <color attach="background" args={["#0f0e0d"]} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 7, 4]} intensity={2.1} />
       <directionalLight position={[-5, 2, -4]} intensity={0.7} color={TEAL} />
@@ -318,7 +318,7 @@ export function ModuleExploded({
         <Lightformer
           form="rect"
           intensity={1.5}
-          color="#cfe0f5"
+          color="#e5ddd0"
           position={[-7, 1.5, -2]}
           scale={[7, 5, 1]}
           target={[0, 0, 0]}
@@ -334,7 +334,7 @@ export function ModuleExploded({
         <Lightformer
           form="rect"
           intensity={0.45}
-          color="#7e93b5"
+          color="#969188"
           position={[0, -5, 0]}
           scale={[10, 10, 1]}
           target={[0, 0, 0]}

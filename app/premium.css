@@ -1,0 +1,716 @@
+/* ==========================================================================
+   PRAVERSE — 2026 "OBSIDIAN & LIGHT"
+   Loaded after globals.css. Redefines the tokens (so every older component
+   inherits the new palette) and adds the new system used by the rebuilt
+   pages: prefixed `pv-`, the home hero `ph-`.
+
+   The idea: a near-black studio lit by one white source. Colour only ever
+   arrives as light — the four business-line hues are the four beams the
+   prism on the home page separates — and never as paint on a surface.
+   ========================================================================== */
+
+:root {
+  --paper: #0a0a09;
+  --paper-2: #121110;
+  --paper-3: #1a1917;
+  --paper-4: #22201d;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-2: rgba(255, 255, 255, 0.12);
+  --line-strong: #6b665e;
+
+  --ink: #f5f3ee;
+  --ink-2: #b4afa6; /* warm bone-grey */
+  --ink-3: #8f897f; /* captions only */
+
+  --navy: #070706;
+  --on-navy: #f5f3ee;
+  --on-navy-2: #b4afa6;
+
+  /* the four beams */
+  --acc-ent: #9b7bff;
+  --acc-ent-bright: #b7a2ff;
+  --acc-ent-ink: #b7a2ff;
+  --acc-pha: #22c98f;
+  --acc-pha-ink: #4fe0aa;
+  --acc-men: #45bdf5;
+  --acc-men-ink: #86d6fb;
+  --acc-pho: #f5a524;
+  --acc-pho-ink: #fbbf4a;
+  --teal: #d9c08e;
+  --teal-ink: #e8d5ab;
+
+  --glass: rgba(26, 25, 23, 0.66);
+  --glass-line: rgba(255, 255, 255, 0.08);
+
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), "Times New Roman", serif;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 26px;
+  --maxw: 1360px;
+
+  --sec: clamp(88px, 11vw, 168px);
+}
+
+body {
+  background: var(--paper);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+:focus-visible {
+  outline-color: var(--gold-ink);
+}
+
+/* Paragraph text is justified; bullets, centred blocks and UI micro-copy are
+   left as they are. A one-line paragraph is unaffected, because the last line
+   of a justified block is always set ragged. */
+main p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+main li p,
+main .mono,
+main [class*="eyebrow"],
+main .pv-center p,
+main p.pv-center,
+main figcaption,
+main .ph-fig,
+main .pv-fig-cap,
+main label p,
+main .pv-grid[data-cols="4"] .pv-card p,
+main .fs-statement,
+main .film-title p,
+main .film-stack-lead,
+main .btn-p,
+main .btn-g {
+  text-align: inherit;
+  hyphens: manual;
+}
+main .pv-center,
+main .pv-center p {
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ type */
+
+.eyebrow,
+.pv-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pv-eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.pv-eyebrow[data-plain]::before {
+  display: none;
+}
+
+.pv-h1,
+.pv-h2,
+.pv-h3,
+.ph-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.pv-h1 {
+  font-size: clamp(44px, 7.2vw, 112px);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+.pv-h2 {
+  font-size: clamp(34px, 4.6vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.pv-h3 {
+  font-size: clamp(20px, 1.7vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+.pv-h1 em,
+.pv-h2 em,
+.pv-h3 em,
+.ph-title em,
+.pv-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.pv-h1 em,
+.pv-h2 em,
+.ph-title em {
+  font-size: 1.06em;
+}
+
+.pv-lede {
+  font-size: clamp(18px, 1.45vw, 22px);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+.pv-body {
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.pv-small {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.pv-ink {
+  color: var(--ink);
+}
+.pv-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* --------------------------------------------------------------- buttons */
+
+.btn-p,
+.btn-g {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: background-color 0.25s var(--ease-expo), color 0.25s var(--ease-expo),
+    border-color 0.25s var(--ease-expo), transform 0.25s var(--ease-expo);
+}
+.btn-p {
+  background: var(--ink);
+  color: #07080b;
+}
+.btn-p:hover {
+  background: #fff;
+}
+.btn-p span {
+  transition: transform 0.3s var(--ease-expo);
+}
+.btn-p:hover span {
+  transform: translateX(3px);
+}
+.btn-g {
+  color: var(--ink);
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.02);
+}
+.btn-g:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+.btn-p:active,
+.btn-g:active {
+  transform: scale(0.98);
+}
+.btn-sm {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+/* Older components still render .btn-primary; give it the same voice. */
+.btn.btn-primary,
+.btn-primary {
+  background: var(--ink) !important;
+  color: #07080b !important;
+  border-radius: 999px;
+}
+.btn.btn-primary:hover {
+  background: #fff !important;
+}
+
+.pv-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom: 1px solid var(--line-2);
+  padding-bottom: 3px;
+  transition: border-color 0.25s;
+}
+.pv-link:hover {
+  border-color: currentColor;
+}
+
+/* =================================================================== NAV */
+
+.nav {
+  background: transparent !important;
+  border-bottom: 1px solid transparent !important;
+  box-shadow: none !important;
+  transition: background-color 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+}
+.nav[data-scrolled="true"] {
+  background: rgba(7, 8, 11, 0.72) !important;
+  border-bottom-color: var(--line) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+.nav-links a {
+  font-size: 14px !important;
+  color: var(--ink-2) !important;
+  letter-spacing: -0.005em;
+  transition: color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--ink) !important;
+}
+.nav-links a[aria-current="page"]::after {
+  background: var(--ink) !important;
+}
+.nav-cta {
+  height: 38px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+}
+
+/* =========================================================== HOME HERO */
+
+.ph {
+  position: relative;
+  height: 100svh;
+  min-height: 680px;
+  max-height: 1100px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(60% 55% at 62% 58%, rgba(135, 130, 123, 0.1), transparent 70%),
+    radial-gradient(40% 40% at 10% 10%, rgba(155, 123, 255, 0.06), transparent 70%),
+    var(--paper);
+}
+.ph::after {
+  /* the floor fades the figure into the next section */
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  background: linear-gradient(to bottom, transparent, var(--paper));
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ph-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.ph-svg,
+.ph-canvas {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+.ph-svg {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-expo);
+}
+.ph[data-measured="true"] .ph-svg {
+  opacity: 1;
+}
+.ph[data-ready="true"] .ph-svg {
+  opacity: 0;
+  transition-duration: 0.6s;
+}
+.ph-canvas {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-expo);
+}
+.ph[data-ready="true"] .ph-canvas {
+  opacity: 1;
+}
+
+.ph-flow {
+  stroke-dasharray: 2 34;
+  animation: ph-flow 1.8s linear infinite;
+}
+.ph-svg[data-still="true"] .ph-flow {
+  animation: none;
+  opacity: 0;
+}
+@keyframes ph-flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+/* line labels, anchored on the beam ends */
+.ph-labels {
+  list-style: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.ph-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.ph-label a {
+  pointer-events: auto;
+  position: absolute;
+  left: 22px;
+  top: 0;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: baseline;
+  padding: 10px 16px 10px 12px;
+  border-radius: 14px;
+  width: max-content;
+  max-width: 300px;
+  opacity: 0;
+  translate: -8px 0;
+  transition: opacity 0.7s var(--ease-expo), translate 0.7s var(--ease-expo),
+    background-color 0.3s;
+  transition-delay: inherit;
+}
+.ph[data-measured="true"] .ph-label a {
+  opacity: 1;
+  translate: 0 0;
+}
+.ph-label a:hover,
+.ph-label a:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+}
+.ph[data-hover] .ph-label a {
+  opacity: 0.45;
+}
+.ph[data-hover="photonics"] .ph-label:nth-child(1) a,
+.ph[data-hover="pharma"] .ph-label:nth-child(2) a,
+.ph[data-hover="mennie"] .ph-label:nth-child(3) a,
+.ph[data-hover="enterprise-ai"] .ph-label:nth-child(4) a {
+  opacity: 1;
+}
+.ph-label-n {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c);
+  letter-spacing: 0.06em;
+}
+.ph-label-t {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.ph-label-short {
+  display: none;
+}
+.ph-label-note {
+  grid-column: 2;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+
+.ph-fig {
+  position: absolute;
+  z-index: 4;
+  max-width: 300px;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  text-transform: none;
+}
+.ph-fig span {
+  color: var(--ink-2);
+  margin-right: 6px;
+}
+
+.ph-copy {
+  position: relative;
+  z-index: 5;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: clamp(120px, 19vh, 210px);
+  pointer-events: none;
+}
+.ph-copy > * {
+  pointer-events: auto;
+  max-width: 600px;
+}
+.ph-eyebrow {
+  margin-bottom: 28px;
+}
+.ph-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 12px 2px rgba(255, 255, 255, 0.7);
+}
+.ph-title {
+  font-size: clamp(46px, 6vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.052em;
+  max-width: 11ch !important;
+}
+.ph-lede {
+  margin-top: 28px;
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 44ch !important;
+}
+.ph-cta {
+  margin-top: 38px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ph-scrollhint {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  z-index: 5;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--ink-3);
+}
+.ph-scrollhint span {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, transparent, var(--ink-2));
+  animation: ph-hint 2.4s var(--ease-expo) infinite;
+  transform-origin: top;
+}
+@keyframes ph-hint {
+  0% {
+    transform: scaleY(0);
+  }
+  60% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 899px) {
+  .ph {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .ph::after {
+    height: 70px;
+  }
+  .ph-copy {
+    order: 1;
+    height: auto;
+    padding-top: 112px;
+  }
+  .ph-stage {
+    order: 2;
+    position: relative;
+    inset: auto;
+    height: clamp(300px, 46svh, 420px);
+  }
+  .ph-title {
+    font-size: clamp(42px, 11.5vw, 64px);
+  }
+  .ph-lede {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  .ph-cta {
+    margin-top: 26px;
+  }
+  .ph-cta .btn-p,
+  .ph-cta .btn-g {
+    height: 44px;
+    padding: 0 18px;
+    font-size: 14.5px;
+  }
+  .ph-label a {
+    left: 14px;
+    padding: 6px 8px;
+    max-width: 44vw;
+    display: flex;
+    gap: 8px;
+  }
+  .ph-label-long,
+  .ph-label-note {
+    display: none;
+  }
+  .ph-label-short {
+    display: inline;
+  }
+  .ph-label-t {
+    font-size: 14px;
+  }
+  .ph-fig,
+  .ph-scrollhint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-scrollhint span {
+    animation: none;
+  }
+}
+
+/* ================================================================ FOOTER */
+
+.pf {
+  background: #040506 !important;
+  border-top: 1px solid var(--line);
+  padding-top: clamp(80px, 9vw, 130px) !important;
+}
+.pf-top {
+  display: grid;
+  gap: 36px;
+  padding-bottom: clamp(56px, 7vw, 96px);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 1000px) {
+  .pf-top {
+    grid-template-columns: 7fr 5fr;
+    align-items: end;
+  }
+}
+.pf-statement {
+  font-size: clamp(36px, 4.6vw, 68px);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  max-width: 13ch;
+}
+.pf-statement em {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+.pf-mail {
+  display: inline-flex;
+  gap: 10px;
+  font-size: clamp(20px, 1.8vw, 26px);
+  letter-spacing: -0.02em;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-2);
+  transition: border-color 0.3s;
+}
+.pf-mail:hover {
+  border-color: var(--ink);
+}
+.pf-small {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.pf-grid {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: repeat(2, 1fr);
+  padding-block: clamp(48px, 6vw, 80px);
+}
+@media (min-width: 1000px) {
+  .pf-grid {
+    grid-template-columns: 5fr 2fr 2fr 2fr;
+  }
+}
+.pf-id {
+  grid-column: 1 / -1;
+}
+@media (min-width: 1000px) {
+  .pf-id {
+    grid-column: auto;
+  }
+}
+.pf-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.pf h3 {
+  font-family: var(--font-mono);
+  font-size: 11.5px !important;
+  font-weight: 500;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase;
+  color: var(--ink-3) !important;
+  margin-bottom: 18px;
+}
+.pf ul {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.pf ul a {
+  font-size: 15px;
+  color: var(--ink-2);
+  transition: color 0.2s;
+}
+.pf ul a:hover {
+  color: var(--ink);
+}
+.pf-legal {
+  border-top: 1px solid var(--line) !important;
+}
+
+/* Home hero H1 = eyebrow + display headline (components/hero/PrismHero.tsx). */
+.ph-h1-group {
+  margin: 0;
+  font: inherit;
+  letter-spacing: normal;
+}
+.ph-h1-group > .ph-title {
+  display: block;
+}

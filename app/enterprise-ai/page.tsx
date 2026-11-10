@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
+import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
+import { weDo } from "@/content/wedo";
+import { BigSteps, CapWall, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { AgentVisual } from "@/components/pv/LineVisuals";
+import { IndustriesBento } from "@/components/pv/IndustriesBento";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
+import { agentTypes, capabilities } from "@/content/company";
+import { thesis } from "@/content/thesis";
+import { offers } from "@/content/offers";
+import { CtaBand, Faq, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { Flow } from "@/components/pv/Flow";
 
 /**
  * The signature, as film rather than as a console mockup.
@@ -17,22 +28,31 @@ const EA_CHAPTERS: Chapter[] = [
     kind: "statement",
     at: [0, 0.17],
     text: "A question lands in someone’s queue.",
-    sub: "“Is sampling witnessed for Q3 batches?” — the kind of question that costs an afternoon and gets asked again next quarter."
+    sub: "“Is sampling witnessed for Q3 batches?” — the kind of question that costs an afternoon and gets asked again next quarter.",
   },
   {
     kind: "beats",
     at: [0.17, 0.47],
     beats: [
-      { label: "Reads", text: "214 pages of the SOP, and finds the three sections that matter" },
-      { label: "Checks", text: "1,204 batch records against them, and flags four" },
-      { label: "Drafts", text: "a reply, with every claim carrying the source it came from" }
-    ]
+      {
+        label: "Reads",
+        text: "214 pages of the SOP, and finds the three sections that matter",
+      },
+      {
+        label: "Checks",
+        text: "1,204 batch records against them, and flags four",
+      },
+      {
+        label: "Drafts",
+        text: "a reply, with every claim carrying the source it came from",
+      },
+    ],
   },
   {
     kind: "statement",
     at: [0.47, 0.68],
     text: "Then it stops.",
-    sub: "Nothing is sent, filed or actioned until a named reviewer approves it. That is the architecture, not a setting you can switch off."
+    sub: "Nothing is sent, filed or actioned until a named reviewer approves it. That is the architecture, not a setting you can switch off.",
   },
   {
     kind: "beats",
@@ -40,36 +60,54 @@ const EA_CHAPTERS: Chapter[] = [
     beats: [
       { label: "Recorded", text: "who asked" },
       { label: "Recorded", text: "what the system surfaced" },
-      { label: "Recorded", text: "who decided, and when" }
-    ]
+      { label: "Recorded", text: "who decided, and when" },
+    ],
   },
   {
     kind: "statement",
     at: [0.88, 1.01],
     text: "The system drafts. Your team decides.",
-    sub: "Two years later, somebody will ask how that decision was made. The answer is already written down."
-  }
+    sub: "Two years later, somebody will ask how that decision was made. The answer is already written down.",
+  },
 ];
-
-import { Headline } from "@/components/ui/Headline";
-import { SectionLabel, CTASection } from "@/components/ui/primitives";
-import { agentFlow, agentTypes, capabilities } from "@/content/company";
-import { thesis } from "@/content/thesis";
-import { industries } from "@/content/industries";
-import { offers } from "@/content/offers";
-import Link from "next/link";
 
 export const metadata: Metadata = pageMeta({
   title: "Enterprise AI & Agents for Any Industry",
-  description: "Custom AI agents, copilots, RAG search and production ML for manufacturing, finance, retail, healthcare, logistics and more — with a human gate and audit trail.",
-  path: '/enterprise-ai',
-  og: 'enterprise-ai'
+  description:
+    "Custom AI agents, copilots, RAG search and production ML for manufacturing, finance, retail, healthcare, logistics and more — with a human gate and audit trail.",
+  path: "/enterprise-ai",
+  og: "enterprise-ai",
 });
+
+const A = "var(--acc-ent-bright)";
+const ENT = "var(--acc-ent)";
 
 export default function EnterpriseAIPage() {
   return (
     <div data-acc="enterprise">
       <PageJsonLd path="/enterprise-ai" />
+      <PageHero
+        eyebrow={brief("/enterprise-ai").lead}
+        accent="ent"
+        title={
+          <>
+            The gate is the <em>architecture</em>.
+          </>
+        }
+        lede="Agents, copilots, search and production ML for any business that runs on documents and decisions. Ours read, check and draft — then stop at a named person, and write down who decided."
+        actions={
+          <>
+            <Link className="btn-p" href="/start-a-project">
+              Scope a pilot <span aria-hidden="true">→</span>
+            </Link>
+            <a className="btn-g" href="#build">
+              What we build
+            </a>
+          </>
+        }
+        meta={["Human gate by design", "Cited to the source", "Every decision logged"]}
+        visual={<AgentVisual />}
+      />
       <FilmSection
         id="ea-film"
         video={signatureVideo.enterpriseAi}
@@ -79,164 +117,214 @@ export default function EnterpriseAIPage() {
         caption="Illustrative run. Documents, counts and timings are generic examples."
       />
 
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel accent="line">Enterprise AI &amp; agents</SectionLabel>
-          <Headline as="h1" className="display">
-            The gate is the architecture.
-          </Headline>
-          <p className="lede" style={{ marginTop: 32 }}>
-            An agent that can act without review is a liability in any regulated
-            business. Ours stop at a person by design — and write down who asked,
-            what was surfaced, and who decided.
-          </p>
-        </div>
-      </section>
+      {/* --------------------------------------------------- architecture */}
+      <Section accent="ent">
+        <Statement
+          eyebrow="01 · The principle"
+          lead="An agent that can act without review is a liability."
+          rest="Ours stop at a person, so the answer to “how was this decided?” exists before anybody asks."
+        />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
+        <Figure
+          n="01"
+          title="Anatomy of an agent we deploy"
+          caption="Reference architecture, simplified. Access rules travel with documents into the index, so the agent can only read what the person asking could read. Every drafted sentence links to its source. Nothing reaches a system of record before the gate."
+        >
+          <Flow
+            accent={A}
+            nodes={[
+              {
+                k: "Sources",
+                title: "Where knowledge lives",
+                body: "Drives, wikis, tickets, ERP and email — connected where they are.",
+                tags: ["Drive", "Wiki", "ERP", "Tickets"],
+              },
+              {
+                k: "Index",
+                title: "Retrieval with permissions",
+                body: "Each passage keeps its source and its access rules.",
+              },
+              {
+                k: "Agent",
+                title: "Plans, uses tools, drafts",
+                body: "Every answer cites the passage it came from.",
+              },
+              {
+                k: "Gate",
+                title: "Named reviewer",
+                body: "Approves, edits or rejects.",
+                gate: true,
+                wait: "Awaiting review",
+                ok: "Approved",
+              },
+              {
+                k: "Systems",
+                title: "Recorded, then actioned",
+                body: "Filed, sent or updated — and logged.",
+              },
+            ]}
+            ledger={[
+              {
+                t: "14:02",
+                k: "Asked by",
+                v: "Operations analyst — a question in plain English",
+              },
+              {
+                t: "14:02",
+                k: "Read",
+                v: "Two policies, one contract, eleven tickets — each linked",
+              },
+              {
+                t: "14:31",
+                k: "Decided by",
+                v: "Team lead — approved with one edit",
+              },
+            ]}
+          />
+        </Figure>
+      </Section>
 
       {/* ----------------------------------------------------- capabilities */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel>Capabilities</SectionLabel>
-          <Headline onScroll>Six things we build.</Headline>
-          <div className="grid-3">
-            {capabilities.map((c) => (
-              <article className="card" key={c.title}>
-                <h3 className="h3" style={{ fontSize: 20 }}>
-                  {c.title}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {c.body}
-                </p>
-                <p className="card-means">{c.means}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------ industries */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Industries</SectionLabel>
-          <Headline onScroll>Any industry that runs on documents and decisions.</Headline>
-          <div className="grid-3">
-            {industries.map((i) => (
-              <article className="card" key={i.name}>
-                <h3 className="h3" style={{ fontSize: 20 }}>
-                  {i.name}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {i.use}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ----------------------------------------------------- start small */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel>Start small</SectionLabel>
-          <Headline onScroll>Begin with one pilot on your own data.</Headline>
-          <div className="grid-4">
-            {offers.map((o, i) => (
-              <article className="card" key={o.title}>
-                <p className="line-card-n">{String(i + 1).padStart(2, "0")}</p>
-                <h3 className="h3" style={{ fontSize: 20, marginTop: 12 }}>
-                  {o.title}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {o.body}
-                </p>
-                <p className="card-means">{o.gets}</p>
-              </article>
-            ))}
-          </div>
-          <p className="body-2" style={{ marginTop: 32, maxWidth: 640 }}>
-            Tell us the problem and you get a written plan within two business days.
-          </p>
-          <p style={{ marginTop: 20 }}>
-            <Link className="btn btn-ghost" href="/start-a-project">
-              Start a project
-            </Link>
-          </p>
-        </div>
-      </section>
+      <Section tone="raised" accent="ent" id="build">
+        <SectionHead
+          index="02"
+          eyebrow="Capabilities"
+          title={
+            <>
+              What we build, <em>and what it changes</em>.
+            </>
+          }
+          lede="Six capabilities and four agents. Each one says what it does and what it means for the people who live with it afterwards."
+        />
+        <CapWall
+          items={[
+            ...capabilities.map((c, i) => ({
+              title: c.title,
+              body: `${c.body} ${c.means}`,
+              kicker: `Capability ${String(i + 1).padStart(2, "0")}`,
+              colour: ENT,
+            })),
+            ...agentTypes.map((a) => ({ title: a.title, body: a.body, kicker: "Agent", colour: ENT })),
+          ]}
+        />
+      </Section>
 
       {/* ------------------------------------------------------- our view */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel accent="line">{thesis.label}</SectionLabel>
-          <Headline onScroll className="h2 thesis-head">
-            {thesis.headline}
-          </Headline>
-
-          <div className="thesis">
-            <p className="thesis-lede">{thesis.lede}</p>
-
-            <ol className="thesis-roles">
-              {thesis.roles.map((r) => (
-                <li key={r.name}>
-                  <span className="thesis-role">{r.name}</span>
-                  <span className="thesis-role-body">{r.body}</span>
-                </li>
-              ))}
-            </ol>
-
+      <Section accent="ent">
+        <SectionHead
+          index="03"
+          eyebrow={thesis.label}
+          title={thesis.headline}
+          lede={thesis.lede}
+        />
+        <Figure
+          n="02"
+          title="Several models, one answer, one person"
+          caption="Each model has one job. Where they disagree, the disagreement is written down and handed to the reviewer instead of being smoothed into a confident paragraph."
+        >
+          <Flow
+            accent={A}
+            cycle={8}
+            nodes={[
+              ...thesis.roles.map((r) => ({ k: r.name, title: r.body })),
+              {
+                k: "Person",
+                title: "A qualified reviewer decides",
+                gate: true,
+                wait: "With the reviewer",
+                ok: "Decided",
+              },
+            ]}
+          />
+        </Figure>
+        <div className="pv-offset">
+          <div>
             {thesis.body.map((para) => (
-              <p className="thesis-para" key={para.slice(0, 32)}>
+              <p className="pv-body pv-thesis-p" key={para.slice(0, 32)}>
                 {para}
               </p>
             ))}
-
-            <p className="thesis-close">
+            <p className="pv-body pv-ink pv-thesis-p">
               {thesis.closing.text}{" "}
-              <span className="thesis-soon">{thesis.closing.note}</span>
+              <span className="pv-serif">{thesis.closing.note}</span>
             </p>
-            <p style={{ marginTop: 26 }}>
-              <Link className="btn btn-ghost" href={thesis.closing.href}>
-                {thesis.closing.cta}
+            <p className="pv-thesis-p">
+              <Link className="pv-link" href={thesis.closing.href}>
+                {thesis.closing.cta} <span aria-hidden="true">→</span>
               </Link>
             </p>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* ------------------------------------------------------ agent types */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Agents</SectionLabel>
-          <Headline onScroll>Four that earn their keep.</Headline>
-          <div className="grid-4">
-            {agentTypes.map((a, i) => (
-              <article className="card" key={a.title}>
-                <p className="line-card-n">{String(i + 1).padStart(2, "0")}</p>
-                <h3 className="h3" style={{ fontSize: 20, marginTop: 12 }}>
-                  {a.title}
-                </h3>
-                <p className="body-2" style={{ marginTop: 10, fontSize: 15 }}>
-                  {a.body}
-                </p>
-              </article>
-            ))}
+      {/* ----------------------------------------------------- start small */}
+      <Section tone="raised" accent="ent">
+        <SectionHead
+          index="04"
+          eyebrow="Start small"
+          title={
+            <>
+              Begin with <em>one pilot</em>, on your own data.
+            </>
+          }
+          lede="Four scoped ways in. Each runs on your documents or data, not a demo set, and ends in something you can test."
+        />
+        <BigSteps items={offers.map((o) => ({ title: o.title, body: `${o.body} ${o.gets}` }))} />
+      </Section>
+
+      {/* ------------------------------------------------------ industries */}
+      <Section accent="ent">
+        <SectionHead
+          index="05"
+          eyebrow="Industries"
+          title={
+            <>
+              Any industry that runs on <em>documents and decisions</em>.
+            </>
+          }
+        />
+        <IndustriesBento />
+      </Section>
+
+      {/* ------------------------------------------------------- we build */}
+      <Section tone="raised" accent="ent">
+        <SectionHead
+          index="06"
+          eyebrow="What we build"
+          title={
+            <>
+              Systems we <em>ship</em>.
+            </>
+          }
+          lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
+        />
+        <CapWall items={wallFromWeDo(weDo.ent, ENT)} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="ent">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="07"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
           </div>
-
-          <p className="mono" style={{ marginTop: 64, color: "var(--ink-2)" }}>
-            How a request moves
-          </p>
-          <ol className="flow">
-            {agentFlow.map((f) => (
-              <li key={f} data-accent={f === "Expert review"}>
-                {f}
-              </li>
-            ))}
-          </ol>
+          <Faq items={brief("/enterprise-ai").faq ?? []} />
         </div>
-      </section>
+      </Section>
 
-      <CTASection
-        title="Have a workflow in mind?"
+      <CtaBand
+        title={
+          <>
+            Have a workflow <em>in mind</em>?
+          </>
+        }
         body="Describe it in plain language. You get a written plan within two business days."
       />
     </div>

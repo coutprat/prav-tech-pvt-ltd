@@ -1,0 +1,74 @@
+[
+ {
+  "slug": "banking-finance-insurance",
+  "name": "Banking, finance & insurance",
+  "title": "AI for banking, finance and insurance that a regulator can follow.",
+  "line": "KYC, credit, claims and fraud review that moves faster and stays explainable."
+ },
+ {
+  "slug": "manufacturing",
+  "name": "Manufacturing & Industry 4.0",
+  "title": "Manufacturing AI that works on the line.",
+  "line": "Vision inspection, predictive maintenance and SOP search on the shop floor."
+ },
+ {
+  "slug": "retail-ecommerce",
+  "name": "Retail & e-commerce",
+  "title": "Retail AI that knows the shelf and the cart.",
+  "line": "Forecasting, catalogue and support agents that sell more with less manual work."
+ },
+ {
+  "slug": "logistics-supply-chain",
+  "name": "Logistics & supply chain",
+  "title": "Supply-chain AI for the exceptions.",
+  "line": "Document extraction, exception handling and inventory visibility across the chain."
+ },
+ {
+  "slug": "energy-utilities",
+  "name": "Energy & utilities",
+  "title": "Energy AI that watches the assets.",
+  "line": "Asset monitoring, anomaly detection and field-report intelligence."
+ },
+ {
+  "slug": "agritech",
+  "name": "Agriculture & agritech",
+  "title": "Agritech AI that reaches the field.",
+  "line": "Crop, yield and advisory AI that reaches farmers in their own language."
+ },
+ {
+  "slug": "education",
+  "name": "Education & edtech",
+  "title": "Education AI that keeps the teacher in charge.",
+  "line": "Learning platforms, tutors and content tools that teachers stay in charge of."
+ },
+ {
+  "slug": "legal-compliance",
+  "name": "Legal & compliance",
+  "title": "Legal AI where every answer cites its source.",
+  "line": "Contract review, research and compliance tracking with every answer cited."
+ },
+ {
+  "slug": "real-estate-construction",
+  "name": "Real estate & construction",
+  "title": "Construction AI that reads the drawings and the site.",
+  "line": "Project documents, site progress and sales enquiries handled faster."
+ },
+ {
+  "slug": "telecom",
+  "name": "Telecom & networks",
+  "title": "Telecom AI from the network to the care desk.",
+  "line": "Network analytics, support automation and the interconnect AI clusters need."
+ },
+ {
+  "slug": "media-marketing",
+  "name": "Media & marketing",
+  "title": "Generative AI for media that stays on brand.",
+  "line": "Generative AI for content, campaigns and insight — with brand control."
+ },
+ {
+  "slug": "hospitality-travel",
+  "name": "Hospitality & travel",
+  "title": "Hospitality AI that feels personal at scale.",
+  "line": "Booking, guest service and demand forecasting that feel personal at scale."
+ }
+]

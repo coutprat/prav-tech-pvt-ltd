@@ -33,14 +33,18 @@ const RISE = [
   ".stat-note",
   ".lede",
   ".body-2",
-  ".section-label"
+  ".section-label",
+  ".pv-card",
+  ".pv-rise",
+  ".pv-stat",
+  ".pv-bignum"
 ].join(",");
 
 /** Elements that already animate themselves, or live in a pinned scene. */
 const SKIP =
   ".reveal, .sequence, .fs, .film, .mod-section, .mennie-hero, [data-no-motion], .footer, .cta";
 
-const SPOT = ".card, .why-list > li, .sov-story, .steps > li";
+const SPOT = ".card, .why-list > li, .sov-story, .steps > li, .pv-card, .bt";
 
 export function ScrollMotion() {
   const pathname = usePathname();
@@ -138,12 +142,43 @@ export function ScrollMotion() {
       );
 
       triggers.push(
+        // Diagrams play their own CSS sequence once they are on screen.
+        ...ScrollTrigger.batch(".pv-fig", {
+          start: "top 80%",
+          once: true,
+          onEnter: (batch) => batch.forEach((el) => el.classList.add("is-in"))
+        }),
+        // Bento tiles do not rise: transforming that many glass tiles costs
+        // frames on software rasterisers. Their light trace draws on hover.
         ...ScrollTrigger.batch(".section-alt", {
           start: "top 88%",
           once: true,
           onEnter: (batch) => batch.forEach((el) => el.classList.add("is-in"))
         })
       );
+
+      // Big numbers count up once, the first time they are read.
+      document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+        const raw = el.dataset.count ?? "";
+        const end = Number(raw);
+        if (!Number.isFinite(end)) return;
+        const pad = raw.length;
+        const from = end > 1000 ? end - 24 : 0;
+        const o = { v: from };
+        const t = gsap.to(o, {
+          v: end,
+          duration: 1.6,
+          ease: "expo.out",
+          paused: true,
+          onUpdate: () => {
+            el.textContent = String(Math.round(o.v)).padStart(pad, "0");
+          }
+        });
+        tweens.push(t);
+        triggers.push(
+          ScrollTrigger.create({ trigger: el, start: "top 90%", once: true, onEnter: () => t.play() })
+        );
+      });
 
       document.querySelectorAll<HTMLElement>(".aurora").forEach((el) => {
         const host = el.parentElement;

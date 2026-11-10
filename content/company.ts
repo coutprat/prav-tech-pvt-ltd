@@ -22,7 +22,8 @@ export const company = {
   markets: "India, US, Europe",
   /** Founder's address. Enquiry + careers routing lives in content/site.ts. */
   email: "pratham@praversetech.com",
-  linkedIn: "https://www.linkedin.com/company/praverse-tech",
+  /** Confirmed by the founder, November 2026. */
+  linkedIn: "https://www.linkedin.com/company/praverse-tech-pvt-ltd/",
   tagline: "Engineering human-centred intelligence.",
   oneLiner:
     "Enterprise AI and agents for any industry — healthcare, pharma, manufacturing, finance, retail and more — and the high-speed interconnect layer for India's sovereign AI data centres.",

@@ -1,0 +1,120 @@
+/* ==========================================================================
+   /careers (cr-)
+   ========================================================================== */
+
+.cr-jobs {
+  list-style: none;
+  display: grid;
+  gap: 20px;
+}
+.cr-job {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--paper-3), var(--paper-2));
+  padding: clamp(24px, 3.4vw, 44px);
+  scroll-margin-top: 110px;
+}
+.cr-job-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.cr-job-title {
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.cr-job .pv-chips {
+  margin-top: 14px;
+}
+.cr-job-summary {
+  margin-top: 24px;
+  max-width: 68ch;
+  font-size: clamp(17px, 1.3vw, 19px);
+  line-height: 1.6;
+  color: var(--ink);
+}
+.cr-job-cols {
+  display: grid;
+  gap: 28px;
+  margin-top: 30px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 820px) {
+  .cr-job-cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+  }
+}
+.cr-job-sub {
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.cr-job-cols ul + .cr-job-sub {
+  margin-top: 28px;
+}
+.cr-job-cols ul {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.cr-job-cols li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-align: left;
+}
+.cr-job-cols li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 8px;
+  height: 1px;
+  background: var(--ink-3);
+}
+
+.cr-empty {
+  max-width: 62ch;
+}
+
+/* the apply form's panel */
+.cr-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--paper-3), var(--paper-2));
+  padding: clamp(24px, 4vw, 48px);
+}
+.cr-panel .form {
+  margin-top: 0;
+  gap: 22px;
+}
+.cr-aside {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-2);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-align: left;
+}
+.cr-aside a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}

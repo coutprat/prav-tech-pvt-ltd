@@ -23,13 +23,16 @@ const OUT = "qa/perf";
 await mkdir(OUT, { recursive: true });
 
 const browser = await chromium.launch({
-  args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
+  // GPU=1 measures on the machine's real GPU (and forces the 3D hero with ?gpu=1).
+  args: process.env.GPU
+    ? ["--use-gl=angle", "--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"]
+    : ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
 });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 const client = await context.newCDPSession(page);
 
-await page.goto(BASE + route, { waitUntil: "domcontentloaded", timeout: 90000 });
+await page.goto(BASE + route + (process.env.GPU ? (route.includes("?") ? "&" : "?") + "gpu=1" : ""), { waitUntil: "domcontentloaded", timeout: 90000 });
 await page.waitForTimeout(3500);
 
 // A/B a suspect: PERF_CSS="selector { prop: value }" is added to the page

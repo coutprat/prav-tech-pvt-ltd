@@ -1,10 +1,12 @@
 import { businessLines, company, people, portfolio } from "@/content/company";
-import { faqs } from "@/content/faq";
+import { FACTS, FOUNDER_SAME_AS, HOME_FAQ, PAGES, SAME_AS, SERVICE_LINES, SUMMARY } from "@/lib/answers";
 import { industries } from "@/content/industries";
 import { reachLadder, testTools, transceiverFacts } from "@/content/interconnect";
 import { site } from "@/content/site";
 import { getVerifyItem } from "@/content/verify";
 import { getRoute } from "@/lib/routes";
+import { getSector, sectors } from "@/content/sectors";
+import { govOffers } from "@/content/government";
 
 /**
  * Structured data.
@@ -47,24 +49,31 @@ function Ld({ data }: { data: Node | Node[] }) {
  * Rendered once, in the root layout; every other node points at it by @id.
  */
 export function OrganizationJsonLd() {
-  const address = getVerifyItem("registered-address");
+  const p = FACTS.postal;
 
   return (
     <Ld
       data={{
-        "@type": "Organization",
+        "@type": ["Organization", "ProfessionalService"],
         "@id": ORG_ID,
         name: company.legalName,
         alternateName: company.name,
         url: company.url,
         logo: `${company.url}/logo.svg`,
-        description: company.oneLiner,
+        description: SUMMARY,
         // The legal entity's date, which is what schema.org means by this. The
         // 2023 start of the work is a story, not an incorporation.
         foundingDate: String(company.founded),
+        identifier: [
+          ...(FACTS.cin ? [{ "@type": "PropertyValue", propertyID: "CIN", value: FACTS.cin }] : []),
+          ...(FACTS.gstin ? [{ "@type": "PropertyValue", propertyID: "GSTIN", value: FACTS.gstin }] : [])
+        ],
+        ...(FACTS.gstin ? { taxID: FACTS.gstin } : {}),
+        ...(FACTS.phone ? { telephone: FACTS.phone } : {}),
+        image: `${company.url}/og/home.jpg`,
         email: site.enquiryEmail,
         slogan: company.tagline,
-        sameAs: [company.linkedIn],
+        ...(SAME_AS.length ? { sameAs: SAME_AS } : {}),
         founder: { "@id": `${company.url}/#founder` },
         areaServed: ["IN", "US", "EU"],
         knowsAbout: [
@@ -86,7 +95,9 @@ export function OrganizationJsonLd() {
           "Medical imaging AI",
           "AI data-centre interconnect",
           "800G and 1.6T optical transceivers",
-          "Sovereign AI data centres in India"
+          "Sovereign AI data centres in India",
+          "AI for government and the public sector",
+          ...sectors.map((x) => `AI for ${x.name.toLowerCase()}`)
         ],
         contactPoint: [
           {
@@ -105,11 +116,26 @@ export function OrganizationJsonLd() {
         ],
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Vadodara",
-          addressRegion: "Gujarat",
-          addressCountry: "IN",
+          addressLocality: p.addressLocality,
+          addressRegion: p.addressRegion,
+          addressCountry: p.addressCountry,
           // Only emitted once the full registered address is confirmed.
-          ...(address.confirmed ? { streetAddress: address.claim } : {})
+          ...(p.streetAddress ? { streetAddress: p.streetAddress } : {}),
+          ...(p.postalCode ? { postalCode: p.postalCode } : {})
+        },
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: `${company.name} services`,
+          itemListElement: SERVICE_LINES.map((s) => ({
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: s.name,
+              description: s.description,
+              url: `${company.url}${s.path}`,
+              provider: org
+            }
+          }))
         }
       }}
     />
@@ -127,7 +153,7 @@ export function SiteJsonLd() {
           "@id": `${company.url}/#website`,
           url: company.url,
           name: company.name,
-          description: company.oneLiner,
+          description: SUMMARY,
           inLanguage: "en-IN",
           publisher: org
         },
@@ -135,9 +161,9 @@ export function SiteJsonLd() {
           "@type": "Person",
           "@id": `${company.url}/#founder`,
           name: f.name,
-          jobTitle: "Founder & CEO",
+          jobTitle: FACTS.founder.title,
           worksFor: org,
-          sameAs: [company.linkedIn]
+          sameAs: FOUNDER_SAME_AS
         }
       ]}
     />
@@ -150,7 +176,8 @@ export function FaqJsonLd() {
     <Ld
       data={{
         "@type": "FAQPage",
-        mainEntity: faqs.map((f) => ({
+        "@id": `${company.url}/#faq`,
+        mainEntity: HOME_FAQ.map((f) => ({
           "@type": "Question",
           name: f.q,
           acceptedAnswer: { "@type": "Answer", text: f.a }
@@ -163,14 +190,57 @@ export function FaqJsonLd() {
 /* ----------------------------------------------------------- breadcrumbs */
 
 function breadcrumb(path: string): Node {
-  const page = getRoute(path);
+  // Every ancestor that is itself a canonical route, then the page.
+  const parts = path.split("/").filter(Boolean);
+  const trail = ["/", ...parts.map((_, i) => `/${parts.slice(0, i + 1).join("/")}`)].map(getRoute);
   return {
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: getRoute("/").name, item: `${company.url}/` },
-      { "@type": "ListItem", position: 2, name: page.name, item: `${company.url}${page.path}` }
-    ]
+    itemListElement: trail.map((r, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: r.name,
+      item: `${company.url}${r.path === "/" ? "/" : r.path}`
+    }))
   };
+}
+
+function faqPage(path: string, items: readonly { q: string; a: string }[]): Node {
+  return {
+    "@type": "FAQPage",
+    "@id": `${company.url}${path}#faq`,
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a }
+    }))
+  };
+}
+
+/** A sector page: one Service per offer, grouped, plus the page's FAQ. */
+function sectorNodes(path: string): Node[] {
+  const s = getSector(path.replace("/industries/", ""));
+  if (!s) return [];
+  return [
+    {
+      "@type": "Service",
+      "@id": `${company.url}${path}#service`,
+      name: `AI solutions for ${s.name.toLowerCase()}`,
+      serviceType: `${s.name} AI development and consulting`,
+      description: s.seo.description,
+      url: `${company.url}${path}`,
+      provider: org,
+      areaServed: [{ "@type": "Country", name: "India" }, "Worldwide"],
+      audience: { "@type": "BusinessAudience", name: s.name },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: `${s.name} AI services`,
+        itemListElement: s.services.map((x) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: x.title, description: x.body, provider: org }
+        }))
+      }
+    }
+  ];
 }
 
 /* -------------------------------------------------------------- services */
@@ -270,7 +340,45 @@ function interconnectProducts(): Node {
 
 /** Page-specific nodes, keyed by canonical path. */
 function pageNodes(path: string): Node[] {
+  if (path.startsWith("/industries/")) return sectorNodes(path);
   switch (path) {
+    case "/industries":
+      return [
+        {
+          "@type": "ItemList",
+          "@id": `${company.url}/industries#sectors`,
+          name: `Industries ${company.name} builds AI for`,
+          itemListElement: sectors.map((s, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: s.name,
+            url: `${company.url}/industries/${s.slug}`
+          }))
+        }
+      ];
+    case "/government":
+      return [
+        {
+          "@type": "Service",
+          "@id": `${company.url}/government#service`,
+          name: "AI and digital infrastructure for government and the public sector",
+          serviceType: "Sovereign AI, e-governance automation and public-sector AI systems",
+          description:
+            "Sovereign and air-gapped AI deployments, inspection and audit intelligence, public-health platforms, e-governance document automation and data-centre interconnect for national compute.",
+          url: `${company.url}/government`,
+          provider: org,
+          areaServed: [{ "@type": "Country", name: "India" }],
+          audience: { "@type": "GovernmentOrganization", name: "Government departments, regulators and public-sector undertakings" },
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Public-sector services",
+            itemListElement: govOffers.map((x) => ({
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: x.title, description: x.body, provider: org }
+            }))
+          }
+        }
+      ];
     case "/enterprise-ai":
       return [
         service(
@@ -301,8 +409,27 @@ function pageNodes(path: string): Node[] {
           ["IN"]
         )
       ];
+    case "/mennie":
+      return [
+        service(
+          path,
+          "MENNIE, voice-first patient assistant",
+          "Healthcare AI: voice-first patient intake and clinician-ready summaries",
+          "MENNIE meets patients at the door, the kiosk or on their phone and hands clinicians a structured summary. In research and development; it does not diagnose, treat or replace medical professionals.",
+          ["IN"]
+        )
+      ];
     case "/photonics":
-      return [interconnectProducts()];
+      return [
+        service(
+          path,
+          line("photonics").title,
+          "AI data-centre copper and optical interconnect supply and design-in",
+          "800G and 1.6T DAC, ACC, AEC and AOC cables and pluggable optical transceivers for AI clusters in India, supplied and designed in today, with Indian manufacturing on a staged roadmap.",
+          ["IN"]
+        ),
+        interconnectProducts()
+      ];
     default:
       return [];
   }
@@ -313,7 +440,14 @@ function pageNodes(path: string): Node[] {
  * product list). One line in each page: <PageJsonLd path="/pharma" />.
  */
 export function PageJsonLd({ path }: { path: string }) {
-  const nodes = [...(path === "/" ? [] : [breadcrumb(path)]), ...pageNodes(path)];
+  // The home FAQ is emitted by <FaqJsonLd />; every other page's FAQ comes
+  // from lib/answers.ts, the same list its visible FAQ section renders.
+  const faq = path === "/" ? undefined : PAGES[path]?.faq;
+  const nodes = [
+    ...(path === "/" ? [] : [breadcrumb(path)]),
+    ...pageNodes(path),
+    ...(faq?.length ? [faqPage(path, faq)] : [])
+  ];
   if (!nodes.length) return null;
   return <Ld data={nodes} />;
 }

@@ -1,0 +1,97 @@
+/* /pharma — page-specific pieces only. Kit styles live in premium-kit.css. */
+
+.pha-k {
+  margin-top: 36px;
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.pha-logos {
+  margin-top: clamp(48px, 6vw, 80px);
+}
+
+/* --- regulated-markets matrix */
+.pha-matrix-wrap {
+  overflow-x: auto;
+}
+.pha-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+}
+.pha-matrix thead th:first-child {
+  width: 26%;
+}
+.pha-matrix th,
+.pha-matrix td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  vertical-align: middle;
+}
+.pha-matrix thead th {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom-color: var(--line-2);
+}
+.pha-matrix th[scope="row"],
+.pha-matrix thead th:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+.pha-matrix th[scope="row"] {
+  font-weight: 500;
+  color: var(--ink);
+}
+.pha-matrix tbody tr:last-child th,
+.pha-matrix tbody tr:last-child td {
+  border-bottom: 0;
+}
+.pha-yes {
+  color: var(--acc-pha-ink);
+  font-size: 13px;
+}
+.pha-no {
+  color: var(--ink-3);
+  opacity: 0.55;
+}
+
+.pha-matrix-list {
+  display: none;
+  list-style: none;
+}
+.pha-matrix-list > li {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pha-matrix-list > li:first-child {
+  padding-top: 0;
+}
+.pha-matrix-list > li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.pha-matrix-list h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 719px) {
+  .pha-matrix-wrap {
+    display: none;
+  }
+  .pha-matrix-list {
+    display: block;
+  }
+}

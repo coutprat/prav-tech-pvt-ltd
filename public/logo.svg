@@ -14,8 +14,8 @@
       <stop offset="1" stop-color="#4A8FD0"/>
     </linearGradient>
     <linearGradient id="pv-f" gradientUnits="userSpaceOnUse" x1="0" y1="430" x2="0" y2="780">
-      <stop offset="0" stop-color="#0B1020" stop-opacity="0"/>
-      <stop offset="1" stop-color="#0B1020" stop-opacity=".22"/>
+      <stop offset="0" stop-color="#0B0A08" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0B0A08" stop-opacity=".22"/>
     </linearGradient>
   </defs>
 

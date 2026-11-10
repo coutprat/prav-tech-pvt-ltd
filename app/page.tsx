@@ -1,171 +1,345 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
-import { HomeHero } from "@/components/sections/HomeHero";
-import { Aurora, allLineBlobs } from "@/components/ui/Aurora";
-import { ScrollTint } from "@/components/ui/ScrollTint";
-import { Reveal } from "@/components/ui/Reveal";
-import { Headline } from "@/components/ui/Headline";
-import { ProofBar } from "@/components/ui/ProofBar";
-import { BusinessLineCard } from "@/components/ui/BusinessLineCard";
-import { SectionLabel, CTASection } from "@/components/ui/primitives";
+import { PrismHero } from "@/components/hero/PrismHero";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { faqs } from "@/content/faq";
-import { Verify } from "@/components/ui/Verify";
-import { homeFrames } from "@/content/media";
-import { businessLines, company, howWeWork, pillars } from "@/content/company";
+import { company, howWeWork, pillars } from "@/content/company";
+import { locations, site } from "@/content/site";
+import Link from "next/link";
+import { weDo } from "@/content/wedo";
+import { IndustriesBento, bentoItems } from "@/components/pv/IndustriesBento";
+import { BigSteps, CapWall, FeatureBand, Statement, wallFromWeDo } from "@/components/pv/kit3";
+import { GovVisual } from "@/components/pv/LineVisuals";
+import { SectorIcon } from "@/components/pv/SectorIcon";
+import { sectors } from "@/content/sectors";
+import { LineSpectrum } from "@/components/pv/LineSpectrum";
+import {
+  CtaBand,
+  Faq,
+  Figure,
+  LogoRow,
+  Section,
+  SectionHead,
+} from "@/components/pv/kit";
+import { Flow } from "@/components/pv/Flow";
 
-/** Accent per line, in the same order as content/company.ts businessLines. */
-const LINE_ACCENTS = ["--acc-ent", "--acc-pha", "--acc-men", "--acc-pho"];
-const LINE_GLOWS = ["#7C5CFF", "#10B981", "#38BDF8", "#F59E0B"];
+/** A cross-section of real work across the five lines, coloured by line. */
+const HOME_WALL = [
+  ...wallFromWeDo(weDo.ent.slice(0, 4), "var(--acc-ent)", "Enterprise AI"),
+  ...wallFromWeDo(weDo.pha.slice(0, 3), "var(--acc-pha)", "Pharma AI"),
+  ...wallFromWeDo(weDo.men.slice(0, 2), "var(--acc-men)", "Healthcare AI"),
+  ...wallFromWeDo(weDo.sov.slice(0, 1), "var(--acc-pho)", "Sovereign AI"),
+  ...wallFromWeDo(weDo.pho.slice(0, 2), "var(--acc-pho)", "Photonics"),
+];
 
 const HOME_TITLE = "Praverse Tech | Custom AI & Agents for Any Industry, India";
 
 export const metadata: Metadata = {
   ...pageMeta({
     title: HOME_TITLE,
-    description: "Custom enterprise AI, agents and copilots for any industry — manufacturing, finance, retail, healthcare, pharma — plus 800G/1.6T interconnect for India's AI data centres.",
-    path: '/',
-    og: 'home'
+    description:
+      "AI development company in Vadodara, Gujarat: custom AI agents and copilots for any industry and government, plus 800G/1.6T interconnect for India's AI data centres.",
+    path: "/",
+    og: "home",
   }),
   // Absolute: the layout's "· Praverse Tech" suffix would repeat the name.
-  title: { absolute: HOME_TITLE }
+  title: { absolute: HOME_TITLE },
 };
+
+/** Same order and colours as the prism in the hero, so the beams land here. */
+const LINES = [
+  {
+    n: "01",
+    colour: "#9b7bff",
+    we: weDo.ent.slice(0, 3).map((w) => w.title),
+    href: "/enterprise-ai",
+    title: "Enterprise AI & Agents",
+    body: "Agents, copilots, document intelligence and production ML that work inside the systems your teams already use — and stop for a named reviewer before anything is sent, filed or changed.",
+    tags: ["Agents", "RAG", "Vision", "MLOps"],
+  },
+  {
+    n: "02",
+    colour: "#22c98f",
+    we: weDo.pha.slice(0, 3).map((w) => w.title),
+    href: "/pharma",
+    title: "Pharma & Regulatory AI",
+    body: "FDA 483 responses, CAPA reasoning, data-integrity review and inspection readiness, built alongside people who stand in front of inspectors for a living. Every output is a draft a qualified person signs.",
+    tags: ["21 CFR 211", "ICH Q9 / Q10", "ALCOA+"],
+  },
+  {
+    n: "03",
+    colour: "#45bdf5",
+    we: weDo.men.slice(0, 3).map((w) => w.title),
+    href: "/mennie",
+    title: "Healthcare AI · MENNIE",
+    body: "MENNIE, a voice-first patient assistant that meets people at the door, the kiosk or on their phone and hands the clinician a structured picture — plus imaging and screening support at the edge.",
+    tags: ["Voice-first", "Imaging", "Edge AI"],
+  },
+  {
+    n: "04",
+    colour: "#f5a524",
+    we: weDo.pho.slice(0, 3).map((w) => w.title),
+    href: "/photonics",
+    title: "Photonics & AI Data Centres",
+    body: "The copper and optical interconnect that AI clusters are built on — DAC, ACC, AEC, AOC and pluggable optics at 800G and 1.6T — designed in and qualified in India with our US technology partner.",
+    tags: ["800G", "1.6T", "Copper + optics"],
+  },
+];
 
 export default function HomePage() {
   return (
     <>
-      {/* The hero's first frame is the LCP element — preload it so it is not
-          queued behind the JS bundles. */}
-      <link
-        rel="preload"
-        as="image"
-        href={`${homeFrames.desktop.dir}/frame-0001.webp`}
-        fetchPriority="high"
-      />
+      <PrismHero lead={brief("/").lead} />
 
-      {/* ---------------------------------------------------------- hero */}
-      <HomeHero frames={homeFrames} />
+      {/* ------------------------------------------------------- the facts */}
+      <Section tight>
+        <dl className="pv-bignums">
+          {[
+            { v: "04", l: "Lines of work", n: "One engineering core" },
+            { v: String(bentoItems.length), l: "Sectors we build for", n: "Three flagship lines" },
+            { v: "03", l: "Markets", n: "India · US · Europe" },
+            { v: String(company.ideaFrom), l: "Building since", n: `${locations.cities.length} cities · HQ Vadodara` },
+          ].map((x) => (
+            <div className="pv-bignum" key={x.l}>
+              <dt className="pv-bignum-l">{x.l}</dt>
+              <dd>
+                <span className="pv-bignum-v" data-count={x.v}>
+                  {x.v}
+                </span>
+                <span className="pv-bignum-n">{x.n}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
 
-      <ScrollTint
-        sections={businessLines.map((l, i) => ({
-          id: `line-${l.id}`,
-          color: LINE_GLOWS[i]
-        }))}
-      />
+      {/* ------------------------------------------------------ four lines */}
+      <Section id="lines">
+        <SectionHead
+          index="01"
+          eyebrow="Four lines"
+          title={
+            <>
+              One practice. <em>Four</em> disciplines.
+            </>
+          }
+          lede="The same engineers, the same review discipline and the same audit trail sit under every line. What changes is the domain expertise we build alongside — and the regulation the work has to survive."
+        />
+        <LineSpectrum
+          lines={LINES.map(({ n, colour, href, title, body, tags, we }) => ({ n, colour, href, title, body, tags, we }))}
+        />
+      </Section>
 
-      {/* ------------------------------------------------------ statement */}
-      <section className="section" style={{ position: "relative" }}>
-        <Aurora blobs={allLineBlobs} />
-        <div className="wrap">
-          <Headline as="h1" className="display">
-            Intelligence, engineered for industry.
-          </Headline>
-          <p className="lede" style={{ marginTop: 32 }}>
-            {company.oneLiner}
-          </p>
+      {/* ------------------------------------------- operating principle */}
+      <Section tone="raised">
+        <Statement
+          eyebrow="02 · Operating principle"
+          lead={
+            <>
+              The system drafts. <em>Your experts</em> decide.
+            </>
+          }
+          rest="The review gate is part of the architecture, not a setting."
+          foot={pillars.map((p) => ({ title: p.title, body: p.body }))}
+        />
+        <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }}>
+          <Figure
+            n="02"
+            title="Where a person sits in every system we ship"
+            caption="Illustrative run. The agent may read, check and draft as fast as it likes; nothing leaves the gate until a named reviewer approves it, and the ledger is written as it goes."
+          >
+            <Flow
+              accent="var(--acc-pha)"
+              nodes={[
+                {
+                  k: "Input",
+                  title: "Your documents & data",
+                  body: "SOPs, records, tickets, images — where they already live.",
+                  tags: ["SOP", "Records", "Email"],
+                },
+                {
+                  k: "Agent",
+                  title: "Reads, checks, drafts",
+                  body: "Every claim carries the source it came from.",
+                },
+                {
+                  k: "Gate",
+                  title: "Named reviewer",
+                  body: "Approves, edits or rejects the draft.",
+                  gate: true,
+                  wait: "Awaiting review",
+                  ok: "Approved",
+                },
+                {
+                  k: "Action",
+                  title: "Sent, filed, actioned",
+                  body: "Only now does anything change in your systems.",
+                },
+              ]}
+              ledger={[
+                { t: "09:41", k: "Asked by", v: "Quality lead, via the team inbox" },
+                { t: "09:42", k: "Surfaced", v: "Three SOP sections and four batch records, each linked" },
+                { t: "10:05", k: "Decided by", v: "Named reviewer — draft edited, then approved" },
+              ]}
+            />
+          </Figure>
         </div>
-      </section>
+      </Section>
 
-      <ProofBar
-        items={[
-          `Idea ${company.ideaFrom} · incorporated ${company.founded}`,
-          "Vadodara, India",
-          <Verify key="pubs" id="publications-count" />,
-          "Technology partner: our USA technology partner",
-          "Pharma advisory: SWATI Spentose (V-Group, est. 1952)"
-        ]}
-      />
+      {/* ------------------------------------------------ capabilities wall */}
+      <Section>
+        <SectionHead
+          index="03"
+          eyebrow="Capabilities"
+          title={
+            <>
+              Specific systems, <em>not slideware</em>.
+            </>
+          }
+          lede="Built or being built by our engineers, across all five lines. Client work is described without names; the tag shows where each one stands."
+        />
+        <CapWall items={HOME_WALL} />
+      </Section>
 
-      {/* -------------------------------------------------- business lines */}
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Four lines</SectionLabel>
-          <Headline onScroll>Where the work lands.</Headline>
+      {/* ------------------------------------------------------ industries */}
+      <Section tone="raised">
+        <SectionHead
+          index="04"
+          eyebrow="Industries"
+          title={
+            <>
+              Three lines in depth. <em>Every sector</em> in reach.
+            </>
+          }
+          lede="Pharma, healthcare and government are where we go deepest. The same engineering carries wherever a qualified person has to read a lot, decide well and show their working."
+        />
+        <IndustriesBento flagshipOnly exclude="government" />
+        <ul className="sx" aria-label="Every sector we build for">
+          {sectors.map((x) => (
+            <li key={x.slug}>
+              <Link href={`/industries/${x.slug}`}>
+                <SectorIcon name={x.icon} size={16} />
+                {x.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Section>
 
-          <div className="line-grid">
-            {businessLines.map((l, i) => (
-              <Reveal key={l.id} delay={i * 0.08}>
-                <div id={`line-${l.id}`}>
-                  <BusinessLineCard
-                    n={l.n}
-                    href={l.href}
-                    title={l.title}
-                    blurb={l.blurb}
-                    tags={l.tags}
-                    motif={l.motif}
-                    accent={LINE_ACCENTS[i]}
-                  />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ------------------------------------------------------ government */}
+      <Section>
+        <FeatureBand
+          eyebrow="05 · Government & public sector"
+          title={
+            <>
+              Sovereign AI for the <em>public sector</em>.
+            </>
+          }
+          lede="Air-gapped and on-premise deployments, inspection intelligence for regulators, public-health platforms and e-governance automation. One office pilots, a named officer signs off, and only then does it scale."
+          actions={
+            <>
+              <Link className="btn-p" href="/government">
+                Government & public sector <span aria-hidden="true">→</span>
+              </Link>
+              <a
+                className="btn-g"
+                href={`mailto:${site.enquiryEmail}?subject=${encodeURIComponent("Capability statement request")}`}
+              >
+                Request a capability statement
+              </a>
+            </>
+          }
+          visual={<GovVisual />}
+        />
+      </Section>
 
-      {/* --------------------------------------------- operating principle */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel accent="teal">Operating principle</SectionLabel>
-          <Headline onScroll>The system drafts. Your experts decide.</Headline>
-          <p className="lede" style={{ marginTop: 28 }}>
-            {company.principle}
-          </p>
+      {/* ---------------------------------------------------- engagement */}
+      <Section tone="raised">
+        <SectionHead
+          index="06"
+          eyebrow="How an engagement runs"
+          title={
+            <>
+              Problem to <em>production</em>, in four steps.
+            </>
+          }
+          lede={`${company.promise} Each step ends in something you can read, test or run.`}
+        />
+        <BigSteps
+          items={howWeWork.map((h, i) => ({
+            title: h.step,
+            body: h.body,
+            tag: ["Workflow map", "Written plan", "Working system", "Live and measured"][i],
+          }))}
+        />
+      </Section>
 
-          <div className="pillar-grid">
-            {pillars.map((p) => (
-              <div key={p.title}>
-                <h3 className="h3">{p.title}</h3>
-                <p className="body-2" style={{ marginTop: 12 }}>
-                  {p.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ------------------------------------------------------- the group */}
+      <Section>
+        <SectionHead
+          index="07"
+          eyebrow="Who we build with"
+          title={
+            <>
+              Domain depth from people who <em>do the work</em>.
+            </>
+          }
+          lede="Our pharma AI is built alongside a quality and regulatory consultancy and advised by a specialty-pharma group with seven decades of approvals. Our interconnect is supplied with a US technology partner."
+        />
+        <LogoRow
+          items={[
+            {
+              name: "Nexgen Pharma Solutions",
+              src: "/partners/nexgen-on-dark.webp",
+              role: "Quality & regulatory",
+              w: 734,
+              h: 72,
+            },
+            {
+              name: "SWATI Spentose",
+              src: "/partners/swati-on-dark.webp",
+              role: "Pharma advisory · est. 1952",
+              w: 143,
+            },
+            {
+              name: "Our USA technology partner",
+              role: "Interconnect technology",
+            },
+            {
+              name: "Praverse Tech Pvt Ltd",
+              role: "AI & photonics · Vadodara",
+            },
+          ]}
+        />
+      </Section>
 
-      {/* ----------------------------------------------------- how we work */}
-      <section className="section section-alt">
-        <div className="wrap">
-          <SectionLabel>How we work</SectionLabel>
-          <Headline onScroll>Four steps, no mystery.</Headline>
-
-          <ol className="steps">
-            {howWeWork.map((s, i) => (
-              <Reveal key={s.step} as="li" delay={i * 0.07}>
-                <span className="steps-n num">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="h3">{s.step}</h3>
-                <p className="body-2">{s.body}</p>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ----------------------------------------------------------- faq */}
+      {/* ------------------------------------------------------------- FAQ */}
       <FaqJsonLd />
-      <section className="section">
-        <div className="wrap">
-          <SectionLabel>Questions</SectionLabel>
-          <Headline onScroll>Straight answers.</Headline>
-          <div style={{ marginTop: 32, display: "grid", gap: 20, maxWidth: 820 }}>
-            {faqs.map((f) => (
-              <div key={f.q}>
-                <h3 className="h3">{f.q}</h3>
-                <p className="body-2" style={{ marginTop: 8 }}>
-                  {f.a}
-                </p>
-              </div>
-            ))}
+      <Section tone="raised">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="08"
+              eyebrow="Questions"
+              title={
+                <>
+                  Straight <em>answers</em>.
+                </>
+              }
+            />
           </div>
+          <Faq items={faqs} />
         </div>
-      </section>
+      </Section>
 
-      <CTASection
-        title="Tell us the problem."
+      <CtaBand
+        title={
+          <>
+            Tell us the <em>problem</em>.
+          </>
+        }
         body={company.promise}
-        primary={{ href: "/start-a-project", label: "Start a project" }}
-        secondary={{ href: "/contact", label: "Contact" }}
       />
     </>
   );

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
+import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
-import { Headline } from "@/components/ui/Headline";
-import { SectionLabel } from "@/components/ui/primitives";
-import { Aurora } from "@/components/ui/Aurora";
+import { Verify } from "@/components/ui/Verify";
+import { Card, Grid, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { company } from "@/content/company";
-import { site } from "@/content/site";
+import { locations, site, whatsappHref } from "@/content/site";
+import "./contact.css";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact",
@@ -17,52 +19,90 @@ export const metadata: Metadata = pageMeta({
 
 export default function ContactPage() {
   return (
-    <section className="page-head" style={{ position: "relative" }}>
+    <>
       <PageJsonLd path="/contact" />
-      <Aurora
-        blobs={[
-          { color: "var(--acc-ent)", x: 14, y: 26, size: 460 },
-          { color: "var(--teal)", x: 86, y: 62, size: 420 }
-        ]}
-      />
-      <div className="wrap">
-        <SectionLabel accent="teal">Contact</SectionLabel>
-        <Headline as="h1" className="display">
-          Start a conversation.
-        </Headline>
 
-        <div className="contact-grid">
-          <div>
-            <p className="lede">{company.promise}</p>
-            <dl className="contact-details">
+      <PageHero
+        accent="white"
+        visual={<PrismMark />}
+        eyebrow={brief("/contact").lead}
+        title={
+          <>
+            Start a <em>conversation</em>.
+          </>
+        }
+        lede="Enterprise AI, pharma AI, MENNIE or photonics. Describe the problem in plain language. What comes back is a written plan, not a pitch deck."
+        meta={["Written plan in two business days", locations.hq, company.markets]}
+      />
+
+      {/* ----------------------------------------------------- form + details */}
+      <Section accent="white">
+        <div className="ct-split">
+          <div className="ct-a-head">
+            <SectionHead
+              index="01"
+              eyebrow="Write to us"
+              title={
+                <>
+                  Tell us what you are <em>trying to solve</em>.
+                </>
+              }
+            />
+            <div className="ct-promise">
+              <span className="ct-promise-v">
+                Two <em>business days</em>.
+              </span>
+              <span className="ct-promise-n">{company.promise}</span>
+            </div>
+
+          </div>
+          <div className="ct-a-details">
+            <dl className="ct-details">
               <div>
-                <dt>Email</dt>
+                <dt>Enquiries</dt>
                 <dd>
-                  <a className="link" href={`mailto:${site.enquiryEmail}`}>
-                    {site.enquiryEmail}
+                  <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>WhatsApp</dt>
+                <dd>
+                  <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+                    Message us on WhatsApp
                   </a>
                 </dd>
               </div>
               <div>
                 <dt>Careers</dt>
                 <dd>
-                  <a className="link" href={`mailto:${site.careersEmail}`}>
-                    {site.careersEmail}
-                  </a>
+                  <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>
                 </dd>
               </div>
               <div>
                 <dt>Registered office</dt>
-                <dd>{company.hq}</dd>
+                <dd>
+                  <Verify id="registered-address" />
+                </dd>
+              </div>
+              <div>
+                <dt>Team</dt>
+                <dd>
+                  {locations.hq}
+                  <span>Team members in {locations.cities.join(", ")}</span>
+                </dd>
               </div>
               <div>
                 <dt>Markets</dt>
-                <dd>{company.markets}</dd>
+                <dd>{locations.markets}</dd>
               </div>
             </dl>
           </div>
 
-          <div>
+          <div className="ct-panel">
+            <p className="ct-panel-h">
+              <strong>Enquiry</strong>
+              <span>Fields marked * are required</span>
+            </p>
             <EnquiryForm
               subject="Enquiry from praversetech.com"
               submitLabel="Send enquiry"
@@ -87,7 +127,45 @@ export default function ContactPage() {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
+
+      {/* ------------------------------------------------------ other routes */}
+      <Section tone="raised" accent="white">
+        <SectionHead
+          index="02"
+          eyebrow="Other ways in"
+          title={
+            <>
+              If you already know <em>what you need</em>.
+            </>
+          }
+        />
+        <Grid cols={3}>
+          <Card
+            n="01"
+            title="Start a project"
+            href="/start-a-project"
+            cta="Send a brief"
+            accent="white"
+          >
+            <p>
+              A structured brief: the problem, and the constraints it has to live inside. You get a
+              written plan back within two business days.
+            </p>
+          </Card>
+          <Card n="02" title="Security review" href="/trust" cta="Read the trust page" accent="white">
+            <p>
+              Where data goes, who processes it, and what this website does and does not collect —
+              written for the person who has to sign off.
+            </p>
+          </Card>
+          <Card n="03" title="Careers" href="/careers" cta="See open roles" accent="white">
+            <p>
+              Open roles in {locations.hq}, and how to apply. A person reads every application.
+            </p>
+          </Card>
+        </Grid>
+      </Section>
+    </>
   );
 }

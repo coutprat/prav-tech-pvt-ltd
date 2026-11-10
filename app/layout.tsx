@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import "./premium.css";
+import "./premium-kit.css";
+import "./v3.css";
+import "./v3-pages.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ScrollMotion } from "@/components/layout/ScrollMotion";
+import { Pointer } from "@/components/layout/Pointer";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { Welcome, welcomeScript } from "@/components/layout/Welcome";
 import { company } from "@/content/company";
@@ -15,6 +20,14 @@ import { Analytics } from "@vercel/analytics/next";
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
+  display: "swap"
+});
+
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["italic", "normal"],
+  variable: "--font-instrument",
   display: "swap"
 });
 
@@ -80,7 +93,7 @@ export default function RootLayout({
     // hydrates; that difference is intended, not a mismatch.
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrument.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -100,6 +113,7 @@ export default function RootLayout({
         <WhatsAppButton />
         <SmoothScroll />
         <ScrollMotion />
+        <Pointer />
         {/*
           Cookieless Core Web Vitals from real visitors. Sets no cookies and
           builds no cross-site profile, so it needs no consent banner — the
