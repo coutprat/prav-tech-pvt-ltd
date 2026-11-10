@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import { HomeHero } from "@/components/sections/HomeHero";
+import { PrismHero } from "@/components/hero/PrismHero";
 import { Aurora, allLineBlobs } from "@/components/ui/Aurora";
 import { ScrollTint } from "@/components/ui/ScrollTint";
 import { Reveal } from "@/components/ui/Reveal";
@@ -11,7 +11,6 @@ import { SectionLabel, CTASection } from "@/components/ui/primitives";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { faqs } from "@/content/faq";
 import { Verify } from "@/components/ui/Verify";
-import { homeFrames } from "@/content/media";
 import { businessLines, company, howWeWork, pillars } from "@/content/company";
 
 /** Accent per line, in the same order as content/company.ts businessLines. */
@@ -34,17 +33,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* The hero's first frame is the LCP element — preload it so it is not
-          queued behind the JS bundles. */}
-      <link
-        rel="preload"
-        as="image"
-        href={`${homeFrames.desktop.dir}/frame-0001.webp`}
-        fetchPriority="high"
-      />
-
-      {/* ---------------------------------------------------------- hero */}
-      <HomeHero frames={homeFrames} />
+      <PrismHero />
 
       <ScrollTint
         sections={businessLines.map((l, i) => ({

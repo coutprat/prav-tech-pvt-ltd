@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import "./premium.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
@@ -15,6 +16,14 @@ import { Analytics } from "@vercel/analytics/next";
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
+  display: "swap"
+});
+
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["italic", "normal"],
+  variable: "--font-instrument",
   display: "swap"
 });
 
@@ -80,7 +89,7 @@ export default function RootLayout({
     // hydrates; that difference is intended, not a mismatch.
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrument.variable}`}
       suppressHydrationWarning
     >
       <head>
