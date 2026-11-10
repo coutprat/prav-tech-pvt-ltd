@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { site } from "@/content/site";
 import { brief } from "@/lib/answers";
 import type { ReactNode } from "react";
 import { pageMeta } from "@/lib/seo";
@@ -87,7 +88,7 @@ export default function PrivacyPage() {
                 {company.legalName}, <Verify id="registered-address" />.{" "}
                 <Verify id="cin" />. For any privacy question, or to exercise the
                 rights below, write to{" "}
-                <a href={`mailto:${company.email}`}>{company.email}</a>
+                <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
                 .
               </p>
             </Part>
@@ -189,7 +190,7 @@ export default function PrivacyPage() {
               </p>
               <p>
                 To exercise any of these, email{" "}
-                <a href={`mailto:${company.email}`}>{company.email}</a>
+                <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
                 . We will respond within the period the applicable law allows.
               </p>
             </Part>

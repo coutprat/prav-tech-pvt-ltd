@@ -68,14 +68,22 @@ export const FACTS = {
 } as const;
 
 /**
+ * Google Business Profile URL: NOT YET SUPPLIED.
+ * Paste the profile's share link (https://g.page/... or a maps.app.goo.gl /
+ * google.com/maps place URL) here once the founder's account is signed in.
+ * While it is null nothing is emitted; once set it joins SAME_AS, and so the
+ * Organization JSON-LD and llms.txt, with no other change.
+ */
+export const GOOGLE_BUSINESS_PROFILE: string | null = null;
+
+/**
  * Profiles that are the same entity as this site. Only URLs found in the repo
- * or the founder's vault, and only where they are confirmed: the company
- * LinkedIn URL in content/company.ts is still unconfirmed (verify
- * "linkedin-company"), so it joins the list when that entry is confirmed.
+ * or the founder's vault, and only where confirmed in content/verify.ts.
  */
 export const SAME_AS: string[] = [
+  ...(getVerifyItem("linkedin-company").confirmed ? [company.linkedIn] : []),
   "https://github.com/Praverse-Tech-Pvt-Ltd",
-  ...(getVerifyItem("linkedin-company").confirmed ? [company.linkedIn] : [])
+  ...(GOOGLE_BUSINESS_PROFILE ? [GOOGLE_BUSINESS_PROFILE] : [])
 ];
 
 /** The founder's own profile, from the vault (used on the previous site). */

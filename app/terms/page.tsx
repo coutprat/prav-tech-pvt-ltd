@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { site } from "@/content/site";
 import { brief } from "@/lib/answers";
 import type { ReactNode } from "react";
 import { pageMeta } from "@/lib/seo";
@@ -150,7 +151,7 @@ export default function TermsPage() {
 
             <Part id="contact">
               <p>
-                <a href={`mailto:${company.email}`}>{company.email}</a>
+                <a href={`mailto:${site.enquiryEmail}`}>{site.enquiryEmail}</a>
               </p>
             </Part>
           </article>

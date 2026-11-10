@@ -181,8 +181,10 @@ export const verifyItems = [
     where: "Footer",
     claim: "Company LinkedIn page",
     fallback: "",
-    needs: "Confirm the company LinkedIn URL.",
-    confirmed: false  },
+    needs: "Confirmed: https://www.linkedin.com/company/praverse-tech-pvt-ltd/",
+    confirmed: true,
+    source: "Founder, November 2026"
+  },
   {
     id: "gstin",
     where: "Government — credentials",
