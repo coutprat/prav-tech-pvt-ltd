@@ -8,7 +8,8 @@ import { locations, site } from "@/content/site";
 import Link from "next/link";
 import { weDo } from "@/content/wedo";
 import { WeDoList } from "@/components/pv/WeDoList";
-import { SectorGrid } from "@/components/pv/SectorGrid";
+import { IndustriesBento, bentoItems } from "@/components/pv/IndustriesBento";
+import { LineSpectrum } from "@/components/pv/LineSpectrum";
 import {
   Card,
   CtaBand,
@@ -18,7 +19,6 @@ import {
   LogoRow,
   Section,
   SectionHead,
-  Stats,
 } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 
@@ -52,7 +52,8 @@ export const metadata: Metadata = {
 const LINES = [
   {
     n: "01",
-    accent: "ent" as const,
+    colour: "#9b7bff",
+    we: weDo.ent.slice(0, 3).map((w) => w.title),
     href: "/enterprise-ai",
     title: "Enterprise AI & Agents",
     body: "Agents, copilots, document intelligence and production ML that work inside the systems your teams already use — and stop for a named reviewer before anything is sent, filed or changed.",
@@ -60,7 +61,8 @@ const LINES = [
   },
   {
     n: "02",
-    accent: "pha" as const,
+    colour: "#22c98f",
+    we: weDo.pha.slice(0, 3).map((w) => w.title),
     href: "/pharma",
     title: "Pharma & Regulatory AI",
     body: "FDA 483 responses, CAPA reasoning, data-integrity review and inspection readiness, built alongside people who stand in front of inspectors for a living. Every output is a draft a qualified person signs.",
@@ -68,7 +70,8 @@ const LINES = [
   },
   {
     n: "03",
-    accent: "men" as const,
+    colour: "#45bdf5",
+    we: weDo.men.slice(0, 3).map((w) => w.title),
     href: "/mennie",
     title: "Healthcare AI · MENNIE",
     body: "MENNIE, a voice-first patient assistant that meets people at the door, the kiosk or on their phone and hands the clinician a structured picture — plus imaging and screening support at the edge.",
@@ -76,7 +79,8 @@ const LINES = [
   },
   {
     n: "04",
-    accent: "pho" as const,
+    colour: "#f5a524",
+    we: weDo.pho.slice(0, 3).map((w) => w.title),
     href: "/photonics",
     title: "Photonics & AI Data Centres",
     body: "The copper and optical interconnect that AI clusters are built on — DAC, ACC, AEC, AOC and pluggable optics at 800G and 1.6T — designed in and qualified in India with our US technology partner.",
@@ -91,30 +95,24 @@ export default function HomePage() {
 
       {/* ------------------------------------------------------- the facts */}
       <Section tight>
-        <Stats
-          items={[
-            {
-              label: "Founded",
-              value: company.ideaFrom,
-              note: `Incorporated ${company.founded}`,
-            },
-            {
-              label: "Headquarters",
-              value: "Vadodara",
-              note: "Gujarat, India",
-            },
-            {
-              label: "Team in",
-              value: "4 cities",
-              note: locations.cities.join(" · "),
-            },
-            {
-              label: "Markets",
-              value: "3",
-              note: "India · United States · Europe",
-            },
-          ]}
-        />
+        <dl className="pv-bignums">
+          {[
+            { v: "04", l: "Lines of work", n: "One engineering core" },
+            { v: String(bentoItems.length), l: "Sectors we build for", n: "Three flagship lines" },
+            { v: "03", l: "Markets", n: "India · US · Europe" },
+            { v: String(company.ideaFrom), l: "Building since", n: `${locations.cities.length} cities · HQ Vadodara` },
+          ].map((x) => (
+            <div className="pv-bignum" key={x.l}>
+              <dt className="pv-bignum-l">{x.l}</dt>
+              <dd>
+                <span className="pv-bignum-v" data-count={x.v}>
+                  {x.v}
+                </span>
+                <span className="pv-bignum-n">{x.n}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </Section>
 
       {/* ------------------------------------------------------ four lines */}
@@ -129,22 +127,9 @@ export default function HomePage() {
           }
           lede="The same engineers, the same review discipline and the same audit trail sit under every line. What changes is the domain expertise we build alongside — and the regulation the work has to survive."
         />
-        <div className="pv-lines">
-          {LINES.map((l) => (
-            <Card
-              key={l.n}
-              n={l.n}
-              title={l.title}
-              href={l.href}
-              accent={l.accent}
-              meta={l.tags.map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            >
-              <p>{l.body}</p>
-            </Card>
-          ))}
-        </div>
+        <LineSpectrum
+          lines={LINES.map(({ n, colour, href, title, body, tags, we }) => ({ n, colour, href, title, body, tags, we }))}
+        />
       </Section>
 
       {/* ------------------------------------------- operating principle */}
@@ -261,7 +246,7 @@ export default function HomePage() {
           }
           lede="Pharma, healthcare and government are where we go deepest. The same engineering applies wherever a qualified person has to read a lot, decide well and show their working."
         />
-        <SectorGrid />
+        <IndustriesBento />
         <p style={{ marginTop: 28 }}>
           <Link className="pv-link" href="/industries">
             All industries <span aria-hidden="true">→</span>

@@ -25,8 +25,8 @@
 
   /* --- brand --------------------------------------------------------- */
   --navy: #161614; /* CTA and footer go deeper than the page */
-  --teal: #ece7dc; /* light — on dark, or as glow */
-  --teal-ink: #f1ece2; /* 7.8:1 on --paper-3 — text and links */
+  --teal: #d9c08e; /* champagne — the one accent (name kept for old rules) */
+  --teal-ink: #e8d5ab; /* 12:1 on --paper — text, links, focus */
   --amber: #e8a23a; /* Photonics only */
   --amber-ink: #f3b24a; /* 7.1:1 on --paper-3 — Photonics links */
 
@@ -5377,14 +5377,14 @@ body::before {
   cursor: default;
   user-select: none;
   font-family: var(--font-sans);
-  --wm-sweep-a: #cfc8bb;
-  --wm-sweep-b: #f7f4ee;
+  --wm-sweep-a: #d9c08e;
+  --wm-sweep-b: #f6ecd2;
 }
 .wm-rest {
   stroke: rgba(248, 240, 226, 0.17);
 }
 .wm-draw {
-  stroke: rgba(109, 196, 255, 0.5);
+  stroke: rgba(217, 192, 142, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {

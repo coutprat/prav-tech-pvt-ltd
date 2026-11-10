@@ -36,8 +36,8 @@
   --acc-men-ink: #86d6fb;
   --acc-pho: #f5a524;
   --acc-pho-ink: #fbbf4a;
-  --teal: #ece7dc;
-  --teal-ink: #f4f0e8;
+  --teal: #d9c08e;
+  --teal-ink: #e8d5ab;
 
   --glass: rgba(26, 25, 23, 0.66);
   --glass-line: rgba(255, 255, 255, 0.08);
@@ -66,7 +66,7 @@ body {
 }
 
 :focus-visible {
-  outline-color: #fff;
+  outline-color: var(--gold-ink);
 }
 
 /* Paragraph text is justified; bullets, centred blocks and UI micro-copy are
