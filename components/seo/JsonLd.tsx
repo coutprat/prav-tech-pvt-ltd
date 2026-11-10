@@ -1,5 +1,5 @@
 import { businessLines, company, people, portfolio } from "@/content/company";
-import { FACTS, FOUNDER_SAME_AS, HOME_FAQ, PAGES, SAME_AS, SERVICE_LINES, SUMMARY } from "@/lib/answers";
+import { FACTS, FOUNDER_SAME_AS, HOURS, HOME_FAQ, PAGES, SAME_AS, SERVICE_LINES, SUMMARY } from "@/lib/answers";
 import { industries } from "@/content/industries";
 import { reachLadder, testTools, transceiverFacts } from "@/content/interconnect";
 import { site } from "@/content/site";
@@ -123,6 +123,14 @@ export function OrganizationJsonLd() {
           ...(p.streetAddress ? { streetAddress: p.streetAddress } : {}),
           ...(p.postalCode ? { postalCode: p.postalCode } : {})
         },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: HOURS.days.map((d) => `https://schema.org/${d}`),
+            opens: HOURS.opens,
+            closes: HOURS.closes
+          }
+        ],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
           name: `${company.name} services`,
