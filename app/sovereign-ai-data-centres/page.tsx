@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
@@ -18,16 +19,7 @@ import {
 } from "@/content/interconnect";
 import { FilmSection, type Chapter } from "@/components/sections/FilmSection";
 import { signatureVideo } from "@/content/media";
-import {
-  Card,
-  CtaBand,
-  Figure,
-  Grid,
-  Note,
-  PageHero,
-  Section,
-  SectionHead,
-} from "@/components/pv/kit";
+import { Card, CtaBand, Faq, Figure, Grid, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import "../photonics/photonics.css";
 
 /**
@@ -160,7 +152,7 @@ export default function SovereignPage() {
     <div data-acc="photonics">
       <PageJsonLd path="/sovereign-ai-data-centres" />
       <PageHero
-        eyebrow="Sovereign AI data centres"
+        eyebrow={brief("/sovereign-ai-data-centres").lead}
         accent="pho"
         title={
           <>
@@ -385,6 +377,24 @@ export default function SovereignPage() {
           lede="What we deliver on this line today. Interconnect is supplied and designed in with our US technology partner; the software and planning work is ours."
         />
         <CapWall items={wallFromWeDo(weDo.sov, PHO)} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="pho">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="09"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
+          </div>
+          <Faq items={brief("/sovereign-ai-data-centres").faq ?? []} />
+        </div>
       </Section>
 
       <CtaBand

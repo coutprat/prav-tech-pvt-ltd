@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import type { ReactNode } from "react";
 import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -55,7 +56,7 @@ export default function PrivacyPage() {
 
       <PageHero
         accent="white"
-        eyebrow="Legal"
+        eyebrow={brief("/privacy").lead}
         title="Privacy"
         lede={
           <>

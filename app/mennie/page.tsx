@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
 import Link from "next/link";
@@ -9,7 +10,7 @@ import { MennieFilm } from "@/components/sections/MennieFilm";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { mennie } from "@/content/company";
 import { thesis } from "@/content/thesis";
-import { CtaBand, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { CtaBand, Faq, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./mennie.css";
 
@@ -31,7 +32,7 @@ export default function MenniePage() {
     <div data-acc="mennie">
       <PageJsonLd path="/mennie" />
       <PageHero
-        eyebrow="Healthcare AI · Private beta"
+        eyebrow={brief("/mennie").lead}
         accent="men"
         title={
           <>
@@ -192,6 +193,24 @@ export default function MenniePage() {
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
         <CapWall items={wallFromWeDo(weDo.men, MEN)} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="men">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="06"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
+          </div>
+          <Faq items={brief("/mennie").faq ?? []} />
+        </div>
       </Section>
 
       <CtaBand

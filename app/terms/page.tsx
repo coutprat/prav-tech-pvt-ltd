@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import type { ReactNode } from "react";
 import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -50,7 +51,7 @@ export default function TermsPage() {
 
       <PageHero
         accent="white"
-        eyebrow="Legal"
+        eyebrow={brief("/terms").lead}
         title="Terms of use"
         lede="These terms govern your use of praversetech.com. They do not govern any engagement with us — that is covered by the contract we sign."
       />

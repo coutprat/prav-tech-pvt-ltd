@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
 import Link from "next/link";
@@ -13,15 +14,7 @@ import {
   pharmaStandards,
   regulatedMarkets,
 } from "@/content/company";
-import {
-  CtaBand,
-  Figure,
-  LogoRow,
-  Note,
-  Section,
-  SectionHead,
-  PageHero,
-} from "@/components/pv/kit";
+import { CtaBand, Faq, Figure, LogoRow, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./pharma.css";
 
@@ -99,7 +92,7 @@ export default function PharmaPage() {
     <div data-acc="pharma">
       <PageJsonLd path="/pharma" />
       <PageHero
-        eyebrow="Pharma & regulatory AI"
+        eyebrow={brief("/pharma").lead}
         accent="pha"
         title={
           <>
@@ -370,6 +363,24 @@ export default function PharmaPage() {
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
         <CapWall items={wallFromWeDo(weDo.pha, "var(--acc-pha)")} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="pha">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="06"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
+          </div>
+          <Faq items={brief("/pharma").faq ?? []} />
+        </div>
       </Section>
 
       <CtaBand

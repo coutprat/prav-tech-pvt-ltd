@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -22,9 +23,11 @@ export default function IndustriesPage() {
       <section className="ind-hero">
         <div className="wrap ind-hero-grid">
           <div>
-            <p className="pv-eyebrow">Industries</p>
-            <h1 className="pv-h1">
-              One beam of engineering. <em>{bentoItems.length} sectors</em>.
+            <h1 className="pv-h1-group">
+              <span className="pv-eyebrow">{brief("/industries").lead}</span>
+              <span className="pv-h1">
+                One beam of engineering. <em>{bentoItems.length} sectors</em>.
+              </span>
             </h1>
             <p className="pv-lede">
               Healthcare, pharma and government are where we go deepest. The same engineers, review gates and

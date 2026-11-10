@@ -704,3 +704,13 @@ main .pv-center p {
 .pf-legal {
   border-top: 1px solid var(--line) !important;
 }
+
+/* Home hero H1 = eyebrow + display headline (components/hero/PrismHero.tsx). */
+.ph-h1-group {
+  margin: 0;
+  font: inherit;
+  letter-spacing: normal;
+}
+.ph-h1-group > .ph-title {
+  display: block;
+}

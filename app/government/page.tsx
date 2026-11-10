@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -43,7 +44,7 @@ export default function GovernmentPage() {
     <>
       <PageJsonLd path="/government" />
       <PageHero
-        eyebrow="Government & public sector"
+        eyebrow={brief("/government").lead}
         title={
           <>
             AI that a public office can <em>answer for</em>.

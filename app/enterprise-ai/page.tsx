@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
@@ -11,7 +12,7 @@ import { signatureVideo } from "@/content/media";
 import { agentTypes, capabilities } from "@/content/company";
 import { thesis } from "@/content/thesis";
 import { offers } from "@/content/offers";
-import { CtaBand, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { CtaBand, Faq, Figure, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 
 /**
@@ -86,7 +87,7 @@ export default function EnterpriseAIPage() {
     <div data-acc="enterprise">
       <PageJsonLd path="/enterprise-ai" />
       <PageHero
-        eyebrow="Enterprise AI & agents"
+        eyebrow={brief("/enterprise-ai").lead}
         accent="ent"
         title={
           <>
@@ -298,6 +299,24 @@ export default function EnterpriseAIPage() {
           lede="Specific systems our engineers have built or are building now. Client work is described without names; the tag shows where each one stands today."
         />
         <CapWall items={wallFromWeDo(weDo.ent, ENT)} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="ent">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="07"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
+          </div>
+          <Faq items={brief("/enterprise-ai").faq ?? []} />
+        </div>
       </Section>
 
       <CtaBand

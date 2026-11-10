@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -39,7 +40,7 @@ export default function CompanyPage() {
       <PageHero
         accent="white"
         visual={<PrismMark />}
-        eyebrow="Company"
+        eyebrow={brief("/company").lead}
         title={
           <>
             Built by people who have <em>done the work</em>.

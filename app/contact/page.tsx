@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -24,7 +25,7 @@ export default function ContactPage() {
       <PageHero
         accent="white"
         visual={<PrismMark />}
-        eyebrow="Contact"
+        eyebrow={brief("/contact").lead}
         title={
           <>
             Start a <em>conversation</em>.

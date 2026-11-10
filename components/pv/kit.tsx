@@ -98,8 +98,12 @@ export function PageHero({
 }) {
   const copy = (
     <>
-        <p className="pv-eyebrow">{eyebrow}</p>
-        <h1 className="pv-h1">{title}</h1>
+        {/* The eyebrow says what Praverse does on this page, so it is part of
+            the H1 a crawler reads; it looks exactly as it did as a <p>. */}
+        <h1 className="pv-h1-group">
+          <span className="pv-eyebrow">{eyebrow}</span>
+          <span className="pv-h1">{title}</span>
+        </h1>
         {lede ? <p className="pv-lede pv-hero-lede">{lede}</p> : null}
         {actions ? <div className="pv-actions">{actions}</div> : null}
         {meta ? (

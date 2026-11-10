@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import type { CSSProperties } from "react";
 import { pageMeta } from "@/lib/seo";
 import { weDo } from "@/content/wedo";
@@ -36,7 +37,7 @@ import {
   testTools,
   transceiverFacts,
 } from "@/content/interconnect";
-import { CtaBand, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
+import { CtaBand, Faq, Figure, Note, PageHero, Section, SectionHead } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
 import "./photonics.css";
 
@@ -142,7 +143,7 @@ export default function PhotonicsPage() {
     <div data-acc="photonics">
       <PageJsonLd path="/photonics" />
       <PageHero
-        eyebrow="Photonics & AI data centres"
+        eyebrow={brief("/photonics").lead}
         accent="pho"
         title={
           <>
@@ -453,6 +454,24 @@ export default function PhotonicsPage() {
           lede="What we deliver on this line today. Interconnect is supplied and designed in with our US technology partner; the software and planning work is ours."
         />
         <CapWall items={wallFromWeDo(weDo.pho, PHO)} />
+      </Section>
+
+      {/* ------------------------------------------------------------- FAQ */}
+      <Section accent="pho">
+        <div className="pv-split">
+          <div className="pv-sticky">
+            <SectionHead
+              index="09"
+              eyebrow="Questions"
+              title={
+                <>
+                  Asked <em>before the first call</em>.
+                </>
+              }
+            />
+          </div>
+          <Faq items={brief("/photonics").faq ?? []} />
+        </div>
       </Section>
 
       <CtaBand

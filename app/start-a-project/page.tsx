@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
@@ -23,7 +24,7 @@ export default function StartAProjectPage() {
 
       <PageHero
         accent="white"
-        eyebrow="Start a project"
+        eyebrow={brief("/start-a-project").lead}
         title={
           <>
             Tell us the <em>problem</em>.

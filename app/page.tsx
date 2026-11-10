@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { PrismHero } from "@/components/hero/PrismHero";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
@@ -89,7 +90,7 @@ const LINES = [
 export default function HomePage() {
   return (
     <>
-      <PrismHero />
+      <PrismHero lead={brief("/").lead} />
 
       {/* ------------------------------------------------------- the facts */}
       <Section tight>

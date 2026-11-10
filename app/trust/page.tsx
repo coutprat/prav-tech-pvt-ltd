@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { pageMeta } from "@/lib/seo";
 import { PrismMark } from "@/components/pv/LineVisuals";
@@ -65,7 +66,7 @@ export default function TrustPage() {
       <PageHero
         accent="white"
         visual={<PrismMark />}
-        eyebrow="Trust"
+        eyebrow={brief("/trust").lead}
         title={
           <>
             Answers for your <em>security review</em>.

@@ -1,62 +1,96 @@
-import { businessLines, company, mennie, people, trackRecord } from "@/content/company";
-import { faqs } from "@/content/faq";
+import { company, mennie, people, trackRecord } from "@/content/company";
 import { industries } from "@/content/industries";
 import { offers } from "@/content/offers";
-import { site, locations } from "@/content/site";
 import { ROUTES } from "@/lib/routes";
 import { sectors } from "@/content/sectors";
 import { govOffers } from "@/content/government";
 import { weDo } from "@/content/wedo";
+import { FACTS, PAGES, SAME_AS, SERVICE_LINES, SUMMARY } from "@/lib/answers";
 
 /**
- * Plain-text summaries for AI assistants (https://llmstxt.org). Built from the
- * same content files as the pages, so what an assistant quotes is what the
- * site says. Facts gated by [VERIFY] entries are deliberately left out.
+ * /llms.txt and /llms-full.txt (https://llmstxt.org), for AI assistants.
+ *
+ * Both are generated from lib/answers.ts (summary, facts, FAQs, page briefs)
+ * and the content files, the same sources the pages and the JSON-LD read, so
+ * what an assistant quotes is what the site says. Facts gated by [VERIFY]
+ * entries are left out until confirmed.
  */
 
 const abs = (path: string) => `${company.url}${path === "/" ? "" : path}`;
 
 const pages = ROUTES.filter((r) => !["/privacy", "/terms"].includes(r.path));
 
+function keyFacts(): string[] {
+  const rows: [string, string | null][] = [
+    ["Legal name", FACTS.legalName],
+    ["Brand", FACTS.name],
+    ["What it does", FACTS.whatItDoes],
+    ["Headquarters", FACTS.address ?? FACTS.hq],
+    ["Team", FACTS.team],
+    ["Markets", FACTS.markets],
+    ["Founder", `${FACTS.founder.name}, ${FACTS.founder.title}`],
+    ["Founded", `Work began in ${FACTS.ideaFrom}; ${FACTS.legalName} incorporated in ${FACTS.incorporated}`],
+    ["Website", FACTS.url],
+    ["Email (enquiries)", FACTS.enquiryEmail],
+    ["Email (careers)", FACTS.careersEmail],
+    ["Phone", FACTS.phone],
+    ["CIN", FACTS.cin],
+    ["GSTIN", FACTS.gstin]
+  ];
+  return rows.filter((r): r is [string, string] => Boolean(r[1])).map(([k, v]) => `- ${k}: ${v}`);
+}
+
 export function llmsIndex(): string {
   return [
-    `# ${company.name}`,
+    `# ${FACTS.legalName}`,
     "",
-    `> ${company.oneLiner}`,
+    `> ${SUMMARY}`,
     "",
-    `${company.legalName} is headquartered in ${company.hq}. Markets: ${company.markets}. ${company.originLine}`,
+    "## Key facts",
+    "",
+    ...keyFacts(),
+    "",
+    "## Services",
+    "",
+    ...SERVICE_LINES.map((s) => `- [${s.name}](${abs(s.path)}): ${s.description}`),
     "",
     "## Pages",
     "",
-    ...pages.map((r) => `- [${r.name}](${abs(r.path)})`),
+    ...pages.map((r) => `- [${r.name}](${abs(r.path)}): ${PAGES[r.path].brief}`),
     "",
-    "## Business lines",
+    "## Optional",
     "",
-    ...businessLines.map((l) => `- [${l.title}](${abs(l.href)}): ${l.blurb}`),
-    "",
-    "## More",
-    "",
-    `- [Full company facts for AI assistants](${company.url}/llms-full.txt)`,
-    `- Enquiries: ${site.enquiryEmail}`,
-    `- LinkedIn: ${company.linkedIn}`,
+    `- [Full company facts and every page's FAQ](${company.url}/llms-full.txt)`,
+    `- [Start a project](${abs("/start-a-project")}): ${FACTS.promise}`,
+    ...SAME_AS.map((u) => `- [Profile](${u})`),
     ""
   ].join("\n");
 }
 
 export function llmsFull(): string {
   return [
-    `# ${company.name} — full company facts`,
+    `# ${FACTS.legalName}: full company facts`,
     "",
-    `> ${company.oneLiner}`,
+    `> ${SUMMARY}`,
     "",
-    "## Who we are",
+    "## Key facts",
     "",
-    `${company.legalName}. ${company.originLine} ${locations.line} Markets served: ${company.markets}.`,
+    ...keyFacts(),
+    "",
     company.principle,
     "",
-    "## What we do",
+    "## Pages, with their questions and answers",
     "",
-    ...businessLines.flatMap((l) => [`### ${l.title}`, `${l.blurb} Page: ${abs(l.href)}`, ""]),
+    ...pages.flatMap((r) => {
+      const b = PAGES[r.path];
+      return [
+        `### ${r.name}`,
+        "",
+        `${b.brief} ${abs(r.path)}`,
+        "",
+        ...(b.faq ?? []).flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""])
+      ];
+    }),
     "## Ways to start",
     "",
     ...offers.map((o) => `- ${o.title}: ${o.body}`),
@@ -65,42 +99,39 @@ export function llmsFull(): string {
     "",
     ...Object.values(weDo)
       .flat()
-      .map((w) => `- We build ${w.title}: ${w.body}`),
+      .map((w) => `- ${w.title}: ${w.body}`),
     "",
-    "## Industries we serve",
+    "## Industries",
     "",
     ...industries.map((i) => `- ${i.name}: ${i.use}`),
     "",
     ...sectors.flatMap((x) => [
       `### AI for ${x.name}`,
-      `${x.lede} Page: ${abs(`/industries/${x.slug}`)}`,
+      `${x.lede} ${abs(`/industries/${x.slug}`)}`,
       ...x.services.map((v) => `- ${v.title}: ${v.body}`),
       ""
     ]),
     "## Government and public sector",
     "",
-    `Page: ${abs("/government")}. No department, regulator or PSU is named as a client, and no empanelment or certification is claimed.`,
+    `No department, regulator or PSU is named as a client, and no empanelment or certification is claimed. ${abs("/government")}`,
     ...govOffers.map((g) => `- ${g.title}: ${g.body}`),
     "",
-    `### About MENNIE`,
-    `MENNIE stands for ${mennie.expansion}. ${mennie.summary} It is in research and development.`,
+    "## MENNIE",
+    "",
+    `MENNIE stands for ${mennie.expansion}. ${mennie.summary} It is in research and development. ${mennie.disclaimer}`,
     "",
     "## Research track record",
     "",
-    ...trackRecord.map((t) => `- ${t.year}: ${t.title} — ${t.body}`),
+    ...trackRecord.map((t) => `- ${t.year}: ${t.title}: ${t.body}`),
     "",
     "## Leadership and advisors",
     "",
-    ...people.flatMap((p) => [`### ${p.name} — ${p.role}`, ...p.proof.map((x) => `- ${x}`), ""]),
-    "## Frequently asked questions",
-    "",
-    ...faqs.flatMap((f) => [`### ${f.q}`, f.a, ""]),
+    ...people.flatMap((p) => [`### ${p.name}, ${p.role}`, ...p.proof.map((x) => `- ${x}`), ""]),
     "## Contact",
     "",
-    `- Enquiries: ${site.enquiryEmail}`,
+    `- Enquiries: ${FACTS.enquiryEmail}`,
     `- Start a project: ${abs("/start-a-project")}`,
-    `- Promise: ${company.promise}`,
-    `- LinkedIn: ${company.linkedIn}`,
+    `- ${FACTS.promise}`,
     ""
   ].join("\n");
 }

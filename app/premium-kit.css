@@ -1102,3 +1102,16 @@ main .pv-sector-short {
 .sec-others a:hover { color: var(--ink); }
 
 .home-gov .pv-head { margin-bottom: 0; }
+
+/* Hero H1 = eyebrow + display headline (components/pv/kit.tsx PageHero). */
+.pv-h1-group {
+  margin: 0;
+  font: inherit;
+  letter-spacing: normal;
+}
+.pv-h1-group > .pv-eyebrow {
+  vertical-align: top;
+}
+.pv-h1-group > .pv-h1 {
+  display: block;
+}

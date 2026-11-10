@@ -21,7 +21,7 @@ import type { PrismSceneProps } from "@/components/three/PrismScene";
  *   3. The canvas fades in over the SVG once its first frame is drawn.
  * Reduced motion, software WebGL and weak devices stay on step 1.
  */
-export function PrismHero() {
+export function PrismHero({ lead }: { lead: string }) {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const labels = useRef<(HTMLElement | null)[]>([]);
@@ -201,12 +201,15 @@ export function PrismHero() {
       </div>
 
       <div className="ph-copy wrap">
-        <p className="eyebrow ph-eyebrow">
-          <span className="ph-dot" aria-hidden="true" />
-          Praverse Tech · Vadodara, India
-        </p>
-        <h1 id="ph-title" className="ph-title">
-          Intelligence, <em>engineered</em> for industry.
+        {/* The eyebrow says what Praverse is, so it is part of the H1. */}
+        <h1 id="ph-title" className="ph-h1-group">
+          <span className="eyebrow ph-eyebrow">
+            <span className="ph-dot" aria-hidden="true" />
+            {lead}
+          </span>
+          <span className="ph-title">
+            Intelligence, <em>engineered</em> for industry.
+          </span>
         </h1>
         <p className="ph-lede">
           One engineering core, separated into four disciplines: enterprise AI and

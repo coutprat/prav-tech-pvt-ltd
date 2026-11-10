@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brief } from "@/lib/answers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pageMeta } from "@/lib/seo";
@@ -54,7 +55,7 @@ export default async function SectorPage({
     <>
       <PageJsonLd path={path} />
       <PageHero
-        eyebrow={`Industries · ${s.name}`}
+        eyebrow={brief(`/industries/${s.slug}`).lead}
         title={
           <>
             {s.headline} <em>{s.em}</em>.
