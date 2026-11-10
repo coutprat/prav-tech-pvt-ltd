@@ -33,7 +33,7 @@ export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolea
   const b = `${id}b`;
   const detailed = size >= 48;
   const ring = detailed ? 10 : 26;
-  const pale = tile ? "#E6EAF0" : "currentColor";
+  const pale = tile ? "#EEEAE2" : "currentColor";
   const viewBox = tile
     ? "-120 -120 1240 1240"
     : detailed
@@ -51,17 +51,17 @@ export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolea
     >
       <defs>
         <linearGradient id={g} gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
-          <stop offset="0" stopColor="#5FE0C8" />
-          <stop offset=".5" stopColor="#47B4C2" />
-          <stop offset="1" stopColor="#3A80CF" />
+          <stop offset="0" stopColor="#F4F1EA" />
+          <stop offset=".5" stopColor="#D6D0C4" />
+          <stop offset="1" stopColor="#9E978A" />
         </linearGradient>
         <linearGradient id={l} gradientUnits="userSpaceOnUse" x1="60" y1="500" x2="500" y2="60">
-          <stop offset="0" stopColor="#4A8FD0" />
-          <stop offset="1" stopColor="#4CC8B8" />
+          <stop offset="0" stopColor="#A8A194" />
+          <stop offset="1" stopColor="#E4DFD4" />
         </linearGradient>
         <linearGradient id={d} gradientUnits="userSpaceOnUse" x1="940" y1="0" x2="60" y2="0">
-          <stop offset="0" stopColor="#4CC8B8" />
-          <stop offset="1" stopColor="#4A8FD0" />
+          <stop offset="0" stopColor="#E4DFD4" />
+          <stop offset="1" stopColor="#A8A194" />
         </linearGradient>
         {tile && (
           // The card surface, read from the theme tokens so the tile always
@@ -104,7 +104,7 @@ export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolea
           />
         )}
         <path
-          stroke="#45C2B4"
+          stroke="#DCD6CA"
           strokeWidth={detailed ? 8 : 22}
           d="M720,381.8 A361,194 0 1 1 350,355"
         />
@@ -112,15 +112,15 @@ export function Mark({ size = 28, tile = false }: { size?: number; tile?: boolea
 
       <path fill={`url(#${g})`} fillRule="evenodd" d={P} />
 
-      <circle cx="500" cy="60" r={detailed ? 32 : 46} fill="#4FD2BE" />
-      <circle cx="60" cy="500" r={detailed ? 28 : 42} fill="#4A8FD0" />
-      <circle cx="940" cy="500" r={detailed ? 28 : 42} fill="#4FD2BE" />
+      <circle cx="500" cy="60" r={detailed ? 32 : 46} fill="#EDE8DD" />
+      <circle cx="60" cy="500" r={detailed ? 28 : 42} fill="#A8A194" />
+      <circle cx="940" cy="500" r={detailed ? 28 : 42} fill="#EDE8DD" />
 
       {detailed && (
         <g>
-          <circle cx="500" cy="168" r="8" fill="#4FD2BE" />
-          <circle cx="493" cy="440" r="8" fill="#4FD2BE" />
-          <circle cx="770" cy="478" r="8" fill="#4FD2BE" />
+          <circle cx="500" cy="168" r="8" fill="#EDE8DD" />
+          <circle cx="493" cy="440" r="8" fill="#EDE8DD" />
+          <circle cx="770" cy="478" r="8" fill="#EDE8DD" />
           <g fill={pale} opacity={tile ? 1 : 0.7}>
             <circle cx="290" cy="480" r="8" />
             <circle cx="205" cy="566" r="7" />

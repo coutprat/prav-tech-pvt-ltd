@@ -322,7 +322,7 @@ function Prism({
     glassFront.uniforms = glassUniforms;
     const edges = new THREE.EdgesGeometry(glassGeo, 25);
     const edgeMat = new THREE.LineBasicMaterial({
-      color: "#e9eef7",
+      color: "#f5f2ec",
       transparent: true,
       opacity: 0.5,
       depthWrite: false
@@ -330,7 +330,7 @@ function Prism({
 
     // --- beams
     const px = k; // one pixel in world units
-    const inBeam = new THREE.Mesh(plane, beamMaterial("#f4f7ff", 0.0));
+    const inBeam = new THREE.Mesh(plane, beamMaterial("#f7f4ee", 0.0));
     const inLen = place(inBeam, toW(L.source), toW(L.entry), px * (L.compact ? 30 : 46));
     const inMat = inBeam.material as THREE.ShaderMaterial;
     inMat.uniforms.uLen.value = inLen;
@@ -413,7 +413,7 @@ function Prism({
     });
 
     // --- halo behind the glass
-    const halo = new THREE.Mesh(plane, glowMaterial("#cfd8ff", 0));
+    const halo = new THREE.Mesh(plane, glowMaterial("#f2ede4", 0));
     halo.position.copy(centre).setZ(-1.2);
     halo.scale.set(S * 7, S * 7, 1);
 

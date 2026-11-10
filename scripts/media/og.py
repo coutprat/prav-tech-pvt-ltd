@@ -31,11 +31,11 @@ from PIL import Image, ImageDraw, ImageFont
 W, H = 1200, 630
 
 # Theme tokens, app/globals.css :root.
-PAPER = (0x1C, 0x20, 0x28)
-PAPER_3 = (0x2A, 0x30, 0x3A)
-INK = (0xEE, 0xF0, 0xF4)
-INK_2 = (0xA9, 0xB0, 0xBC)
-TEAL = (0x4B, 0xD6, 0xC4)
+PAPER = (0x14, 0x13, 0x11)
+PAPER_3 = (0x26, 0x24, 0x20)
+INK = (0xF5, 0xF3, 0xEE)
+INK_2 = (0xB4, 0xAF, 0xA6)
+TEAL = (0xEC, 0xE7, 0xDC)  # bone: the brand is white light
 AMBER = (0xF5, 0x9E, 0x0B)
 
 # Line accents, and their lighter "-ink" variants for small text on graphite.
@@ -43,7 +43,7 @@ VIOLET, VIOLET_INK = (0x8B, 0x6D, 0xFF), (0xAB, 0x9B, 0xFF)
 EMERALD, EMERALD_INK = (0x10, 0xB9, 0x81), (0x3F, 0xDC, 0x9A)
 SKY, SKY_INK = (0x38, 0xBD, 0xF8), (0x7D, 0xD3, 0xFC)
 AMBER_INK = (0xFB, 0xBF, 0x24)
-TEAL_INK = (0x5F, 0xD9, 0xC9)
+TEAL_INK = (0xF4, 0xF0, 0xE8)
 
 HOME_FRAME = "public/media/home/desktop/frame-0060.webp"
 PHOTONICS_FRAME = "public/media/photonics/desktop/frame-0060.webp"
@@ -249,7 +249,7 @@ def stroke(mask, pts, width):
         d.ellipse([x - r, y - r, x + r, y + r], fill=255)
 
 
-def mark(size, pale="#E6EAF0", ss=4):
+def mark(size, pale="#EEEAE2", ss=4):
     """The Praverse mark, rasterised from the logo.svg geometry."""
     n = size * ss
     s = n / 1000
@@ -272,7 +272,7 @@ def mark(size, pale="#E6EAF0", ss=4):
     # outer orbit: gradient over the top-left, pale top-right, dotted below
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(circ(186, 264)), 10 * s)
-    paint(linear(n, s, (60, 500), (500, 60), [(0, "#4A8FD0"), (1, "#4CC8B8")]), m)
+    paint(linear(n, s, (60, 500), (500, 60), [(0, "#A8A194"), (1, "#E4DFD4")]), m)
 
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(circ(276, 354)), 10 * s)
@@ -287,12 +287,12 @@ def mark(size, pale="#E6EAF0", ss=4):
         a = a0 + (a1 - a0) * i / count
         x, y = (500 + 440 * math.cos(a)) * s, (500 + 440 * math.sin(a)) * s
         dm.ellipse([x - r, y - r, x + r, y + r], fill=255)
-    paint(linear(n, s, (940, 0), (60, 0), [(0, "#4CC8B8"), (1, "#4A8FD0")]), m, 0.8)
+    paint(linear(n, s, (940, 0), (60, 0), [(0, "#E4DFD4"), (1, "#A8A194")]), m, 0.8)
 
     # inner orbit, passing behind the P
     m = Image.new("L", (n, n), 0)
     stroke(m, sc(svg_arc(720, 381.8, 361, 194, 1, 1, 350, 355)), 8 * s)
-    paint("#45C2B4", m)
+    paint("#DCD6CA", m)
 
     # the P (evenodd: the bowl is a hole)
     outer = (
@@ -307,21 +307,21 @@ def mark(size, pale="#E6EAF0", ss=4):
     dm = ImageDraw.Draw(m)
     dm.polygon(sc(outer), fill=255)
     dm.polygon(sc(hole), fill=0)
-    paint(linear(n, s, (700, 250), (350, 780), [(0, "#5FE0C8"), (0.5, "#47B4C2"), (1, "#3A80CF")]), m)
+    paint(linear(n, s, (700, 250), (350, 780), [(0, "#F4F1EA"), (0.5, "#D6D0C4"), (1, "#9E978A")]), m)
     ys = np.arange(n, dtype=np.float32) / s
     ramp = np.clip((ys - 430) / 350, 0, 1) * 0.22 * 255
     shade = Image.fromarray(np.repeat(ramp[:, None], n, axis=1).astype(np.uint8), "L")
     pm = Image.fromarray((np.asarray(m, np.float32) * np.asarray(shade, np.float32) / 255).astype(np.uint8), "L")
-    paint("#0B1020", pm)
+    paint("#0B0A08", pm)
 
     # nodes and satellites
     for cx, cy, rr, col in (
-        (500, 60, 32, "#4FD2BE"),
-        (60, 500, 28, "#4A8FD0"),
-        (940, 500, 28, "#4FD2BE"),
-        (500, 168, 8, "#4FD2BE"),
-        (493, 440, 8, "#4FD2BE"),
-        (770, 478, 8, "#4FD2BE"),
+        (500, 60, 32, "#EDE8DD"),
+        (60, 500, 28, "#A8A194"),
+        (940, 500, 28, "#EDE8DD"),
+        (500, 168, 8, "#EDE8DD"),
+        (493, 440, 8, "#EDE8DD"),
+        (770, 478, 8, "#EDE8DD"),
         (290, 480, 8, pale),
         (205, 566, 7, pale),
         (500, 840, 8, pale),
@@ -351,8 +351,8 @@ def background(accent):
     ys, xs = np.mgrid[0:H, 0:W].astype(np.float32)
     t = np.clip(1 - (xs / W * 0.6 + ys / H * 0.4), 0, 1)[..., None]
     arr += (np.array(PAPER_3, np.float32) - arr) * t * 0.55
-    glow(arr, 120, -40, 520, TEAL, 0.16)
-    glow(arr, W + 40, H + 60, 560, AMBER, 0.13)
+    glow(arr, 120, -40, 520, TEAL, 0.07)
+    glow(arr, W + 40, H + 60, 560, AMBER, 0.08)
     if accent not in (TEAL, AMBER):
         glow(arr, W * 0.78, H * 0.35, 460, accent, 0.16)
     return arr
@@ -434,7 +434,7 @@ def build(slug, eyebrow, title, line, colors, src, out: Path):
         d.text((64, by), t, font=fl, fill=INK_2)
         by += lh
 
-    d.line([(64, y_url - 18), (W - 64, y_url - 18)], fill=(0x34, 0x3A, 0x45), width=1)
+    d.line([(64, y_url - 18), (W - 64, y_url - 18)], fill=(0x3A, 0x37, 0x32), width=1)
     tracked(d, (64, y_url), "praversetech.com", font(17, 450, mono=True), INK_2, 0.6)
 
     out.mkdir(parents=True, exist_ok=True)

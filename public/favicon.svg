@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Praverse">
   <defs>
     <linearGradient id="f" gradientUnits="userSpaceOnUse" x1="700" y1="250" x2="350" y2="780">
-      <stop offset="0" stop-color="#5FE0C8"/>
-      <stop offset=".5" stop-color="#47B4C2"/>
-      <stop offset="1" stop-color="#3A80CF"/>
+      <stop offset="0" stop-color="#F4F1EA"/>
+      <stop offset=".5" stop-color="#D6D0C4"/>
+      <stop offset="1" stop-color="#9E978A"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#0B1020"/>
+  <rect width="64" height="64" rx="14" fill="#0B0A08"/>
   <!-- the P and its inner orbit only: at tab size the outer ring is noise -->
   <g transform="translate(-6.3,-7.1) scale(0.0775)">
-    <path fill="none" stroke="#45C2B4" stroke-width="30" stroke-linecap="round"
+    <path fill="none" stroke="#DCD6CA" stroke-width="30" stroke-linecap="round"
           d="M720,381.8 A361,194 0 1 1 350,355"/>
     <path fill="url(#f)" fill-rule="evenodd"
           d="M244,236 H552 A180.5,180.5 0 0 1 552,597 H435 V773 H375 A30,30 0 0 1 345,743 V351 Z
              M435,312 H552 A104.5,104.5 0 0 1 552,521 H435 Z"/>
-    <circle cx="500" cy="168" r="44" fill="#4FD2BE"/>
+    <circle cx="500" cy="168" r="44" fill="#EDE8DD"/>
   </g>
 </svg>

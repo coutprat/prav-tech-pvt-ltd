@@ -507,7 +507,7 @@
   background:
     linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px) 0 0 / 32px 32px,
     linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px) 0 0 / 32px 32px,
-    linear-gradient(180deg, #0c0e13, #08090c);
+    linear-gradient(180deg, #0e0e0d, #08090c);
   overflow: hidden;
 }
 .pv-fig-bar {
@@ -570,7 +570,7 @@
   padding: 20px;
   border-radius: var(--r-md);
   border: 1px solid var(--line-2);
-  background: rgba(13, 15, 20, 0.92);
+  background: rgba(15, 15, 14, 0.92);
   min-width: 0;
 }
 .pv-flow-step[data-gate] .pv-flow-node {

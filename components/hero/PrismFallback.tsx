@@ -30,13 +30,13 @@ export function PrismFallback({ L, still }: { L: PrismLayout; still: boolean }) 
           <stop offset="1" stopColor="#fff" />
         </linearGradient>
         <linearGradient id="ph-glass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#1a1f2b" stopOpacity="0.9" />
-          <stop offset="0.55" stopColor="#0d1017" stopOpacity="0.75" />
-          <stop offset="1" stopColor="#262c3a" stopOpacity="0.9" />
+          <stop offset="0" stopColor="#201f1d" stopOpacity="0.9" />
+          <stop offset="0.55" stopColor="#10100f" stopOpacity="0.75" />
+          <stop offset="1" stopColor="#2d2c29" stopOpacity="0.9" />
         </linearGradient>
         <radialGradient id="ph-halo">
-          <stop offset="0" stopColor="#cfd8ff" stopOpacity="0.16" />
-          <stop offset="1" stopColor="#cfd8ff" stopOpacity="0" />
+          <stop offset="0" stopColor="#f2ede4" stopOpacity="0.16" />
+          <stop offset="1" stopColor="#f2ede4" stopOpacity="0" />
         </radialGradient>
         {LINES.map((l) => (
           <linearGradient key={l.id} id={`ph-${l.id}`} x1="0" x2="1">
@@ -124,7 +124,7 @@ export function PrismFallback({ L, still }: { L: PrismLayout; still: boolean }) 
       ))}
 
       {/* the glass */}
-      <polygon points={tri} fill="url(#ph-glass)" stroke="#e9eef7" strokeOpacity="0.55" strokeWidth="1.2" />
+      <polygon points={tri} fill="url(#ph-glass)" stroke="#f5f2ec" strokeOpacity="0.55" strokeWidth="1.2" />
       <line
         x1={L.entry.x}
         y1={L.entry.y}

@@ -10,21 +10,21 @@
    ========================================================================== */
 
 :root {
-  --paper: #07080b;
-  --paper-2: #0b0d11;
-  --paper-3: #11141a;
-  --paper-4: #171b22;
+  --paper: #0a0a09;
+  --paper-2: #121110;
+  --paper-3: #1a1917;
+  --paper-4: #22201d;
   --line: rgba(255, 255, 255, 0.075);
   --line-2: rgba(255, 255, 255, 0.12);
-  --line-strong: #5f6672;
+  --line-strong: #6b665e;
 
-  --ink: #f3f4f6;
-  --ink-2: #a2a8b3; /* 7.9:1 on --paper, 7.0:1 on --paper-4 */
-  --ink-3: #7c828d; /* 4.9:1 on --paper — captions only */
+  --ink: #f5f3ee;
+  --ink-2: #b4afa6; /* warm bone-grey */
+  --ink-3: #8f897f; /* captions only */
 
-  --navy: #040506;
-  --on-navy: #f3f4f6;
-  --on-navy-2: #a2a8b3;
+  --navy: #070706;
+  --on-navy: #f5f3ee;
+  --on-navy-2: #b4afa6;
 
   /* the four beams */
   --acc-ent: #9b7bff;
@@ -36,10 +36,10 @@
   --acc-men-ink: #86d6fb;
   --acc-pho: #f5a524;
   --acc-pho-ink: #fbbf4a;
-  --teal: #5ee0cf;
-  --teal-ink: #78e6d8;
+  --teal: #ece7dc;
+  --teal-ink: #f4f0e8;
 
-  --glass: rgba(17, 20, 26, 0.66);
+  --glass: rgba(26, 25, 23, 0.66);
   --glass-line: rgba(255, 255, 255, 0.08);
 
   --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -310,7 +310,7 @@ main .pv-center p {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(60% 55% at 62% 58%, rgba(120, 130, 170, 0.1), transparent 70%),
+    radial-gradient(60% 55% at 62% 58%, rgba(135, 130, 123, 0.1), transparent 70%),
     radial-gradient(40% 40% at 10% 10%, rgba(155, 123, 255, 0.06), transparent 70%),
     var(--paper);
 }

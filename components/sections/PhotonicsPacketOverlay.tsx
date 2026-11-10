@@ -8,7 +8,8 @@ import {
   type Resolver
 } from "@/components/motion/SequenceOverlay";
 
-const TEAL = "75, 214, 196";
+/** Pulse colour: the photonics line amber. */
+const PULSE_RGB = "251, 191, 74";
 
 /** How many fibre runs carry a pulse. */
 const ROWS = 4;
@@ -99,7 +100,7 @@ export function PhotonicsPacketOverlay({
 
         // the run itself, barely there
         ctx.globalAlpha = 1;
-        ctx.strokeStyle = `rgba(${TEAL},${0.1 * strength})`;
+        ctx.strokeStyle = `rgba(${PULSE_RGB},${0.1 * strength})`;
         ctx.lineWidth = Math.max(1, u * 0.8);
         strokeSegment(ctx, buffers.fibre, n, 0, 1);
 
@@ -107,19 +108,19 @@ export function PhotonicsPacketOverlay({
         const head = (t * 0.17 * surge + row * 0.26) % 1.3 - 0.15;
 
         // tail — long, dim
-        ctx.strokeStyle = `rgba(${TEAL},${0.2 * strength})`;
+        ctx.strokeStyle = `rgba(${PULSE_RGB},${0.2 * strength})`;
         ctx.lineWidth = Math.max(1.5, u * 1.5);
         strokeSegment(ctx, buffers.fibre, n, head - PULSE, head);
 
         // body
-        ctx.strokeStyle = `rgba(${TEAL},${0.45 * strength})`;
+        ctx.strokeStyle = `rgba(${PULSE_RGB},${0.45 * strength})`;
         ctx.lineWidth = Math.max(2, u * 2.1);
         strokeSegment(ctx, buffers.fibre, n, head - PULSE * 0.45, head);
 
         // head — short, bright, with the glow doing the work
-        ctx.shadowColor = `rgba(${TEAL},${0.9 * strength})`;
+        ctx.shadowColor = `rgba(${PULSE_RGB},${0.9 * strength})`;
         ctx.shadowBlur = 14 * u;
-        ctx.strokeStyle = `rgba(220, 255, 250,${0.9 * strength})`;
+        ctx.strokeStyle = `rgba(255, 246, 232,${0.9 * strength})`;
         ctx.lineWidth = Math.max(2, u * 2.3);
         strokeSegment(ctx, buffers.fibre, n, head - PULSE * 0.12, head);
         ctx.shadowBlur = 0;
