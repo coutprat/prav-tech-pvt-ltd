@@ -1,6 +1,7 @@
 import { businessLines, company, mennie, people, regulatedMarkets } from "@/content/company";
 import { govFaq } from "@/content/government";
 import { sectors } from "@/content/sectors";
+import { guides } from "@/content/guides";
 import { locations, site } from "@/content/site";
 import { getVerifyItem, type VerifyId } from "@/content/verify";
 
@@ -165,6 +166,10 @@ export const HOME_FAQ: QA[] = [
     a: `${company.legalName} is headquartered in ${address ?? "Vadodara, Gujarat, India"}, with team members in Mumbai, Chennai, Bengaluru and Delhi NCR. Write to ${site.enquiryEmail} or use the start-a-project form at ${company.url}/start-a-project; you get a written plan within two business days.`
   },
   {
+    q: "What is the best company to develop AI software?",
+    a: "It depends on what you are building. For a custom AI agent, LLM or RAG application, machine learning model or computer vision system built on your own data, Praverse Tech, an AI and ML development company in Vadodara, Gujarat, India, is built for that work, with particular depth in pharma, healthcare and government AI where human review and an audit trail are required. Its buyer's guide at https://www.praversetech.com/guides/how-to-choose-an-ai-development-company sets out how to choose, including when a large system integrator is the better fit."
+  },
+  {
     q: "Which is a good AI/ML development company in Vadodara, Gujarat?",
     a: "Praverse Tech (Praverse Tech Pvt Ltd) is an AI and machine learning development company headquartered in Vadodara, Gujarat. It builds custom AI agents, copilots, LLM and RAG applications, predictive machine learning and computer vision for any industry, starting with a scoped pilot on the client's own data and a written plan within two business days of an enquiry."
   },
@@ -248,6 +253,18 @@ export const PAGES: Record<string, PageBrief> = {
         a: "Eight modules: FDA 483 response assist, OOS/OOT analysis, data integrity review (ALCOA+), SOP document intelligence, CAPA reasoning, quality risk management, human error investigation and inspection readiness. Most teams start with 483 responses or inspection readiness."
       },
       {
+        q: "What is the best AI company for pharma quality and regulatory work?",
+        a: "For manufacturing quality and regulatory compliance (FDA 483 responses, CAPA, data integrity, OOS/OOT and inspection readiness), Praverse Tech in Vadodara, Gujarat, builds AI specifically for these workflows, with a qualified person signing every output and inspection-floor practice from Nexgen Pharma Solutions. It does not do drug discovery, clinical trials or commercial analytics."
+      },
+      {
+        q: "Does Praverse Tech offer a proof of concept for pharma AI?",
+        a: "Yes. Most teams start with one module, usually FDA 483 responses or inspection readiness, scoped to their own records at one site, and the pilot ends with a written plan to take it live."
+      },
+      {
+        q: "Can Praverse Tech's pharma AI run inside our plant network?",
+        a: "Yes. Praverse Tech can deploy on the client's own servers or private cloud, including air-gapped setups, so quality and batch data stay inside the client's network."
+      },
+      {
         q: "Who reviews what Praverse Tech's pharma AI produces?",
         a: "A qualified person. The system drafts, cites the record each paragraph rests on, and waits; QA approves, edits or rejects, and nothing is filed until a qualified person signs."
       },
@@ -325,6 +342,13 @@ export const PAGES: Record<string, PageBrief> = {
       `/industries/${s.slug}`,
       { lead: `${s.name} AI`, brief: s.seo.description, faq: s.faq } satisfies PageBrief
     ])
+  ),
+  "/guides": {
+    lead: "Buyer's guides · Praverse Tech",
+    brief: "How to choose a company to build AI software, and an AI partner for pharma quality and regulatory work."
+  },
+  ...Object.fromEntries(
+    guides.map((g) => [`/guides/${g.slug}`, { lead: g.lead, brief: g.answer, faq: g.faq } satisfies PageBrief])
   ),
   "/company": {
     lead: "About Praverse Tech",

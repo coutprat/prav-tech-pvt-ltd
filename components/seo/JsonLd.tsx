@@ -7,6 +7,7 @@ import { getVerifyItem } from "@/content/verify";
 import { getRoute } from "@/lib/routes";
 import { getSector, sectors } from "@/content/sectors";
 import { govOffers } from "@/content/government";
+import { getGuide } from "@/content/guides";
 
 /**
  * Structured data.
@@ -443,8 +444,27 @@ function pageNodes(path: string): Node[] {
         ),
         interconnectProducts()
       ];
-    default:
-      return [];
+    default: {
+      const g = path.startsWith("/guides/") ? getGuide(path.slice("/guides/".length)) : undefined;
+      if (!g) return [];
+      return [
+        {
+          "@type": "Article",
+          "@id": `${company.url}${path}#article`,
+          headline: g.h1,
+          description: g.description,
+          abstract: g.answer,
+          url: `${company.url}${path}`,
+          datePublished: g.published,
+          dateModified: g.updated,
+          inLanguage: "en",
+          author: org,
+          publisher: org,
+          about: g.sections.map((x) => x.heading),
+          mainEntityOfPage: `${company.url}${path}`
+        }
+      ];
+    }
   }
 }
 
