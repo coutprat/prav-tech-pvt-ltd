@@ -39,6 +39,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(company.url),
+  // Bing Webmaster Tools ownership (praversetech@gmail.com). Keep it, or Bing unverifies the site.
+  verification: { other: { "msvalidate.01": "1974D4CB7A1845EBF645463DFA8DE683" } },
   title: {
     default: "Praverse Tech — Intelligence, engineered for industry.",
     template: "%s · Praverse Tech"
