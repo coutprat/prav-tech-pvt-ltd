@@ -16,7 +16,11 @@ import * as THREE from "three";
  *   - the irises tighten and relax, and it blinks on an uneven rhythm,
  *     sometimes twice;
  *   - the chest rises and falls, and the head is never perfectly still;
- *   - when it first sees you it tilts its head, then nods.
+ *   - when it first sees you it tilts its head, then nods;
+ *   - it has lips of warm light: it says "hello" as the curtain opens, breaks
+ *     into a smile with the nod, and keeps a warm, lively expression after
+ *     that (a grin that widens now and then, sometimes a little laugh, a
+ *     brighter smile when you move). Its cheeks glow when it smiles.
  *
  * Everything is procedural: no model file, no textures, no HDR download. The
  * head is a sphere reshaped in code into a tapered helmet, so the visor, jaw
@@ -35,6 +39,16 @@ export type GreeterSceneProps = {
 const BEAMS = ["#9b7bff", "#22c98f", "#45bdf5", "#f5a524"];
 const GOLD = "#d9c08e";
 const EYE = "#fff1d0";
+/** Lips: segments per lip, half-width of the mouth, where it sits on the jaw. */
+const LIP_N = 12;
+const LIP_W = 0.2;
+const MOUTH_Y = -0.49;
+const MOUTH_Z = 0.792;
+const MOUTH_TILT = 0.46;
+const smooth01 = (x: number) => THREE.MathUtils.smoothstep(x, 0, 1);
+/** A bump from 0 up to 1 and back down over [a, b]. */
+const bump = (t: number, a: number, b: number) =>
+  t <= a || t >= b ? 0 : Math.sin(((t - a) / (b - a)) * Math.PI);
 
 /** Head proportions, shared by every part that sits on the head. */
 const HX = 0.86;
@@ -74,6 +88,13 @@ function Android({ onReady }: GreeterSceneProps) {
   const irises = useRef<(THREE.Mesh | null)[]>([]);
   const collar = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
   const emblem = useRef<THREE.MeshStandardMaterial>(null);
+  /** Lip segments: [0, LIP_N) upper lip, [LIP_N, 2 * LIP_N) lower lip. */
+  const lips = useRef<(THREE.Mesh | null)[]>([]);
+  const mouthGlow = useRef<THREE.Mesh>(null);
+  const cheeks = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const pointerSpeed = useRef(0);
+  const lastPointer = useRef({ x: 0, y: 0 });
+  const mood = useRef({ smile: 0, open: 0, width: 1 });
 
   const pointer = useRef({ x: 0, y: 0, at: -10 });
   const yaw = useRef(0);
@@ -115,6 +136,12 @@ function Android({ onReady }: GreeterSceneProps) {
         metalness: 0.85,
         roughness: 0.4,
       }),
+      lip: new THREE.MeshBasicMaterial({
+        color: EYE,
+        transparent: true,
+        opacity: 0,
+        toneMapped: false,
+      }),
       lens: new THREE.MeshPhysicalMaterial({
         color: "#050608",
         metalness: 0.6,
@@ -133,6 +160,9 @@ function Android({ onReady }: GreeterSceneProps) {
         80
       );
     return {
+      // One unit-length capsule per lip, stretched to each segment's length.
+      lipUpper: new THREE.CapsuleGeometry(0.0105, 1, 4, 8),
+      lipLower: new THREE.CapsuleGeometry(0.0125, 1, 4, 8),
       skull: helmet(new THREE.SphereGeometry(1, 96, 72)),
       // A band of black glass across the face.
       visor: helmet(new THREE.SphereGeometry(1.014, 96, 28, 0.44, 2.26, 1.1, 0.62)),
@@ -232,7 +262,8 @@ function Android({ onReady }: GreeterSceneProps) {
     const double = hash(cycle + 31) > 0.62 ? blinkAt(local - 0.3) : 0;
     const closed = Math.max(blinkAt(local), double);
     // A slight squint while nodding reads as a smile.
-    const open = (1 - closed * 0.95) * (1 - nod * 1.3);
+    // A smile narrows the eyes a little, as it does on a face.
+    const open = (1 - closed * 0.95) * (1 - nod * 1.3) * (1 - mood.current.smile * 0.12);
     lids.current.forEach((g) => {
       if (g) g.scale.y = Math.max(0.05, open);
     });
@@ -241,6 +272,74 @@ function Android({ onReady }: GreeterSceneProps) {
     const focus = 1 + Math.sin(t * 0.8) * 0.05 + (hash(slot + 7) - 0.5) * 0.08;
     irises.current.forEach((m) => {
       if (m) m.scale.setScalar(Math.max(0.01, wake * focus));
+    });
+
+    // --- the mouth: lips of light -----------------------------------------
+    // How fast the pointer is moving: a lively visitor gets a bigger smile.
+    const px = pointer.current.x;
+    const py = pointer.current.y;
+    const moved = Math.hypot(px - lastPointer.current.x, py - lastPointer.current.y);
+    lastPointer.current.x = px;
+    lastPointer.current.y = py;
+    const speed = Math.min(1, moved / Math.max(dt, 0.001) / 3);
+    pointerSpeed.current += (speed - pointerSpeed.current) * (1 - Math.exp(-dt * 4));
+
+    // 0.55-1.4 s: "Hel-lo" (two syllables). Then a big smile with the nod,
+    // settling into a warm resting smile.
+    const hello = bump(t, 0.55, 0.85) * 0.9 + bump(t, 0.9, 1.4);
+    const beam = smooth01((t - 1.15) / 0.5);
+    // Every few seconds something pleases it: a wider grin, and sometimes a
+    // short laugh ("ha-ha", two quick openings).
+    const joyCycle = Math.floor((t - 2) / 4.2);
+    const joyLocal = t - 2 - joyCycle * 4.2 - hash(joyCycle + 3) * 1.4;
+    const grin = t > 2 ? bump(joyLocal, 0, 1.3) : 0;
+    const laughing = t > 2 && hash(joyCycle + 17) > 0.45;
+    const laugh = laughing ? bump(joyLocal, 0.15, 0.4) + bump(joyLocal, 0.45, 0.72) : 0;
+
+    const m = mood.current;
+    const targetSmile = Math.min(1, 0.25 + beam * 0.55 + grin * 0.3 + pointerSpeed.current * 0.25);
+    const targetOpen = hello * 0.075 + laugh * 0.05 + grin * 0.012;
+    const targetWidth = 1 + beam * 0.08 + grin * 0.1 - hello * 0.12;
+    const mk = 1 - Math.exp(-dt * 10);
+    m.smile += (targetSmile - m.smile) * (1 - Math.exp(-dt * 5));
+    m.open += (targetOpen - m.open) * mk;
+    m.width += (targetWidth - m.width) * mk;
+
+    const W = LIP_W * m.width;
+    // Height of a lip at u in [-1, 1]: the corners lift with the smile, and
+    // the lips part in the middle when it speaks or laughs.
+    const lipY = (u: number, upper: boolean) => {
+      const curve = m.smile * 0.075 * (u * u) - m.smile * 0.028;
+      // A little fullness even at rest, so it reads as two lips meeting at
+      // the corners rather than a single line.
+      const part = (m.open + 0.016) * Math.pow(Math.max(0, 1 - u * u), 0.8);
+      return upper ? curve + part * 0.45 : curve - part * 0.55;
+    };
+    for (let k = 0; k < LIP_N * 2; k++) {
+      const seg = lips.current[k];
+      if (!seg) continue;
+      const upper = k < LIP_N;
+      const j = upper ? k : k - LIP_N;
+      const u0 = -1 + (2 * j) / LIP_N;
+      const u1 = u0 + 2 / LIP_N;
+      const x0 = u0 * W;
+      const x1 = u1 * W;
+      const y0 = lipY(u0, upper);
+      const y1 = lipY(u1, upper);
+      const um = (u0 + u1) / 2;
+      // Follow the curve of the jaw, so the corners sit back on the face.
+      seg.position.set((x0 + x1) / 2, (y0 + y1) / 2, -um * um * 0.03);
+      seg.rotation.set(0, um * 0.3, Math.atan2(y1 - y0, x1 - x0) - Math.PI / 2);
+      seg.scale.set(1, Math.hypot(x1 - x0, y1 - y0) * 1.12, 1);
+    }
+    // The lips light up as it wakes, a little brighter the more it smiles.
+    mats.lip.opacity = wake * (0.85 + m.smile * 0.15);
+    if (mouthGlow.current) {
+      mouthGlow.current.scale.set(W * 0.85, Math.max(0.0001, m.open * 0.75), 1);
+      mouthGlow.current.position.y = (lipY(0, true) + lipY(0, false)) / 2;
+    }
+    cheeks.current.forEach((c) => {
+      if (c) c.opacity = wake * (0.03 + m.smile * 0.11);
     });
 
     // --- breathing --------------------------------------------------------
@@ -345,6 +444,66 @@ function Android({ onReady }: GreeterSceneProps) {
         <mesh position={[0, -0.86, HZ * taperAt(-0.8) * 0.62 + 0.005]} rotation={[0.72, 0, 0]} material={mats.gold}>
           <boxGeometry args={[0.012, 0.3, 0.012]} />
         </mesh>
+
+        {/* the mouth: two lips of warm light, reshaped every frame */}
+        <group position={[0, MOUTH_Y, MOUTH_Z]} rotation={[MOUTH_TILT, 0, 0]}>
+          {Array.from({ length: LIP_N * 2 }, (_, k) => (
+            <mesh
+              key={k}
+              ref={(mm) => {
+                lips.current[k] = mm;
+              }}
+              geometry={k < LIP_N ? geos.lipUpper : geos.lipLower}
+              material={mats.lip}
+            />
+          ))}
+          {/* warm light between the lips when it speaks or laughs */}
+          <mesh ref={mouthGlow} position={[0, 0, -0.004]}>
+            <circleGeometry args={[1, 32]} />
+            <meshBasicMaterial
+              color={GOLD}
+              transparent
+              opacity={0.45}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+              toneMapped={false}
+            />
+          </mesh>
+          {/* soft spill of the lips onto the jaw */}
+          <mesh position={[0, -0.01, -0.006]} scale={[1, 0.45, 1]}>
+            <circleGeometry args={[0.34, 40]} />
+            <meshBasicMaterial
+              color={GOLD}
+              transparent
+              opacity={0.06}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+              toneMapped={false}
+            />
+          </mesh>
+        </group>
+        {/* cheeks: a rose-gold glow that warms when it smiles */}
+        {[-1, 1].map((side, i) => (
+          <mesh
+            key={side}
+            position={[side * 0.37, -0.4, 0.735]}
+            rotation={[0.35, side * 0.5, 0]}
+            scale={[1, 0.62, 1]}
+          >
+            <circleGeometry args={[0.12, 32]} />
+            <meshBasicMaterial
+              ref={(c) => {
+                cheeks.current[i] = c;
+              }}
+              color="#f2a48a"
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+              toneMapped={false}
+            />
+          </mesh>
+        ))}
 
         {/* eyes: camera irises behind the glass, moved by the gaze */}
         <group ref={gaze}>
