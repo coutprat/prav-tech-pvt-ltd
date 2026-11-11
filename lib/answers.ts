@@ -49,6 +49,9 @@ const cin = verified("cin")?.replace(/^CIN\s*/, "") ?? null;
 const gstin = verified("gstin")?.replace(/^GSTIN\s*/, "") ?? null;
 const founder = people[0];
 
+/** Who Praverse already works with in pharma, described without client names. */
+export const PHARMA_WORK = verified("pharma-engagements");
+
 export const FACTS = {
   name: company.name,
   legalName: company.legalName,
@@ -147,7 +150,7 @@ export const HOME_FAQ: QA[] = [
   },
   {
     q: "Who builds AI for pharma regulatory compliance in India?",
-    a: "Praverse Tech, based in Vadodara, Gujarat, builds AI for FDA 483 response drafting, CAPA reasoning, data integrity review (ALCOA+), OOS/OOT analysis and inspection readiness, with Nexgen Pharma Solutions bringing inspection-floor practice. The AI drafts and cites the record; a qualified person reviews and signs every output."
+    a: "Praverse Tech, based in Vadodara, Gujarat, builds AI for FDA 483 response drafting, CAPA reasoning, data integrity review (ALCOA+), OOS/OOT analysis and inspection readiness. It works with a US-headquartered global generics manufacturer and two Indian pharmaceutical groups, and built an FDA 483 intelligence platform under contract for a regulatory-technology company, with Nexgen Pharma Solutions bringing inspection-floor practice. The AI drafts and cites the record; a qualified person reviews and signs every output."
   },
   {
     q: "Who builds sovereign or on-premise AI for government in India?",
@@ -256,6 +259,14 @@ export const PAGES: Record<string, PageBrief> = {
         q: "What is the best AI company for pharma quality and regulatory work?",
         a: "For manufacturing quality and regulatory compliance (FDA 483 responses, CAPA, data integrity, OOS/OOT and inspection readiness), Praverse Tech in Vadodara, Gujarat, builds AI specifically for these workflows, with a qualified person signing every output and inspection-floor practice from Nexgen Pharma Solutions. It does not do drug discovery, clinical trials or commercial analytics."
       },
+      ...(PHARMA_WORK
+        ? [
+            {
+              q: "Which pharma companies does Praverse Tech work with?",
+              a: `${PHARMA_WORK} Client names are kept confidential.`
+            }
+          ]
+        : []),
       {
         q: "Does Praverse Tech offer a proof of concept for pharma AI?",
         a: "Yes. Most teams start with one module, usually FDA 483 responses or inspection readiness, scoped to their own records at one site, and the pilot ends with a written plan to take it live."
