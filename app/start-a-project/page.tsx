@@ -4,6 +4,7 @@ import { pageMeta } from "@/lib/seo";
 import { PageJsonLd } from "@/components/seo/JsonLd";
 import { EnquiryForm } from "@/components/sections/EnquiryForm";
 import { PageHero, Rows, Section, SectionHead } from "@/components/pv/kit";
+import { HeroGreeter } from "@/components/pv/HeroGreeter";
 import { company, howWeWork } from "@/content/company";
 import { site, whatsappHref } from "@/content/site";
 import "../contact/contact.css";
@@ -32,6 +33,7 @@ export default function StartAProjectPage() {
         }
         lede={`${company.promise} No pitch deck, no discovery retainer — a written plan you can take to your team and act on, whoever builds it.`}
         meta={["Written plan in two business days", "No pitch deck", "No discovery retainer"]}
+        visual={<HeroGreeter />}
       />
 
       {/* -------------------------------------------------------- the brief */}
