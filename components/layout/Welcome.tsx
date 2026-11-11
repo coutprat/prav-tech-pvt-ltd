@@ -41,7 +41,12 @@ export function Welcome() {
   );
 }
 
-const KEY = "praverse-welcomed";
+/**
+ * Bumped from "praverse-welcomed" when the 3D greeter replaced the logo
+ * curtain: the old key is set for every earlier visitor, who would otherwise
+ * never meet the greeter.
+ */
+const KEY = "praverse-hello-v2";
 /** How long to wait for the greeter's first frame before lifting anyway. */
 const WAIT = 4200;
 /** How long the greeter stays once it is on screen. */
@@ -68,8 +73,9 @@ const FADE = 700;
  * will be no 3D scene.
  */
 export const welcomeScript = `(function(){try{var r=document.documentElement;
-var seen=localStorage.getItem("${KEY}");
-var still=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var force=/[?&]hello=1/.test(location.search);
+var seen=!force&&localStorage.getItem("${KEY}");
+var still=!force&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if(seen||still){r.setAttribute("data-welcomed","");return;}
 localStorage.setItem("${KEY}","1");
 var t0=Date.now(),timer=0,gone=false;
