@@ -121,7 +121,7 @@ export default function ContactPage() {
                   name: "area",
                   label: "Area",
                   type: "select",
-                  options: ["Enterprise AI", "Pharma AI", "MENNIE / Healthcare", "Photonics", "Something else"]
+                  options: ["Enterprise AI", "Pharma AI", "MENNIE / Healthcare", "Photonics", "Government / public sector", "Something else"]
                 },
                 {
                   name: "message",

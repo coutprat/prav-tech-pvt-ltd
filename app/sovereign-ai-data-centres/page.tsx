@@ -187,8 +187,8 @@ export default function SovereignPage() {
       <Section accent="pho" id="test">
         <Statement
           eyebrow="01 · The test"
-          lead="“Sovereign” is doing a lot of marketing work at the moment."
-          rest="Four questions separate the operators who mean it from the ones who have put an Indian flag on a slide."
+          lead="“Sovereign” is easy to claim and hard to prove."
+          rest="Four questions show whether a cluster is sovereign in practice, not only in name."
         />
         <div style={{ marginTop: "clamp(40px, 5vw, 72px)" }} />
         <BigSteps items={sovereignTests.map((t) => ({ title: t.head, body: t.body }))} />

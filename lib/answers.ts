@@ -158,7 +158,7 @@ export const HOME_FAQ: QA[] = [
   },
   {
     q: "What does Praverse Tech do in photonics and AI data centres?",
-    a: "Praverse Tech is India's partner for the copper and optical interconnect AI clusters run on: DAC, ACC, AEC and AOC cables and pluggable optical transceivers for 800G and 1.6T, supplied and designed in today with a US technology partner, with Indian assembly and manufacturing on a staged roadmap. It does not operate data centres."
+    a: "Praverse Tech is an India-based partner for the copper and optical interconnect AI clusters run on: DAC, ACC, AEC and AOC cables and pluggable optical transceivers for 800G and 1.6T, supplied and designed in today with a US technology partner, with Indian assembly and manufacturing on a staged roadmap. It does not operate data centres."
   },
   {
     q: "What is MENNIE?",

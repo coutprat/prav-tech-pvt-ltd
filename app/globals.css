@@ -5934,7 +5934,42 @@ body::before {
   display: grid;
   place-items: center;
   background: var(--paper);
-  animation: welcome-lift 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  /* No-script safety net: lifts by itself. The script lifts it much sooner. */
+  animation: welcome-lift 0.7s cubic-bezier(0.65, 0, 0.35, 1) 7s forwards;
+}
+/* Backdrop: a drafting grid that fades out from the centre, and a low wash of
+   the four beam colours along the floor. Both are barely there on purpose. */
+.welcome::before,
+.welcome::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.welcome::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(60% 55% at 50% 45%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(60% 55% at 50% 45%, #000 0%, transparent 78%);
+}
+.welcome::after {
+  background:
+    radial-gradient(46% 40% at 50% 42%, rgba(217, 192, 142, 0.085), transparent 70%),
+    radial-gradient(30% 34% at 18% 100%, rgba(155, 123, 255, 0.1), transparent 70%),
+    radial-gradient(26% 30% at 40% 100%, rgba(34, 201, 143, 0.06), transparent 70%),
+    radial-gradient(26% 30% at 62% 100%, rgba(69, 189, 245, 0.06), transparent 70%),
+    radial-gradient(30% 34% at 84% 100%, rgba(245, 165, 36, 0.09), transparent 70%);
+}
+.welcome-inner {
+  position: relative;
+  z-index: 1;
+}
+/* The script says go: same fade, no delay. */
+:root[data-welcome-out] .welcome {
+  animation: welcome-lift 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 /* Second visit, or someone who asked for less motion. */
 :root[data-welcomed] .welcome {
@@ -5948,14 +5983,85 @@ body::before {
   color: var(--ink);
   animation: welcome-settle 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.welcome-line {
-  margin: 0;
-  font-size: clamp(17px, 2.6vw, 23px);
+.welcome-hello {
+  margin: 6px 0 0;
+  font-size: clamp(30px, 5vw, 56px);
   font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--ink);
+  text-align: center;
+  padding: 0 24px;
+}
+.welcome-hello em {
+  font-family: var(--font-instrument), "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
   letter-spacing: -0.01em;
+  color: #d9c08e;
+}
+.welcome-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--ink-2);
   text-align: center;
   padding: 0 24px;
+}
+/* The greeter's stage. The mark holds the place until the android's first
+   frame is drawn, then the two cross-fade. */
+.welcome-stage {
+  position: relative;
+  width: min(620px, 90vw);
+  height: min(56vh, 540px);
+}
+.welcome-stage::before {
+  /* a soft floor of light under the bust */
+  content: "";
+  position: absolute;
+  inset: 12% 8% 0;
+  background: radial-gradient(50% 50% at 50% 55%, rgba(217, 192, 142, 0.14), transparent 70%);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.welcome-stage[data-ready="true"]::before {
+  opacity: 1;
+}
+.welcome-stage canvas {
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  /* the bust runs off the bottom of the stage; fade it out rather than cut it */
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+.welcome-stage[data-ready="true"] canvas {
+  opacity: 1;
+}
+.welcome-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  transition: opacity 0.5s ease;
+  animation: welcome-mark 1.6s ease-in-out infinite alternate;
+}
+.welcome-stage[data-ready="true"] .welcome-mark {
+  opacity: 0;
+  animation: none;
+}
+@keyframes welcome-mark {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes welcome-settle {
   from {
@@ -5968,7 +6074,7 @@ body::before {
   }
 }
 @keyframes welcome-lift {
-  0%, 62% {
+  0% {
     opacity: 1;
   }
   100% {

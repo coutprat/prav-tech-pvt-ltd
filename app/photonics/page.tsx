@@ -44,7 +44,7 @@ import "./photonics.css";
 export const metadata: Metadata = pageMeta({
   title: "Photonics & AI Data Centres",
   description:
-    "India's partner for high-speed AI interconnect: supply and design-in today, Indian manufacturing on a staged roadmap.",
+    "An India-based partner for high-speed AI interconnect: supply and design-in today, Indian manufacturing on a staged roadmap.",
   path: "/photonics",
   og: "photonics",
 });
@@ -150,7 +150,7 @@ export default function PhotonicsPage() {
             The layer every AI cluster <em>runs on</em>.
           </>
         }
-        lede="An AI cluster is only as fast as the links between its GPUs. We are India’s partner for the copper and optical interconnect that carries that traffic: supplied and designed in today with our US technology partner, with the capability to manufacture it here built in stages."
+        lede="An AI cluster is only as fast as the links between its GPUs. We are an India-based partner for the copper and optical interconnect that carries that traffic: supplied and designed in today with our US technology partner, with the capability to manufacture it here built in stages."
         actions={
           <>
             <Link className="btn-p" href="/start-a-project">
