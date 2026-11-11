@@ -47,7 +47,7 @@ export default function GovernmentPage() {
         eyebrow={brief("/government").lead}
         title={
           <>
-            AI that a public office can <em>answer for</em>.
+            Accountable AI for <em>government</em>.
           </>
         }
         lede="Sovereign deployments, inspection intelligence, public-health platforms and document automation for departments, regulators and public-sector undertakings — engineered so that a named officer decides, the record is complete, and citizen data stays on the department's own infrastructure."
@@ -76,7 +76,7 @@ export default function GovernmentPage() {
           eyebrow="What we deliver"
           title={
             <>
-              Programme-scale work across <em>all five lines</em>.
+              Programme-scale work across <em>every line we run</em>.
             </>
           }
           lede="Government is not a separate product line. It is where every line we run — enterprise AI, regulatory AI, healthcare AI, interconnect and sovereign compute — meets the strictest requirements on accountability and data."
@@ -112,7 +112,7 @@ export default function GovernmentPage() {
               Pilot, evaluate, <em>then</em> scale.
             </>
           }
-          lede="Public money deserves evidence before rollout. Every programme starts on one workflow and the department's own data, and only scales after it has passed criteria agreed in writing."
+          lede="Every programme starts on one workflow and the department's own data, and only scales after it has passed criteria agreed in writing."
         />
         <Figure
           n="01"

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import { CtaScene } from "@/components/pv/CtaScene";
 
 /**
  * The 2026 section kit. Server components only: everything here is markup
  * and CSS (app/premium.css, `pv-` prefix). Motion comes from ScrollMotion,
  * which lifts .pv-card / .pv-rise in batches and adds .is-in to .pv-fig.
+ * The one client island is CtaScene, the 3D figure behind the CTA band.
  */
 
 type Accent = "ent" | "pha" | "men" | "pho" | "white";
@@ -302,6 +304,7 @@ export function CtaBand({
   return (
     <section className="pv-cta">
       <div className="pv-cta-light" aria-hidden="true" />
+      <CtaScene />
       <div className="wrap pv-cta-in pv-center">
         <h2 className="pv-h2">{title}</h2>
         {body ? <p className="pv-lede">{body}</p> : null}

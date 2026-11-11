@@ -156,7 +156,7 @@ export default function SovereignPage() {
         accent="pho"
         title={
           <>
-            Sovereignty is decided in the <em>cable plant</em>.
+            Sovereign AI starts with the <em>links between your GPUs</em>.
           </>
         }
         lede="A sovereign AI cluster means the compute, the data and the operator sit under Indian jurisdiction. That is a procurement and engineering problem long before it is a legal one — and most of it lands on the links between the GPUs."
@@ -187,8 +187,8 @@ export default function SovereignPage() {
       <Section accent="pho" id="test">
         <Statement
           eyebrow="01 · The test"
-          lead="“Sovereign” is doing a lot of marketing work at the moment."
-          rest="Four questions separate the operators who mean it from the ones who have put an Indian flag on a slide."
+          lead="“Sovereign” is easy to claim and hard to prove."
+          rest="Four questions show whether a cluster is sovereign in practice, not only in name."
         />
         <div style={{ marginTop: "clamp(40px, 5vw, 72px)" }} />
         <BigSteps items={sovereignTests.map((t) => ({ title: t.head, body: t.body }))} />

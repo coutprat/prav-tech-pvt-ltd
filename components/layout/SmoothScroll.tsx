@@ -20,6 +20,8 @@ export function SmoothScroll() {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
+    // Components that scroll to an element go through Lenis, or the two fight.
+    (window as Window & { __lenis?: Lenis }).__lenis = lenis;
 
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
@@ -27,6 +29,7 @@ export function SmoothScroll() {
 
     return () => {
       gsap.ticker.remove(raf);
+      delete (window as Window & { __lenis?: Lenis }).__lenis;
       lenis.destroy();
     };
   }, []);

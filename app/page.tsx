@@ -23,6 +23,102 @@ import {
   SectionHead,
 } from "@/components/pv/kit";
 import { Flow } from "@/components/pv/Flow";
+import { ProblemFinder, type Problem } from "@/components/pv/ProblemFinder";
+import { offers } from "@/content/offers";
+import { getVerifyItem } from "@/content/verify";
+
+/**
+ * Who already trusts us. Only shown while the owner-confirmed engagement note
+ * in content/verify.ts stands, and written as descriptions: no client is
+ * named on this site.
+ */
+const ENGAGED = getVerifyItem("pharma-engagements").confirmed;
+
+const FIRST = "A written plan within two business days, then a pilot on your own data.";
+
+/** Problems in the visitor's words, answered with copy the site already makes. */
+const PROBLEMS: Problem[] = [
+  {
+    id: "documents",
+    say: "My team is buried in documents.",
+    line: "Enterprise AI",
+    colour: "var(--acc-ent)",
+    title: "Answers from your own records, with the source attached.",
+    body: offers[0].body,
+    first: offers[0].gets,
+    href: "/enterprise-ai",
+    topic: "enterprise",
+  },
+  {
+    id: "workflow",
+    say: "The same manual workflow eats hours every week.",
+    line: "Enterprise AI · Agents",
+    colour: "var(--acc-ent)",
+    title: "One workflow, handled end to end, with a person approving.",
+    body: offers[1].body,
+    first: offers[1].gets,
+    href: "/enterprise-ai",
+    topic: "enterprise",
+  },
+  {
+    id: "inspection",
+    say: "An inspection or an audit is coming.",
+    line: "Pharma & Regulatory AI",
+    colour: "var(--acc-pha)",
+    title: "Drafts your quality team can verify, line by line.",
+    body: "FDA 483 responses, CAPA reasoning, data-integrity review and inspection readiness. Every output is a draft that a qualified person signs.",
+    first: FIRST,
+    proof: ENGAGED
+      ? "A US-headquartered global generics manufacturer and two Indian pharmaceutical groups."
+      : undefined,
+    href: "/pharma",
+    topic: "pharma",
+  },
+  {
+    id: "forecast",
+    say: "We cannot see what demand, churn or failures will do next.",
+    line: "Enterprise AI · Machine learning",
+    colour: "var(--acc-ent)",
+    title: "Predictions that show their evidence.",
+    body: offers[2].body,
+    first: offers[2].gets,
+    href: "/enterprise-ai",
+    topic: "enterprise",
+  },
+  {
+    id: "patients",
+    say: "Patients wait too long before anyone listens.",
+    line: "Healthcare AI · MENNIE",
+    colour: "var(--acc-men)",
+    title: "A voice-first assistant that prepares the clinician.",
+    body: "MENNIE meets people at the door, at the kiosk or on their phone, and hands the clinician a structured picture before the consultation starts.",
+    first: FIRST,
+    href: "/mennie",
+    topic: "mennie",
+  },
+  {
+    id: "sovereign",
+    say: "Our data cannot leave our building.",
+    line: "Government & sovereign AI",
+    colour: "var(--gold)",
+    title: "AI that runs where your data already lives.",
+    body: "Air-gapped and on-premise deployments on your own servers or private cloud. One office pilots, a named officer signs off, and only then does it scale.",
+    first: FIRST,
+    href: "/government",
+    topic: "government",
+  },
+  {
+    id: "interconnect",
+    say: "Our AI cluster is waiting on its interconnect.",
+    line: "Photonics & AI data centres",
+    colour: "var(--acc-pho)",
+    title: "The copper and optical links between your GPUs.",
+    body: "DAC, ACC, AEC and AOC cables and pluggable optics at 800G and 1.6T, supplied with our US technology partner and planned around your cluster.",
+    first: FIRST,
+    href: "/photonics",
+    topic: "photonics",
+  },
+];
 
 /** A cross-section of real work across the five lines, coloured by line. */
 const HOME_WALL = [
@@ -90,7 +186,10 @@ const LINES = [
 export default function HomePage() {
   return (
     <>
-      <PrismHero lead={brief("/").lead} />
+      <PrismHero
+        lead={brief("/").lead}
+        proof={ENGAGED ? "Already working with global and Indian pharmaceutical companies" : undefined}
+      />
 
       {/* ------------------------------------------------------- the facts */}
       <Section tight>
@@ -113,6 +212,61 @@ export default function HomePage() {
           ))}
         </dl>
       </Section>
+
+      {/* ------------------------------------------------- your problem */}
+      <Section id="problem">
+        <SectionHead
+          eyebrow="Start here"
+          title={
+            <>
+              What is the <em>problem</em> on your desk?
+            </>
+          }
+          lede="Pick the one that sounds like yours. This is what we would build for it, and what you would have in your hands first."
+        />
+        <ProblemFinder items={PROBLEMS} />
+      </Section>
+
+      {/* ------------------------------------------------ already trusted */}
+      {ENGAGED ? (
+        <Section tone="raised">
+          <Statement
+            eyebrow="Already at work"
+            lead={
+              <>
+                Already working with <em>global and Indian</em> pharmaceutical companies.
+              </>
+            }
+            rest="Described here, never named."
+          />
+          <div style={{ marginTop: "clamp(48px, 6vw, 88px)" }} />
+          <CapWall
+            kicker="Engagement"
+            items={[
+              {
+                title: "A global generics manufacturer",
+                body: "Headquartered in the United States, with manufacturing plants in India.",
+                colour: "var(--acc-pha)",
+              },
+              {
+                title: "Two Indian pharmaceutical groups",
+                body: "Pharmaceutical groups in India that we work with directly.",
+                colour: "var(--acc-pha)",
+              },
+              {
+                title: "A pharma regulatory-technology company",
+                body: "An FDA 483 intelligence platform, built under contract.",
+                wide: true,
+                colour: "var(--acc-pha)",
+                tag: "Built",
+              },
+            ]}
+          />
+          <p className="pv-proof-note">
+            Client names are kept confidential. We describe the work, never the client.
+          </p>
+        </Section>
+      ) : null}
 
       {/* ------------------------------------------------------ four lines */}
       <Section id="lines">
@@ -197,7 +351,7 @@ export default function HomePage() {
               Specific systems, <em>not slideware</em>.
             </>
           }
-          lede="Built or being built by our engineers, across all five lines. Client work is described without names; the tag shows where each one stands."
+          lede="Built or being built by our engineers, across every line we run. Client work is described without names; the tag shows where each one stands."
         />
         <CapWall items={HOME_WALL} />
       </Section>
@@ -339,7 +493,7 @@ export default function HomePage() {
             Tell us the <em>problem</em>.
           </>
         }
-        body={company.promise}
+        body="You get a written plan within two business days, not a pitch deck."
       />
     </>
   );

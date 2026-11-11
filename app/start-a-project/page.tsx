@@ -92,7 +92,7 @@ export default function StartAProjectPage() {
                   name: "area",
                   label: "Which line",
                   type: "select",
-                  options: ["Enterprise AI", "Pharma AI", "MENNIE / Healthcare", "Photonics", "Not sure yet"]
+                  options: ["Enterprise AI", "Pharma AI", "MENNIE / Healthcare", "Photonics", "Government / public sector", "Not sure yet"]
                 },
                 {
                   name: "problem",

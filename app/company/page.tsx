@@ -180,10 +180,10 @@ export default function CompanyPage() {
           eyebrow="Where we are"
           title={
             <>
-              One office, <em>on your clock</em>.
+              One office, <em>one team</em>.
             </>
           }
-          lede="Engineering, qualification and support sit in India, on the same clock as the teams we build for."
+          lede="Engineering, qualification and support sit together in India (IST, UTC+5:30), so the people who build a system are the people who support it."
         />
         <Grid cols={2}>
           <Card n="Headquarters" title={company.hq} accent="white">
@@ -231,7 +231,7 @@ export default function CompanyPage() {
             Tell us the <em>problem</em>.
           </>
         }
-        body={company.promise}
+        body="You get a written plan within two business days, not a pitch deck."
       />
     </>
   );
