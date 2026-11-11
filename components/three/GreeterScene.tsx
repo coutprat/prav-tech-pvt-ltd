@@ -20,7 +20,8 @@ import * as THREE from "three";
  *   - it has lips of warm light: it says "hello" as the curtain opens, breaks
  *     into a smile with the nod, and keeps a warm, lively expression after
  *     that (a grin that widens now and then, sometimes a little laugh, a
- *     brighter smile when you move). Its cheeks glow when it smiles.
+ *     brighter smile when you move);
+ *   - it wears a cap with the Praverse mark on the front panel.
  *
  * Everything is procedural: no model file, no textures, no HDR download. The
  * head is a sphere reshaped in code into a tapered helmet, so the visor, jaw
@@ -45,6 +46,11 @@ const LIP_W = 0.2;
 const MOUTH_Y = -0.49;
 const MOUTH_Z = 0.792;
 const MOUTH_TILT = 0.46;
+/** The cap: crown radius over the skull, and the polar angle of its rim. */
+const CAP_R = 1.045;
+const CAP_RIM = 1.0;
+/** Where the mark sits on the front panel (polar angle). */
+const CAP_BADGE = 0.66;
 const smooth01 = (x: number) => THREE.MathUtils.smoothstep(x, 0, 1);
 /** A bump from 0 up to 1 and back down over [a, b]. */
 const bump = (t: number, a: number, b: number) =>
@@ -91,7 +97,6 @@ function Android({ onReady }: GreeterSceneProps) {
   /** Lip segments: [0, LIP_N) upper lip, [LIP_N, 2 * LIP_N) lower lip. */
   const lips = useRef<(THREE.Mesh | null)[]>([]);
   const mouthGlow = useRef<THREE.Mesh>(null);
-  const cheeks = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
   const pointerSpeed = useRef(0);
   const lastPointer = useRef({ x: 0, y: 0 });
   const mood = useRef({ smile: 0, open: 0, width: 1 });
@@ -142,6 +147,23 @@ function Android({ onReady }: GreeterSceneProps) {
         opacity: 0,
         toneMapped: false,
       }),
+      // The cap: a deep navy twill, matte so it reads as cloth against the
+      // ceramic and glass.
+      cap: new THREE.MeshPhysicalMaterial({
+        color: "#141a2a",
+        metalness: 0,
+        roughness: 0.82,
+        sheen: 1,
+        sheenRoughness: 0.6,
+        sheenColor: new THREE.Color("#3a4a6a"),
+        side: THREE.DoubleSide,
+      }),
+      badge: new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        toneMapped: false,
+        depthWrite: false,
+      }),
       lens: new THREE.MeshPhysicalMaterial({
         color: "#050608",
         metalness: 0.6,
@@ -164,6 +186,39 @@ function Android({ onReady }: GreeterSceneProps) {
       lipUpper: new THREE.CapsuleGeometry(0.0105, 1, 4, 8),
       lipLower: new THREE.CapsuleGeometry(0.0125, 1, 4, 8),
       skull: helmet(new THREE.SphereGeometry(1, 96, 72)),
+      // The cap's crown: the top of the head, a little proud of it.
+      crown: helmet(new THREE.SphereGeometry(CAP_R, 96, 40, 0, Math.PI * 2, 0, CAP_RIM)),
+      // The bill: a crescent that reaches forward from the front of the rim.
+      bill: (() => {
+        const sh = new THREE.Shape();
+        const n = 48;
+        const a0 = -1.05;
+        const a1 = 1.05;
+        for (let i = 0; i <= n; i++) {
+          const a = a0 + ((a1 - a0) * i) / n;
+          const x = Math.sin(a);
+          const z = Math.cos(a);
+          if (i === 0) sh.moveTo(x, z);
+          else sh.lineTo(x, z);
+        }
+        for (let i = n; i >= 0; i--) {
+          const a = a0 + ((a1 - a0) * i) / n;
+          // reach is longest at the front and tapers to the sides
+          const reach = 1 + 0.48 * Math.pow(Math.cos((a / 1.05) * (Math.PI / 2)), 0.7);
+          sh.lineTo(Math.sin(a) * reach, Math.cos(a) * reach);
+        }
+        const g = new THREE.ExtrudeGeometry(sh, {
+          depth: 0.035,
+          bevelEnabled: true,
+          bevelSize: 0.012,
+          bevelThickness: 0.012,
+          bevelSegments: 3,
+          curveSegments: 4,
+        });
+        // shape is drawn in x/y; lay it flat with "y" pointing forward (+z)
+        g.rotateX(Math.PI / 2);
+        return g;
+      })(),
       // A band of black glass across the face.
       visor: helmet(new THREE.SphereGeometry(1.014, 96, 28, 0.44, 2.26, 1.1, 0.62)),
       // The jaw plate: machined titanium under the visor.
@@ -191,6 +246,31 @@ function Android({ onReady }: GreeterSceneProps) {
       ]),
     };
   }, []);
+
+  // The Praverse mark for the front of the cap, drawn from /logo.svg into a
+  // canvas so it is crisp and needs no extra file.
+  useEffect(() => {
+    let tex: THREE.CanvasTexture | null = null;
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 512;
+      const ctx = c.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, 512, 512);
+      tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 4;
+      mats.badge.map = tex;
+      mats.badge.needsUpdate = true;
+      mats.badge.opacity = 1;
+    };
+    img.src = "/logo.svg";
+    return () => {
+      img.onload = null;
+      tex?.dispose();
+    };
+  }, [mats]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -338,9 +418,6 @@ function Android({ onReady }: GreeterSceneProps) {
       mouthGlow.current.scale.set(W * 0.85, Math.max(0.0001, m.open * 0.75), 1);
       mouthGlow.current.position.y = (lipY(0, true) + lipY(0, false)) / 2;
     }
-    cheeks.current.forEach((c) => {
-      if (c) c.opacity = wake * (0.03 + m.smile * 0.11);
-    });
 
     // --- breathing --------------------------------------------------------
     const breath = Math.sin(t * 1.15);
@@ -440,6 +517,39 @@ function Android({ onReady }: GreeterSceneProps) {
         {seam(1.1, 2.26, "visor-top")}
         {seam(1.72, 2.26, "visor-bottom")}
         {seam(0.46, Math.PI * 2, "crown", 1.006)}
+
+        {/* ------------------------------------------------------------ cap */}
+        <mesh geometry={geos.crown} material={mats.cap} />
+        {/* gold piping around the rim of the cap */}
+        {seam(CAP_RIM, Math.PI * 2, "cap-rim", CAP_R + 0.004)}
+        {/* the button on top */}
+        <mesh position={[0, HY * CAP_R + 0.005, 0]} scale={[1, 0.55, 1]} material={mats.gold}>
+          <sphereGeometry args={[0.055, 24, 16]} />
+        </mesh>
+        {/* the bill, following the rim's oval, tipped down a touch */}
+        <group
+          position={[0, Math.cos(CAP_RIM) * HY * CAP_R - 0.02, 0]}
+          rotation={[0.24, 0, 0]}
+          scale={[
+            Math.sin(CAP_RIM) * CAP_R * HX * taperAt(Math.cos(CAP_RIM)),
+            1,
+            Math.sin(CAP_RIM) * CAP_R * HZ * taperAt(Math.cos(CAP_RIM)),
+          ]}
+        >
+          <mesh geometry={geos.bill} material={mats.cap} />
+        </group>
+        {/* the Praverse mark on the front panel */}
+        <mesh
+          position={[
+            0,
+            Math.cos(CAP_BADGE) * HY * CAP_R,
+            Math.sin(CAP_BADGE) * CAP_R * HZ * taperAt(Math.cos(CAP_BADGE)) + 0.012,
+          ]}
+          rotation={[-(Math.PI / 2 - CAP_BADGE) * 0.92, 0, 0]}
+          material={mats.badge}
+        >
+          <planeGeometry args={[0.4, 0.4]} />
+        </mesh>
         {/* a short vertical seam down the chin */}
         <mesh position={[0, -0.86, HZ * taperAt(-0.8) * 0.62 + 0.005]} rotation={[0.72, 0, 0]} material={mats.gold}>
           <boxGeometry args={[0.012, 0.3, 0.012]} />
@@ -482,29 +592,6 @@ function Android({ onReady }: GreeterSceneProps) {
             />
           </mesh>
         </group>
-        {/* cheeks: a rose-gold glow that warms when it smiles */}
-        {[-1, 1].map((side, i) => (
-          <mesh
-            key={side}
-            position={[side * 0.37, -0.4, 0.735]}
-            rotation={[0.35, side * 0.5, 0]}
-            scale={[1, 0.62, 1]}
-          >
-            <circleGeometry args={[0.12, 32]} />
-            <meshBasicMaterial
-              ref={(c) => {
-                cheeks.current[i] = c;
-              }}
-              color="#f2a48a"
-              transparent
-              opacity={0}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-              toneMapped={false}
-            />
-          </mesh>
-        ))}
-
         {/* eyes: camera irises behind the glass, moved by the gaze */}
         <group ref={gaze}>
           {[-1, 1].map((side, i) => (
