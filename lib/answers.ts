@@ -28,6 +28,21 @@ const verified = (id: VerifyId) => {
 
 /* ------------------------------------------------------------------ facts */
 
+/**
+ * Office hours, as on the Google Business Profile: Monday to Saturday,
+ * 09:30-18:30 India time, closed Sunday. One value for the contact page,
+ * the Organization JSON-LD and llms.txt.
+ */
+export const HOURS = {
+  days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  opens: "09:30",
+  closes: "18:30",
+  timeZone: "IST (UTC+5:30)",
+  open: "Monday to Saturday, 9:30 am to 6:30 pm IST",
+  closed: "Closed Sunday",
+  label: "Monday to Saturday, 9:30 am to 6:30 pm IST. Closed Sunday."
+} as const;
+
 const address = verified("registered-address");
 const cin = verified("cin")?.replace(/^CIN\s*/, "") ?? null;
 const gstin = verified("gstin")?.replace(/^GSTIN\s*/, "") ?? null;
@@ -64,17 +79,19 @@ export const FACTS = {
   phone: null as string | null,
   cin,
   gstin,
+  hours: HOURS.label,
   promise: company.promise
 } as const;
 
 /**
- * Google Business Profile URL: NOT YET SUPPLIED.
- * Paste the profile's share link (https://g.page/... or a maps.app.goo.gl /
- * google.com/maps place URL) here once the founder's account is signed in.
- * While it is null nothing is emitted; once set it joins SAME_AS, and so the
- * Organization JSON-LD and llms.txt, with no other change.
+ * Google Business Profile: the verified "Praverse Tech Pvt Ltd" listing
+ * (place ID 0xe6cb7596a42c529b). It joins SAME_AS, and so the Organization
+ * JSON-LD and llms.txt. The profile's shorter address ("T2 413 & 420, Prince
+ * Cube, Gotri, Vadodara, Gujarat 390021") is the same office as the signage
+ * address the site uses. The phone lives on the profile only, by the
+ * founder's choice; FACTS.phone stays null.
  */
-export const GOOGLE_BUSINESS_PROFILE: string | null = null;
+export const GOOGLE_BUSINESS_PROFILE: string | null = "https://www.google.com/maps?cid=16630515338855600795";
 
 /**
  * Profiles that are the same entity as this site. Only URLs found in the repo

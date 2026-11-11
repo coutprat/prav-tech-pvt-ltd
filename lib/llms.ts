@@ -33,6 +33,7 @@ function keyFacts(): string[] {
     ["Website", FACTS.url],
     ["Email (enquiries)", FACTS.enquiryEmail],
     ["Email (careers)", FACTS.careersEmail],
+    ["Office hours", FACTS.hours],
     ["Phone", FACTS.phone],
     ["CIN", FACTS.cin],
     ["GSTIN", FACTS.gstin]

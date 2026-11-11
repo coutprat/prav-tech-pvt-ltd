@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { brief } from "@/lib/answers";
+import { brief, HOURS } from "@/lib/answers";
 import { pageMeta } from "@/lib/seo";
 import { PrismMark } from "@/components/pv/LineVisuals";
 import { PageJsonLd } from "@/components/seo/JsonLd";
@@ -82,6 +82,13 @@ export default function ContactPage() {
                 <dt>Registered office</dt>
                 <dd>
                   <Verify id="registered-address" />
+                </dd>
+              </div>
+              <div>
+                <dt>Office hours</dt>
+                <dd>
+                  {HOURS.open}
+                  <span>{HOURS.closed}</span>
                 </dd>
               </div>
               <div>
