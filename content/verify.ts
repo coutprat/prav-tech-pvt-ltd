@@ -235,6 +235,16 @@ export const verifyItems = [
     confirmed: false
   },
   {
+    id: "pharma-engagements",
+    where: "Pharma page FAQ, home FAQ, buyer's guides, llms files",
+    claim: "Praverse Tech works with pharmaceutical companies including a US-headquartered global generics manufacturer with plants in India and two Indian pharmaceutical groups. It built an FDA 483 intelligence platform under contract for a pharma regulatory-technology company, and it partners with Nexgen Pharma Solutions for inspection-floor practice.",
+    fallback: "",
+    needs:
+      "Owner-confirmed engagements. Client names stay off the site at the owner's instruction: descriptions only. Name a client only with its written consent.",
+    confirmed: true,
+    source: "Founder, in session, 11 November 2026 (clients named privately; the regulatory-technology contract is the SOW of 22 April 2026)"
+  },
+  {
     id: "public-sector-references",
     where: "Government — references",
     claim: "Public-sector references",

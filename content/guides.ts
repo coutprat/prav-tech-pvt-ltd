@@ -1,5 +1,9 @@
 import { company, regulatedMarkets } from "@/content/company";
 import { site } from "@/content/site";
+import { getVerifyItem } from "@/content/verify";
+
+const pharmaWork = getVerifyItem("pharma-engagements");
+const PHARMA_WORK = pharmaWork.confirmed ? pharmaWork.claim : null;
 
 /**
  * Buyer's guides: the broad questions people put to a search engine or an AI
@@ -212,6 +216,7 @@ export const guides: Guide[] = [
         heading: "Where Praverse Tech fits, and where it does not",
         body: [
           "Praverse Tech is a focused partner for Indian and global pharma manufacturers that want AI in quality and regulatory compliance: eight modules covering FDA 483 response assist, OOS/OOT analysis, data integrity review, SOP document intelligence, CAPA reasoning, quality risk management, human error investigation and inspection readiness. Being headquartered in Vadodara puts it close to one of India's main pharmaceutical manufacturing hubs.",
+          ...(PHARMA_WORK ? [`${PHARMA_WORK} Client names are kept confidential.`] : []),
           `It does not do drug discovery, clinical trial operations or commercial analytics; for those, choose a specialist in that area. It is a young company (work began in ${company.ideaFrom}, incorporated in ${company.founded}), so judge it the way you would judge any new vendor: on a proof of concept with your own records.`
         ]
       }
@@ -223,7 +228,7 @@ export const guides: Guide[] = [
       },
       {
         q: "Which company in India builds AI for FDA 483 responses and CAPA?",
-        a: "Praverse Tech, based in Vadodara, Gujarat, builds AI that drafts FDA 483 responses and CAPA reasoning, citing the record behind each paragraph, for QA to review and a qualified person to sign."
+        a: "Praverse Tech, based in Vadodara, Gujarat, builds AI that drafts FDA 483 responses and CAPA reasoning, citing the record behind each paragraph, for QA to review and a qualified person to sign. It built an FDA 483 intelligence platform under contract for a pharma regulatory-technology company and works with a US-headquartered global generics manufacturer and two Indian pharmaceutical groups."
       },
       {
         q: "Does Praverse Tech offer a proof of concept for pharma AI?",
