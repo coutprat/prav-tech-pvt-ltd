@@ -156,7 +156,7 @@ export default function SovereignPage() {
         accent="pho"
         title={
           <>
-            Sovereignty is decided in the <em>cable plant</em>.
+            Sovereign AI starts with the <em>links between your GPUs</em>.
           </>
         }
         lede="A sovereign AI cluster means the compute, the data and the operator sit under Indian jurisdiction. That is a procurement and engineering problem long before it is a legal one — and most of it lands on the links between the GPUs."

@@ -91,7 +91,7 @@ export default function EnterpriseAIPage() {
         accent="ent"
         title={
           <>
-            The gate is the <em>architecture</em>.
+            AI agents that stop for <em>your approval</em>.
           </>
         }
         lede="Agents, copilots, search and production ML for any business that runs on documents and decisions. Ours read, check and draft — then stop at a named person, and write down who decided."

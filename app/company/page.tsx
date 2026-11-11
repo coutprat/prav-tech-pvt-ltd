@@ -231,7 +231,7 @@ export default function CompanyPage() {
             Tell us the <em>problem</em>.
           </>
         }
-        body={company.promise}
+        body="You get a written plan within two business days, not a pitch deck."
       />
     </>
   );

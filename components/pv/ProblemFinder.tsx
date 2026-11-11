@@ -84,7 +84,17 @@ export function ProblemFinder({ items }: { items: Problem[] }) {
             tabIndex={i === active ? 0 : -1}
             className="pq-tab"
             style={{ "--c": it.colour } as CSSProperties}
-            onClick={() => setActive(i)}
+            onClick={() => {
+              setActive(i);
+              // On a phone the answer sits below the list: bring it into view.
+              const el = panel.current;
+              if (el && window.matchMedia("(max-width: 999px)").matches) {
+                type Scroller = { scrollTo: (t: HTMLElement, o: { offset: number }) => void };
+                const lenis = (window as Window & { __lenis?: Scroller }).__lenis;
+                if (lenis) lenis.scrollTo(el, { offset: -96 });
+                else el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }}
             onPointerEnter={(e) => {
               if (e.pointerType === "mouse") setActive(i);
             }}

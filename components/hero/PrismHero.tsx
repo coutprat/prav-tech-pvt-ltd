@@ -21,7 +21,7 @@ import type { PrismSceneProps } from "@/components/three/PrismScene";
  *   3. The canvas fades in over the SVG once its first frame is drawn.
  * Reduced motion, software WebGL and weak devices stay on step 1.
  */
-export function PrismHero({ lead }: { lead: string }) {
+export function PrismHero({ lead, proof }: { lead: string; proof?: string }) {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const labels = useRef<(HTMLElement | null)[]>([]);
@@ -212,9 +212,9 @@ export function PrismHero({ lead }: { lead: string }) {
           </span>
         </h1>
         <p className="ph-lede">
-          One engineering core, separated into four disciplines: enterprise AI and
-          agents, pharma and regulatory AI, healthcare AI, and the optical
-          interconnect India&rsquo;s AI data centres run on.
+          Bring us the problem. One engineering core builds the answer across four
+          disciplines: enterprise AI and agents, pharma and regulatory AI, healthcare
+          AI, and the optical interconnect India&rsquo;s AI data centres run on.
         </p>
         <div className="ph-cta">
           <Link className="btn-p" href="/start-a-project">
@@ -225,6 +225,12 @@ export function PrismHero({ lead }: { lead: string }) {
             Explore the four lines
           </Link>
         </div>
+        {proof ? (
+          <p className="ph-proof mono">
+            <i aria-hidden="true" />
+            {proof}
+          </p>
+        ) : null}
       </div>
 
       <div className="ph-scrollhint mono" aria-hidden="true">

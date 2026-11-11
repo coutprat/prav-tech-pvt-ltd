@@ -79,6 +79,16 @@ Same loading contract as the hero prism: `useGpuScene()` gate, bare `import()` o
   - `app/photonics/page.tsx`, `lib/answers.ts`: "India's partner for…" → "an India-based partner for…".
 - `app/contact/page.tsx`, `app/start-a-project/page.tsx`: added the "Government / public sector" option.
 
+## 6. Second pass: wording and small fixes
+
+- Home hero (`components/hero/PrismHero.tsx`): the lede now opens with "Bring us the problem." A new optional `proof` prop renders a one-line trust note under the buttons (`.ph-proof`); the home page passes it only while the pharma engagements are confirmed.
+- Page headlines rewritten for plain reading by international and procurement readers:
+  - `/enterprise-ai`: "The gate is the architecture." → "AI agents that stop for your approval."
+  - `/government`: "AI that a public office can answer for." → "Accountable AI for government."
+  - `/sovereign-ai-data-centres`: "Sovereignty is decided in the cable plant." → "Sovereign AI starts with the links between your GPUs."
+- CTA band on `/` and `/company`: the body no longer repeats the heading ("Tell us the problem.").
+- Problem finder on phones: tapping a problem scrolls the answer card into view. This goes through Lenis (`window.__lenis`, set in `components/layout/SmoothScroll.tsx`) because native smooth scrolling fights Lenis.
+
 ## Verification done
 
 - `npx tsc --noEmit` and `npm run lint` pass.

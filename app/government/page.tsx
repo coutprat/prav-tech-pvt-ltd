@@ -47,7 +47,7 @@ export default function GovernmentPage() {
         eyebrow={brief("/government").lead}
         title={
           <>
-            AI that a public office can <em>answer for</em>.
+            Accountable AI for <em>government</em>.
           </>
         }
         lede="Sovereign deployments, inspection intelligence, public-health platforms and document automation for departments, regulators and public-sector undertakings — engineered so that a named officer decides, the record is complete, and citizen data stays on the department's own infrastructure."

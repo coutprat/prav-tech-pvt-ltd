@@ -186,7 +186,10 @@ const LINES = [
 export default function HomePage() {
   return (
     <>
-      <PrismHero lead={brief("/").lead} />
+      <PrismHero
+        lead={brief("/").lead}
+        proof={ENGAGED ? "Already working with global and Indian pharmaceutical companies" : undefined}
+      />
 
       {/* ------------------------------------------------------- the facts */}
       <Section tight>
@@ -490,7 +493,7 @@ export default function HomePage() {
             Tell us the <em>problem</em>.
           </>
         }
-        body={company.promise}
+        body="You get a written plan within two business days, not a pitch deck."
       />
     </>
   );
