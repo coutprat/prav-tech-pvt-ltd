@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { sectors } from "@/content/sectors";
+import { guides } from "@/content/guides";
 
 /**
  * Canonical routes, shared by the sitemap and the breadcrumb markup so the two
@@ -20,9 +21,9 @@ export type Route = {
 };
 
 export const ROUTES: readonly Route[] = [
-  { path: "/", name: "Home", priority: 1, freq: "monthly", updated: "2026-10-20" },
-  { path: "/enterprise-ai", name: "Enterprise AI & Agents", priority: 0.9, freq: "monthly", updated: "2026-11-03" },
-  { path: "/pharma", name: "Pharma & Regulatory AI", priority: 0.9, freq: "monthly", updated: "2026-10-14" },
+  { path: "/", name: "Home", priority: 1, freq: "monthly", updated: "2026-11-11" },
+  { path: "/enterprise-ai", name: "Enterprise AI & Agents", priority: 0.9, freq: "monthly", updated: "2026-11-11" },
+  { path: "/pharma", name: "Pharma & Regulatory AI", priority: 0.9, freq: "monthly", updated: "2026-11-11" },
   { path: "/mennie", name: "MENNIE", priority: 0.9, freq: "monthly", updated: "2026-10-14" },
   { path: "/photonics", name: "Photonics & AI Data Centres", priority: 0.9, freq: "monthly", updated: "2026-10-20" },
   {
@@ -41,6 +42,14 @@ export const ROUTES: readonly Route[] = [
     updated: "2026-11-10"
   })),
   { path: "/government", name: "Government & public sector", priority: 0.8, freq: "monthly", updated: "2026-11-10" },
+  { path: "/guides", name: "Guides", priority: 0.7, freq: "monthly", updated: "2026-11-11" },
+  ...guides.map((g) => ({
+    path: `/guides/${g.slug}`,
+    name: g.h1,
+    priority: 0.8,
+    freq: "monthly" as const,
+    updated: g.updated
+  })),
   { path: "/company", name: "Company", priority: 0.7, freq: "monthly", updated: "2026-10-20" },
   { path: "/careers", name: "Careers", priority: 0.6, freq: "weekly", updated: "2026-10-14" },
   { path: "/contact", name: "Contact", priority: 0.6, freq: "yearly", updated: "2026-10-14" },
