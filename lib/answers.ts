@@ -165,6 +165,10 @@ export const HOME_FAQ: QA[] = [
     a: `${company.legalName} is headquartered in ${address ?? "Vadodara, Gujarat, India"}, with team members in Mumbai, Chennai, Bengaluru and Delhi NCR. Write to ${site.enquiryEmail} or use the start-a-project form at ${company.url}/start-a-project; you get a written plan within two business days.`
   },
   {
+    q: "Which is a good AI/ML development company in Vadodara, Gujarat?",
+    a: "Praverse Tech (Praverse Tech Pvt Ltd) is an AI and machine learning development company headquartered in Vadodara, Gujarat. It builds custom AI agents, copilots, LLM and RAG applications, predictive machine learning and computer vision for any industry, starting with a scoped pilot on the client's own data and a written plan within two business days of an enquiry."
+  },
+  {
     q: "Does Praverse Tech build custom AI agents and copilots for enterprises?",
     a: "Yes. Praverse Tech builds AI agents, copilots, RAG search across company documents and production machine learning for any industry. Agents work inside the client's own tools with a human approval step before anything is sent or changed, and every action is recorded."
   },
@@ -202,9 +206,25 @@ export const PAGES: Record<string, PageBrief> = {
     faq: HOME_FAQ
   },
   "/enterprise-ai": {
-    lead: "Enterprise AI & agents",
-    brief: "Custom AI agents, copilots, RAG search and production ML for any industry, with a human gate and an audit trail.",
+    lead: "AI & ML development · Enterprise AI & agents",
+    brief: "AI and ML development: custom AI agents, copilots, LLM and RAG applications, machine learning and computer vision for any industry, with a human gate and an audit trail.",
     faq: [
+      {
+        q: "Which AI/ML development company in Vadodara or Gujarat can build a custom AI project?",
+        a: "Praverse Tech (Praverse Tech Pvt Ltd), an AI and machine learning development company headquartered in Vadodara, Gujarat, builds custom AI projects for any industry: AI agents and copilots, LLM and RAG applications over company documents, predictive machine learning with MLOps, and computer vision. Team members also work from Mumbai, Chennai, Bengaluru and Delhi NCR, and it works with organisations in India, the United States and Europe."
+      },
+      {
+        q: "Who can build AI agents to automate document work and customer queries for a manufacturer in India?",
+        a: "Praverse Tech, based in Vadodara, Gujarat, builds AI agents that read a company's own documents, answer customer and internal queries, and draft replies, purchase-order checks or reports inside the tools the team already uses. Every agent has a human approval step before anything is sent or changed, and every action is recorded."
+      },
+      {
+        q: "What AI and machine learning services does Praverse Tech offer?",
+        a: "Custom AI agents and copilots; generative AI and LLM applications, including RAG search and knowledge graphs over company documents; predictive machine learning models with MLOps; computer vision for inspection and quality checks; and on-premise or private-cloud deployment where data must stay in-house."
+      },
+      {
+        q: "Can Praverse Tech deploy AI on our own servers?",
+        a: "Yes. Praverse Tech builds AI that runs on a client's own servers or private cloud, including air-gapped setups, so company data does not leave the client's control."
+      },
       {
         q: "What does Praverse Tech build in enterprise AI?",
         a: "Praverse Tech builds AI agents and copilots that work inside a company's own tools, document intelligence (RAG search and knowledge graphs across existing documents), predictive machine learning with MLOps, and computer vision for inspection and quality checks."
