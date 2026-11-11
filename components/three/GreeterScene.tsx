@@ -28,6 +28,8 @@ import * as THREE from "three";
 
 export type GreeterSceneProps = {
   onReady: () => void;
+  /** Draw frames only while true (on screen, tab visible). Defaults to true. */
+  active?: boolean;
 };
 
 const BEAMS = ["#9b7bff", "#22c98f", "#45bdf5", "#f5a524"];
@@ -445,9 +447,10 @@ function Studio() {
   );
 }
 
-export default function GreeterScene({ onReady }: GreeterSceneProps) {
+export default function GreeterScene({ onReady, active = true }: GreeterSceneProps) {
   return (
     <Canvas
+      frameloop={active ? "always" : "never"}
       dpr={[1, 2]}
       camera={{ position: [0, 0.1, 7.6], fov: 30, near: 0.1, far: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}

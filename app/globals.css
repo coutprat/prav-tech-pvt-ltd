@@ -5968,8 +5968,46 @@ body::before {
   z-index: 1;
 }
 /* The script says go: same fade, no delay. */
+/* The exit is staged so it reads as one movement, not a cut:
+     1. the greeter and its words rise, shrink a little and soften away;
+     2. a beat later the backdrop dissolves, opening from the centre;
+     3. the page underneath settles up into place as it is revealed.
+   Total 1.3 s, which is FADE in Welcome.tsx. */
 :root[data-welcome-out] .welcome {
-  animation: welcome-lift 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: welcome-lift 0.95s cubic-bezier(0.65, 0, 0.35, 1) 0.35s forwards;
+}
+:root[data-welcome-out] .welcome-inner {
+  animation: welcome-exit 0.8s cubic-bezier(0.55, 0, 0.2, 1) forwards;
+}
+:root[data-welcome-out] .welcome::before,
+:root[data-welcome-out] .welcome::after {
+  animation: welcome-open 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+:root[data-welcome-out]:not([data-welcomed]) #main > :first-child {
+  animation: welcome-arrive 1.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes welcome-exit {
+  to {
+    opacity: 0;
+    transform: translateY(-36px) scale(0.92);
+    filter: blur(8px);
+  }
+}
+@keyframes welcome-open {
+  to {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+@keyframes welcome-arrive {
+  from {
+    opacity: 0.4;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 /* Second visit, or someone who asked for less motion. */
 :root[data-welcomed] .welcome {
@@ -7047,5 +7085,17 @@ html.motion [data-m]:not([data-m-done]) {
 @media (max-width: 639px) {
   .spec-table {
     min-width: 0;
+  }
+}
+
+/* The greeter as a page centrepiece (/start-a-project). Reuses the curtain's
+   stage, sized to the hero column instead of the viewport. */
+.hero-greeter {
+  width: 100%;
+  height: clamp(340px, 46vw, 560px);
+}
+@media (max-width: 960px) {
+  .hero-greeter {
+    height: min(92vw, 420px);
   }
 }
