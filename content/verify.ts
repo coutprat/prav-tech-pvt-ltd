@@ -102,7 +102,8 @@ export const verifyItems = [
     claim: "Advisor, Praverse Tech",
     fallback: "Managing Director, Nexgen Pharma Solutions Pvt Ltd",
     needs: "Confirm what title Ashwani should carry on this site.",
-    confirmed: false
+    confirmed: true,
+    source: "Founder, in session, 11 November 2026"
   },
   {
     id: "linkedin-people",

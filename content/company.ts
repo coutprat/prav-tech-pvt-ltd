@@ -481,7 +481,7 @@ export const people = [
   {
     slug: "ashwani-shrivastav",
     name: "Ashwani Shrivastav",
-    role: "Managing Director, Nexgen Pharma Solutions Pvt Ltd",
+    role: "Advisor, Praverse Tech; Managing Director, Nexgen Pharma Solutions Pvt Ltd",
     proof: [
       "Pharma quality expert: QMS, QA, QC and DMF filings in eCTD format.",
       "Inspection support across USFDA, EU-GMP, WHO-GMP, EDQM, ANVISA and MFDS (Korea).",
