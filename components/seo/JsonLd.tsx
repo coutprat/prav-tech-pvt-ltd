@@ -78,7 +78,12 @@ export function OrganizationJsonLd() {
         areaServed: ["IN", "US", "EU"],
         knowsAbout: [
           "Enterprise AI",
+          "AI and machine learning development",
           "Custom AI solutions for any industry",
+          "Generative AI and LLM application development",
+          "Machine learning model development",
+          "Computer vision",
+          "MLOps",
           "AI agents",
           "AI copilots",
           "Document intelligence",
@@ -392,7 +397,7 @@ function pageNodes(path: string): Node[] {
         service(
           path,
           line("enterprise-ai").title,
-          "Enterprise AI agents, copilots, RAG search and production ML",
+          "AI and machine learning development",
           `Custom AI agents, copilots, RAG search and production ML for ${industries.map((i) => i.name.toLowerCase()).join(", ")} — with a human gate and an audit trail in the architecture.`,
           ["IN", "US", "EU"]
         )

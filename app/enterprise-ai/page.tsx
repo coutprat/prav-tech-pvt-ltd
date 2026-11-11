@@ -72,9 +72,9 @@ const EA_CHAPTERS: Chapter[] = [
 ];
 
 export const metadata: Metadata = pageMeta({
-  title: "Enterprise AI & Agents for Any Industry",
+  title: "AI & ML Development: Custom Agents, LLM Apps & ML",
   description:
-    "Custom AI agents, copilots, RAG search and production ML for manufacturing, finance, retail, healthcare, logistics and more — with a human gate and audit trail.",
+    "AI/ML development company in Vadodara, Gujarat: custom AI agents, LLM and RAG apps, machine learning and computer vision for any industry, with a human gate.",
   path: "/enterprise-ai",
   og: "enterprise-ai",
 });

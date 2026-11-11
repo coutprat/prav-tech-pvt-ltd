@@ -33,13 +33,13 @@ const HOME_WALL = [
   ...wallFromWeDo(weDo.pho.slice(0, 2), "var(--acc-pho)", "Photonics"),
 ];
 
-const HOME_TITLE = "Praverse Tech | Custom AI & Agents for Any Industry, India";
+const HOME_TITLE = "Praverse Tech | AI & ML Development Company, Vadodara, India";
 
 export const metadata: Metadata = {
   ...pageMeta({
     title: HOME_TITLE,
     description:
-      "AI development company in Vadodara, Gujarat: custom AI agents and copilots for any industry and government, plus 800G/1.6T interconnect for India's AI data centres.",
+      "AI and ML development company in Vadodara, Gujarat: custom AI agents, LLM apps, machine learning and computer vision for any industry, plus 800G/1.6T interconnect.",
     path: "/",
     og: "home",
   }),
